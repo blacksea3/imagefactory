@@ -21,3 +21,10 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+用户信息.csv
+用户信息.xlsx
+topalg/src/main/java/com/bla/secret/*
+
+topalg/.idea/*
+visualpara/imafac.vpp.bak*
