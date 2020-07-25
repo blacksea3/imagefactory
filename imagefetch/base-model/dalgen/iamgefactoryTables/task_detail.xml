@@ -1,0 +1,139 @@
+<!DOCTYPE table SYSTEM "../config/table-config-1.0.dtd">
+<table sqlname="task_detail" physicalName="task_detail" remark="task_detail">
+
+    <operation name="insertWithID" paramtype="object" remark="带ID插入表">
+            <![CDATA[
+            INSERT INTO task_detail
+            (
+            id,
+            instance_name,
+            content,
+            service_name,
+            script,
+            ext_info,
+            gmt_create,
+            gmt_modified
+            )
+            values(
+            #{id},
+            #{instance_name},
+            #{content},
+            #{service_name},
+            #{script},
+            #{ext_info},
+            now(),
+            now()
+            );
+      ]]>
+    </operation>
+
+    <operation name="insertWithOutID" paramtype="object" remark="不带ID插入表">
+            <![CDATA[
+            INSERT INTO task_detail
+            (
+            instance_name,
+            content,
+            service_name,
+            script,
+            ext_info,
+            gmt_create,
+            gmt_modified
+            )
+            values(
+            #{instance_name},
+            #{content},
+            #{service_name},
+            #{script},
+            #{ext_info},
+            now(),
+            now()
+            );
+      ]]>
+    </operation>
+
+    <!--
+    <operation name="updateById" paramType="object">
+        <sql>
+            <![CDATA[
+            UPDATE task_detail
+            SET
+            instance_name = ?,
+            content = ?,
+            service_name = ?,
+            script = ?,
+            ext_info = ?,
+            gmt_modified = ?
+            ;
+      ]]></sql>
+        <sqlmap>
+            <![CDATA[
+            UPDATE task_detail
+            SET gmt_modified=now()
+            <if test="instance_name != null">
+                ,instance_name=#{instance_name}
+            </if>
+            <if test="content != null">
+                ,content=#{content}
+            </if>
+            <if test="service_name != null">
+                ,service_name=#{service_name}
+            </if>
+            <if test="script != null">
+                ,script=#{script}
+            </if>
+            <if test="ext_info != null">
+                ,ext_info=#{ext_info}
+            </if>
+            WHERE id=#{id}
+      ]]>
+        </sqlmap>
+    </operation>
+-->
+
+    <!--
+    <operation name="selectByCondition" multiplicity="many">
+        <extraparams>
+            <param name="query"
+                   javatype="net.vinote.user.dal.customize.query.UserInfoQuery" />
+        </extraparams>
+        <sql><![CDATA[
+            select id,name,sex,birthday,phone,remark,createUser,createTime,modifyUser,modifyTime,deleted from uc_user_info
+      ]]></sql>
+        <sqlmap>
+            <![CDATA[
+        select id,name,sex,birthday,phone,remark,createUser,createTime,modifyUser,modifyTime,deleted from uc_user_info
+            where deleted='0'
+            <if test="query.id != null">
+                and id=#{query.id}
+            </if>
+            <if test="query.name != null">
+                and name like concat('%',#{query.name},'%')
+            </if>
+            <if test="query.sex != null">
+                and sex=#{query.sex}
+            </if>
+            <if test="query.phone != null">
+                and phone=#{query.phone}
+            </if>
+            order by createTime desc
+            <if test="query.rows > 0">
+              limit #{query.offset},#{query.rows}
+            </if>
+      ]]>
+        </sqlmap>
+    </operation>
+
+    <operation name="selectById" multiplicity="one" paramType="primitive">
+        <sql><![CDATA[
+            select id,name,sex,birthday,phone,remark,createUser,createTime,modifyUser,modifyTime,deleted from uc_user_info where id=?
+      ]]></sql>
+        <sqlmap>
+            <![CDATA[
+        select id,name,sex,birthday,phone,remark,createUser,createTime,modifyUser,modifyTime,deleted from uc_user_info
+            where deleted='0' and id=#{id}
+      ]]>
+        </sqlmap>
+    </operation>
+-->
+
+</table>
