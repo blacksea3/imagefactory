@@ -1,7 +1,7 @@
 package com.bla.imagefetch.app.quartz;
 
-import com.bla.imagefetch.app.util.FileUtil;
-import com.bla.imagefetch.app.util.LoggerUtil;
+import com.bla.imagefetch.common.util.FileUtil;
+import com.bla.imagefetch.common.util.LoggerUtil;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

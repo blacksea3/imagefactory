@@ -1,4 +1,4 @@
-package com.bla.imagefetch.app.util;
+package com.bla.imagefetch.common.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

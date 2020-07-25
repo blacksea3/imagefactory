@@ -1,7 +1,10 @@
 package com.bla.imagefetch.app.quartz;
 
+import com.bla.imagefetch.common.util.LoggerUtil;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class MainJobDetailBean implements InitializingBean {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(MainJobDetailBean.class);
+
     /**
      * 当bean被注入后，启动定时器
      * @author jiaxiantao(blacksea3)
@@ -21,6 +26,8 @@ public class MainJobDetailBean implements InitializingBean {
      */
     @Override
     public void afterPropertiesSet() throws Exception {
+        LoggerUtil.info(LOGGER, "Bean of MainJobDetailBean has been initialized!");
+
         SchedulerFactory schedulerFactory = new StdSchedulerFactory();
         Scheduler scheduler = schedulerFactory.getScheduler();
         // 启动scheduler

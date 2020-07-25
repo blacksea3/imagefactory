@@ -12,16 +12,31 @@
     <artifactId>app</artifactId>
 
     <dependencies>
+        <!-- 项目内其他模块 start -->
+        <dependency>
+            <groupId>com.bla</groupId>
+            <artifactId>common-util</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bla</groupId>
+            <artifactId>core-service</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <!-- 项目内其他模块 end -->
+
         <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         -->
+        <!-- springboot web start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- springboot web end -->
         <!--
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -36,6 +51,7 @@
         </dependency>
         -->
 
+        <!-- quartz start -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
@@ -44,7 +60,9 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz-jobs</artifactId>
         </dependency>
+        <!-- quartz end -->
 
+        <!-- springboot测试 start -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -56,6 +74,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
+        <dependency>
+            <!-- this is needed or IntelliJ gives junit.jar-->
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- springboot测试 end -->
     </dependencies>
 
     <!-- 作用:打一个可运行的包 -->

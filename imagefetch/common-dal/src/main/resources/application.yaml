@@ -1,0 +1,26 @@
+# 数据源
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/imagefactory
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    dbcp2:
+      min-idle: 5                                # 数据库连接池的最小维持连接数
+      initial-size: 5                            # 初始化连接数
+      max-total: 5                               # 最大连接数
+      max-wait-millis: 150                       # 等待连接获取的最大超时时间
+
+# mybatis配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml    # mapper映射文件位置
+  type-aliases-package: com.bla.imagefetch.common.dal.imagefactory.auto.mapper    # 实体类所在的位置
+logging:
+  level:
+    com:
+      bla:
+        imagefetch:
+          common:
+            dal:
+              imagefactory:
+                auto: debug

@@ -6,6 +6,8 @@
     <modules>
         <module>app</module>
         <module>common-dal</module>
+        <module>core-service</module>
+        <module>common-util</module>
     </modules>
 
     <!-- spring-boot-starter-web 和 spring-boot-starter-test都在这里面了, 版本号已经被控制 -->
@@ -33,6 +35,13 @@
                 <artifactId>spring-boot-starter-data-redis</artifactId>
             </dependency>
             -->
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>2.3.1.RELEASE</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
