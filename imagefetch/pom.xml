@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <modules>
-        <module>base-model</module>
         <module>app</module>
+        <module>common-dal</module>
     </modules>
 
     <!-- spring-boot-starter-web 和 spring-boot-starter-test都在这里面了, 版本号已经被控制 -->
