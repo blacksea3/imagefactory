@@ -33,12 +33,12 @@ public interface TaskDetailDOMapper{
      */
     Long insertBatchWithoutID(List<TaskDetailDO> list);
     /**
-     * desc:根据Id更新表:task_detail.<br/>
-     * descSql =  <![CDATA[ UPDATE task_detail SET GMT_MODIFIED = now() ,SCRIPT = #{script,jdbcType=VARCHAR} ,CONTENT = #{content,jdbcType=VARCHAR} ,EXT_INFO = #{extInfo,jdbcType=VARCHAR} ,SERVICE_NAME = #{serviceName,jdbcType=VARCHAR} ,INSTANCE_NAME = #{instanceName,jdbcType=VARCHAR} WHERE ID = #{id,jdbcType=INTEGER} ]]>
+     * desc:根据Id全量更新表:task_detail.<br/>
+     * descSql =  UPDATE task_detail SET GMT_MODIFIED = now() ,SCRIPT = #{script,jdbcType=VARCHAR} ,CONTENT = #{content,jdbcType=VARCHAR} ,EXT_INFO = #{extInfo,jdbcType=VARCHAR} ,SERVICE_NAME = #{serviceName,jdbcType=VARCHAR} ,INSTANCE_NAME = #{instanceName,jdbcType=VARCHAR} WHERE ID = #{id,jdbcType=INTEGER}
      * @param entity entity
      * @return Long
      */
-    Long update(TaskDetailDO entity);
+    Long updateAll(TaskDetailDO entity);
     /**
      * desc:根据Id删除数据:task_detail.<br/>
      * descSql =  <![CDATA[ DELETE FROM task_detail WHERE ID = #{id,jdbcType=INTEGER} ]]>

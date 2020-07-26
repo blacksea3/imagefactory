@@ -40,7 +40,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
         if (entity.getId() == null){
             return null;
         }else{
-            return taskDetailDOMapper.update(entity);
+            return taskDetailDOMapper.updateAll(entity);
         }
     }
 

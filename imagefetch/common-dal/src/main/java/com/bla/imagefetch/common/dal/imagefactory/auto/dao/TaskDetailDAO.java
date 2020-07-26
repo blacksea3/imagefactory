@@ -41,12 +41,12 @@ public class TaskDetailDAO{
         return taskDetailDOMapper.insertBatchWithoutID(list);
     }
     /**
-     * desc:根据Id更新表:task_detail.<br/>
+     * desc:根据Id全量更新表:task_detail.<br/>
      * @param entity entity
      * @return Long
      */
-    public Long update(TaskDetailDO entity){
-        return taskDetailDOMapper.update(entity);
+    public Long updateAll(TaskDetailDO entity){
+        return taskDetailDOMapper.updateAll(entity);
     }
     /**
      * desc:根据Id删除数据:task_detail.<br/>

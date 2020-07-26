@@ -92,29 +92,17 @@
         </foreach>
     </operation>
     
-    <operation name="update" paramtype="object" remark="根据Id更新表:task_detail">
-        <![CDATA[
+    <operation name="updateAll" paramtype="object" remark="根据Id全量更新表:task_detail">
         UPDATE task_detail
         SET
             GMT_MODIFIED     = now()
-        <if test="script != null">
             ,SCRIPT          = #{script,jdbcType=VARCHAR}
-        </if>
-        <if test="content != null">
             ,CONTENT         = #{content,jdbcType=VARCHAR}
-        </if>
-        <if test="content != null">
             ,EXT_INFO        = #{extInfo,jdbcType=VARCHAR}
-        </if>
-        <if test="content != null">
             ,SERVICE_NAME    = #{serviceName,jdbcType=VARCHAR}
-        </if>
-        <if test="content != null">
             ,INSTANCE_NAME    = #{instanceName,jdbcType=VARCHAR}
-        </if>
         WHERE
             ID              = #{id,jdbcType=INTEGER}
-        ]]>
     </operation>
 
     <operation name="deleteById"  remark="根据Id删除数据:task_detail">
