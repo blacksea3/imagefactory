@@ -20,7 +20,7 @@ public interface TaskDetailDOMapper{
     Long insertWithoutID(TaskDetailDO entity);
     /**
      * desc:带Id插入表:task_detail.<br/>
-     * descSql =  <![CDATA[ INSERT INTO task_detail( ID ,SCRIPT ,CONTENT ,EXT_INFO ,SERVICE_NAME ,INSTANCE_NAME ,GMT_CREATE ,GMT_MODIFIED )VALUES( #{id,jdbcType=VARCHAR} , #{script,jdbcType=VARCHAR} , #{content,jdbcType=VARCHAR} , #{extInfo,jdbcType=VARCHAR} , #{serviceName,jdbcType=VARCHAR} , #{instanceName,jdbcType=VARCHAR} , now() , now() ) ]]>
+     * descSql =  <![CDATA[ INSERT INTO task_detail( ID ,SCRIPT ,CONTENT ,EXT_INFO ,SERVICE_NAME ,INSTANCE_NAME ,GMT_CREATE ,GMT_MODIFIED )VALUES( #{id,jdbcType=INTEGER} , #{script,jdbcType=VARCHAR} , #{content,jdbcType=VARCHAR} , #{extInfo,jdbcType=VARCHAR} , #{serviceName,jdbcType=VARCHAR} , #{instanceName,jdbcType=VARCHAR} , now() , now() ) ]]>
      * @param entity entity
      * @return Long
      */

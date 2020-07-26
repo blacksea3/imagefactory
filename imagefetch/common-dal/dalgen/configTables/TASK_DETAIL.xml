@@ -53,7 +53,7 @@
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
-             #{id,jdbcType=VARCHAR}
+             #{id,jdbcType=INTEGER}
             , #{script,jdbcType=VARCHAR}
             , #{content,jdbcType=VARCHAR}
             , #{extInfo,jdbcType=VARCHAR}

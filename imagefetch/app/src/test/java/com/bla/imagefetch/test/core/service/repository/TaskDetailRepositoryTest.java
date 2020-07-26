@@ -15,17 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ClassName TaskRepositoryTest
- * 原子任务表仓库 测试类
+ * ClassName TaskDetailRepositoryTest
+ * 原子任务仓库 测试类
  *
  * @author blacksea3(jxt)
  * @date 2020/7/25 23:14
  */
 @SpringBootTest
-@MapperScan("com.bla.imagefetch.common.dal.imagefactory.auto.mapper")
-public class TaskRepositoryTest {
+public class TaskDetailRepositoryTest {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(TaskRepositoryTest.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TaskDetailRepositoryTest.class);
 
     @Autowired
     TaskDetailRepository taskDetailRepository;

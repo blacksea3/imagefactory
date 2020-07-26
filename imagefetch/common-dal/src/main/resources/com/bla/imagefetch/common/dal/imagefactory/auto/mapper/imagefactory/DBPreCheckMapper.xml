@@ -5,6 +5,24 @@
         SELECT CONCAT('表结构不一致 tbName:',tb_name,' 期望字段:',exp_columns,' 数据库中字段:',db_columns) as msg
         FROM (
         SELECT
+            COUNT(*)= 8 as fg,'task_config' as tb_name,group_concat(COLUMN_NAME) db_columns,
+            'ID,NAME,STATUS,EXT_INFO,DESCRIPTION,SERVICE_NAME,GMT_CREATE,GMT_MODIFIED' exp_columns
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE
+            TABLE_NAME = 'task_config'
+            AND COLUMN_NAME in('ID','NAME','STATUS','EXT_INFO','DESCRIPTION','SERVICE_NAME','GMT_CREATE','GMT_MODIFIED')
+        GROUP BY TABLE_NAME
+    UNION ALL
+        SELECT
+            COUNT(*)= 8 as fg,'service_config' as tb_name,group_concat(COLUMN_NAME) db_columns,
+            'ID,NAME,EXT_INFO,SYS_NAME,BEAN_NAME,BEAN_TYPE,GMT_CREATE,GMT_MODIFIED' exp_columns
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE
+            TABLE_NAME = 'service_config'
+            AND COLUMN_NAME in('ID','NAME','EXT_INFO','SYS_NAME','BEAN_NAME','BEAN_TYPE','GMT_CREATE','GMT_MODIFIED')
+        GROUP BY TABLE_NAME
+    UNION ALL
+        SELECT
             COUNT(*)= 8 as fg,'task_detail' as tb_name,group_concat(COLUMN_NAME) db_columns,
             'ID,SCRIPT,CONTENT,EXT_INFO,SERVICE_NAME,INSTANCE_NAME,GMT_CREATE,GMT_MODIFIED' exp_columns
         FROM INFORMATION_SCHEMA.COLUMNS

@@ -1,0 +1,96 @@
+<!DOCTYPE table SYSTEM "../config/table-config-1.0.dtd">
+<table sqlname="task_config" physicalName="task_config" remark="任务配置表">
+
+    <operation name="insertWithoutID" paramtype="object" remark="不带Id插入表:task_config">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT
+            LAST_INSERT_ID()
+        </selectKey>
+        <![CDATA[
+        INSERT INTO task_config(
+            ID
+            ,NAME
+            ,DESCRIPTION
+            ,STATUS
+            ,EXT_INFO
+            ,SERVICE_NAME
+            ,GMT_CREATE
+            ,GMT_MODIFIED
+        )VALUES(
+             null
+            , #{name,jdbcType=VARCHAR}
+            , #{description,jdbcType=VARCHAR}
+            , #{status,jdbcType=VARCHAR}
+            , #{extInfo,jdbcType=VARCHAR}
+            , #{serviceName,jdbcType=VARCHAR}
+            , now()
+            , now()
+        )
+        ]]>
+    </operation>
+
+    <operation name="insertWithID" paramtype="object" remark="带Id插入表:task_config">
+        <![CDATA[
+        INSERT INTO task_config(
+            ID
+            ,NAME
+            ,DESCRIPTION
+            ,STATUS
+            ,EXT_INFO
+            ,SERVICE_NAME
+            ,GMT_CREATE
+            ,GMT_MODIFIED
+        )VALUES(
+             #{id,jdbcType=INTEGER}
+            , #{name,jdbcType=VARCHAR}
+            , #{description,jdbcType=VARCHAR}
+            , #{status,jdbcType=VARCHAR}
+            , #{extInfo,jdbcType=VARCHAR}
+            , #{serviceName,jdbcType=VARCHAR}
+            , now()
+            , now()
+        )
+        ]]>
+    </operation>
+
+    <operation name="updateAll" paramtype="object" remark="根据Id全量更新表:task_config">
+        UPDATE task_config
+        SET
+        GMT_MODIFIED     = now()
+        ,NAME            = #{name,jdbcType=VARCHAR}
+        ,DESCRIPTION     = #{description,jdbcType=VARCHAR}
+        ,STATUS          = #{status,jdbcType=VARCHAR}
+        ,EXT_INFO        = #{extInfo,jdbcType=VARCHAR}
+        ,SERVICE_NAME    = #{serviceName,jdbcType=VARCHAR}
+        WHERE
+        ID              = #{id,jdbcType=INTEGER}
+    </operation>
+
+    <operation name="deleteById"  remark="根据Id删除数据:task_config">
+        <![CDATA[
+        DELETE FROM task_config
+        WHERE
+            ID = #{id,jdbcType=INTEGER}
+        ]]>
+    </operation>
+
+    <operation name="queryById" multiplicity="one" remark="根据Id获取数据:task_config">
+        SELECT *
+        FROM task_config
+        WHERE
+        <![CDATA[
+            ID = #{id,jdbcType=INTEGER}
+        ]]>
+    </operation>
+
+    <!-- 根据唯一索引查询数据 -->
+    <operation name="queryByName" multiplicity="one" remark="根据普通索引Name获取数据:task_detail">
+        SELECT *
+        FROM task_config
+        WHERE
+        <![CDATA[
+            NAME   = #{name,jdbcType=VARCHAR}
+        ]]>
+    </operation>
+
+</table>
