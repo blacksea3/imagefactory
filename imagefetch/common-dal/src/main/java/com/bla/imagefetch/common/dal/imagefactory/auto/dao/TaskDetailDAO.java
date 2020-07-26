@@ -17,23 +17,39 @@ public class TaskDetailDAO{
     private TaskDetailDOMapper taskDetailDOMapper;
 
     /**
-     * desc:插入表:task_detail.<br/>
+     * desc:不带Id插入表:task_detail.<br/>
      * @param entity entity
      * @return Long
      */
-    public Long insert(TaskDetailDO entity){
-        return taskDetailDOMapper.insert(entity);
+    public Long insertWithoutID(TaskDetailDO entity){
+        return taskDetailDOMapper.insertWithoutID(entity);
     }
     /**
-     * desc:批量插入表:task_detail.<br/>
+     * desc:带Id插入表:task_detail.<br/>
+     * @param entity entity
+     * @return Long
+     */
+    public Long insertWithID(TaskDetailDO entity){
+        return taskDetailDOMapper.insertWithID(entity);
+    }
+    /**
+     * desc:不带Id批量插入表:task_detail.<br/>
      * @param list list
      * @return Long
      */
-    public Long insertBatch(List<TaskDetailDO> list){
-        return taskDetailDOMapper.insertBatch(list);
+    public Long insertBatchWithoutID(List<TaskDetailDO> list){
+        return taskDetailDOMapper.insertBatchWithoutID(list);
     }
     /**
-     * desc:根据主键删除数据:task_detail.<br/>
+     * desc:根据Id更新表:task_detail.<br/>
+     * @param entity entity
+     * @return Long
+     */
+    public Long update(TaskDetailDO entity){
+        return taskDetailDOMapper.update(entity);
+    }
+    /**
+     * desc:根据Id删除数据:task_detail.<br/>
      * @param id id
      * @return Long
      */
@@ -41,12 +57,12 @@ public class TaskDetailDAO{
         return taskDetailDOMapper.deleteById(id);
     }
     /**
-     * desc:根据主键获取数据:task_detail.<br/>
+     * desc:根据Id获取数据:task_detail.<br/>
      * @param id id
      * @return TaskDetailDO
      */
-    public TaskDetailDO getById(Integer id){
-        return taskDetailDOMapper.getById(id);
+    public TaskDetailDO queryById(Integer id){
+        return taskDetailDOMapper.queryById(id);
     }
     /**
      * desc:根据普通索引InstanceName获取数据:task_detail.<br/>

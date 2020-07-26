@@ -1,6 +1,7 @@
 package com.bla.imagefetch.core.service.repository;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
+import java.util.List;
 
 /**
  * InterfaceName TaskDetailRepository
@@ -11,4 +12,8 @@ import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
  */
 public interface TaskDetailRepository {
     Long insert(TaskDetailDO entity);
+    Long update(TaskDetailDO entity);
+    Long deleteById(Integer id);
+    TaskDetailDO queryById(Integer id);
+    List<TaskDetailDO> queryByInstanceName(String instanceName);
 }

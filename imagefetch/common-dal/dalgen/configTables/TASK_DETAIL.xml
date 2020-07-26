@@ -13,8 +13,8 @@
         ,sf.INSTANCE_NAME,sf.GMT_CREATE,sf.GMT_MODIFIED
     </sql>
 
-    <operation name="insert" paramtype="object" remark="插入表:task_detail">
-        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+    <operation name="insertWithoutID" paramtype="object" remark="不带Id插入表:task_detail">
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
             SELECT
             LAST_INSERT_ID()
         </selectKey>
@@ -41,9 +41,33 @@
         ]]>
     </operation>
 
+    <operation name="insertWithID" paramtype="object" remark="带Id插入表:task_detail">
+        <![CDATA[
+        INSERT INTO task_detail(
+            ID
+            ,SCRIPT
+            ,CONTENT
+            ,EXT_INFO
+            ,SERVICE_NAME
+            ,INSTANCE_NAME
+            ,GMT_CREATE
+            ,GMT_MODIFIED
+        )VALUES(
+             #{id,jdbcType=VARCHAR}
+            , #{script,jdbcType=VARCHAR}
+            , #{content,jdbcType=VARCHAR}
+            , #{extInfo,jdbcType=VARCHAR}
+            , #{serviceName,jdbcType=VARCHAR}
+            , #{instanceName,jdbcType=VARCHAR}
+            , now()
+            , now()
+        )
+        ]]>
+    </operation>
+
     <!-- foreach 可以自定义类型，paramtype="primitive" foreach->javatype="自己书写的类"  -->
     <!-- 只有一个参数且为List时必须将参数命名为list -->
-    <operation name="insertBatch" paramtype="objectList" remark="批量插入表:task_detail">
+    <operation name="insertBatchWithoutID" paramtype="objectList" remark="不带Id批量插入表:task_detail">
         INSERT INTO task_detail(
             ID
             ,SCRIPT
@@ -67,24 +91,33 @@
             )
         </foreach>
     </operation>
-
-    <!-- 不推荐使用全 update 有需要自己打开
-    <operation name="update" paramtype="object" remark="更新表:task_detail">
+    
+    <operation name="update" paramtype="object" remark="根据Id更新表:task_detail">
         <![CDATA[
         UPDATE task_detail
         SET
-            SCRIPT          = #{script,jdbcType=VARCHAR}
+            GMT_MODIFIED     = now()
+        <if test="script != null">
+            ,SCRIPT          = #{script,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null">
             ,CONTENT         = #{content,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null">
             ,EXT_INFO        = #{extInfo,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null">
             ,SERVICE_NAME    = #{serviceName,jdbcType=VARCHAR}
-            ,INSTANCE_NAME   = #{instanceName,jdbcType=VARCHAR}
-            ,GMT_MODIFIED    = now()
+        </if>
+        <if test="content != null">
+            ,INSTANCE_NAME    = #{instanceName,jdbcType=VARCHAR}
+        </if>
         WHERE
             ID              = #{id,jdbcType=INTEGER}
         ]]>
     </operation>
-    -->
-    <operation name="deleteById"  remark="根据主键删除数据:task_detail">
+
+    <operation name="deleteById"  remark="根据Id删除数据:task_detail">
         <![CDATA[
         DELETE FROM task_detail
         WHERE
@@ -92,7 +125,7 @@
         ]]>
     </operation>
 
-    <operation name="getById" multiplicity="one" remark="根据主键获取数据:task_detail">
+    <operation name="queryById" multiplicity="one" remark="根据Id获取数据:task_detail">
         SELECT *
         FROM task_detail
         WHERE

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * ClassName TaskDetailRepositoryImpl
  * 原子任务表仓库 实现类
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Component;
  * @author blacksea3(jxt)
  * @date 2020/7/25 23:13
  */
+@Component
 public class TaskDetailRepositoryImpl implements TaskDetailRepository, InitializingBean {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TaskDetailRepositoryImpl.class);
@@ -25,7 +28,47 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
 
     @Override
     public Long insert(TaskDetailDO entity) {
-        return taskDetailDOMapper.insert(entity);
+        if (entity.getId() == null){
+            return taskDetailDOMapper.insertWithoutID(entity);
+        }else{
+            return taskDetailDOMapper.insertWithID(entity);
+        }
+    }
+
+    @Override
+    public Long update(TaskDetailDO entity) {
+        if (entity.getId() == null){
+            return null;
+        }else{
+            return taskDetailDOMapper.update(entity);
+        }
+    }
+
+    @Override
+    public Long deleteById(Integer id) {
+        if (id == null){
+            return null;
+        }else{
+            return taskDetailDOMapper.deleteById(id);
+        }
+    }
+
+    @Override
+    public TaskDetailDO queryById(Integer id) {
+        if (id == null){
+            return null;
+        }else{
+            return taskDetailDOMapper.queryById(id);
+        }
+    }
+
+    @Override
+    public List<TaskDetailDO> queryByInstanceName(String instanceName) {
+        if (instanceName == null){
+            return null;
+        }else{
+            return taskDetailDOMapper.queryByInstanceName(instanceName);
+        }
     }
 
     @Override

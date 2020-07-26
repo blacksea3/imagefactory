@@ -13,7 +13,7 @@ spring:
 
 # mybatis配置
 mybatis:
-  mapper-locations: classpath:mapper/*.xml    # mapper映射文件位置
+  mapper-locations: classpath:com/bla/imagefetch/common/dal/imagefactory/auto/mapper/imagefactory/*.xml    # mapper映射文件位置
   type-aliases-package: com.bla.imagefetch.common.dal.imagefactory.auto.mapper    # 实体类所在的位置
 logging:
   level:

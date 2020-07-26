@@ -24,9 +24,9 @@
     </sql>
 
 
-    <!--插入表:task_detail-->
-    <insert id="insert"  >
-        <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">
+    <!--不带Id插入表:task_detail-->
+    <insert id="insertWithoutID"  >
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
             SELECT
             LAST_INSERT_ID()
         </selectKey>
@@ -53,8 +53,33 @@
         ]]>
     </insert>
 
-    <!--批量插入表:task_detail-->
-    <insert id="insertBatch"  >
+    <!--带Id插入表:task_detail-->
+    <insert id="insertWithID"  >
+        <![CDATA[
+        INSERT INTO task_detail(
+            ID
+            ,SCRIPT
+            ,CONTENT
+            ,EXT_INFO
+            ,SERVICE_NAME
+            ,INSTANCE_NAME
+            ,GMT_CREATE
+            ,GMT_MODIFIED
+        )VALUES(
+             #{id,jdbcType=VARCHAR}
+            , #{script,jdbcType=VARCHAR}
+            , #{content,jdbcType=VARCHAR}
+            , #{extInfo,jdbcType=VARCHAR}
+            , #{serviceName,jdbcType=VARCHAR}
+            , #{instanceName,jdbcType=VARCHAR}
+            , now()
+            , now()
+        )
+        ]]>
+    </insert>
+
+    <!--不带Id批量插入表:task_detail-->
+    <insert id="insertBatchWithoutID"  >
         INSERT INTO task_detail(
             ID
             ,SCRIPT
@@ -79,7 +104,33 @@
         </foreach>
     </insert>
 
-    <!--根据主键删除数据:task_detail-->
+    <!--根据Id更新表:task_detail-->
+    <update id="update"  >
+        <![CDATA[
+        UPDATE /*MS-TASK-DETAIL-UPDATE*/ task_detail
+        SET
+            GMT_MODIFIED     = now()
+        <if test="script != null">
+            ,SCRIPT          = #{script,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null">
+            ,CONTENT         = #{content,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null">
+            ,EXT_INFO        = #{extInfo,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null">
+            ,SERVICE_NAME    = #{serviceName,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null">
+            ,INSTANCE_NAME    = #{instanceName,jdbcType=VARCHAR}
+        </if>
+        WHERE
+            ID              = #{id,jdbcType=INTEGER}
+        ]]>
+    </update>
+
+    <!--根据Id删除数据:task_detail-->
     <delete id="deleteById"  >
         <![CDATA[
         DELETE /*MS-TASK-DETAIL-DELETEBYID*/ FROM task_detail
@@ -88,9 +139,9 @@
         ]]>
     </delete>
 
-    <!--根据主键获取数据:task_detail-->
-    <select id="getById" resultMap="BaseResultMap" >
-        SELECT /*MS-TASK-DETAIL-GETBYID*/  <include refid="Base_Column_List" />
+    <!--根据Id获取数据:task_detail-->
+    <select id="queryById" resultMap="BaseResultMap" >
+        SELECT /*MS-TASK-DETAIL-QUERYBYID*/  <include refid="Base_Column_List" />
         FROM task_detail
         WHERE
         <![CDATA[
