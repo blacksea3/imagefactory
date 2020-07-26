@@ -43,17 +43,17 @@ public class TaskConfigRepositoryTest {
         Assertions.assertNull(taskConfigRepository.queryById(null));
 
         taskConfigRepository.deleteById(-1);
-        TaskConfigDO TaskConfigDO = new TaskConfigDO();
-        TaskConfigDO.setDescription("des");
-        TaskConfigDO.setServiceName("sername");
-        TaskConfigDO.setExtInfo("ext");
-        TaskConfigDO.setId(-1);
-        TaskConfigDO.setName("na");
-        TaskConfigDO.setStatus("sta");
+        TaskConfigDO taskConfigDO = new TaskConfigDO();
+        taskConfigDO.setDescription("des");
+        taskConfigDO.setServiceName("sername");
+        taskConfigDO.setExtInfo("ext");
+        taskConfigDO.setId(-1);
+        taskConfigDO.setName("na");
+        taskConfigDO.setStatus("sta");
 
-        Assertions.assertEquals(1, (long) taskConfigRepository.insert(TaskConfigDO));
+        Assertions.assertEquals(1, (long) taskConfigRepository.insert(taskConfigDO));
 
-        Assertions.assertTrue(compareTaskConfigDO(TaskConfigDO, taskConfigRepository.queryById(-1)));
+        Assertions.assertTrue(compareTaskConfigDO(taskConfigDO, taskConfigRepository.queryById(-1)));
         Assertions.assertEquals(1, taskConfigRepository.deleteById(-1));
     }
 
@@ -68,18 +68,18 @@ public class TaskConfigRepositoryTest {
         LoggerUtil.info(LOGGER, "testTaskConfigUpdate() started...");
 
         taskConfigRepository.deleteById(-1);
-        TaskConfigDO TaskConfigDO = new TaskConfigDO();
-        TaskConfigDO.setDescription("des");
-        TaskConfigDO.setServiceName("sername");
-        TaskConfigDO.setExtInfo("ext");
-        TaskConfigDO.setId(-1);
-        TaskConfigDO.setName("na");
-        TaskConfigDO.setStatus("sta");
+        TaskConfigDO taskConfigDO = new TaskConfigDO();
+        taskConfigDO.setDescription("des");
+        taskConfigDO.setServiceName("sername");
+        taskConfigDO.setExtInfo("ext");
+        taskConfigDO.setId(-1);
+        taskConfigDO.setName("na");
+        taskConfigDO.setStatus("sta");
 
-        Assertions.assertEquals(1, (long) taskConfigRepository.insert(TaskConfigDO));
-        TaskConfigDO.setExtInfo("newext");
-        Assertions.assertEquals(1, taskConfigRepository.update(TaskConfigDO));
-        Assertions.assertTrue(compareTaskConfigDO(TaskConfigDO, taskConfigRepository.queryById(-1)));
+        Assertions.assertEquals(1, (long) taskConfigRepository.insert(taskConfigDO));
+        taskConfigDO.setExtInfo("newext");
+        Assertions.assertEquals(1, taskConfigRepository.update(taskConfigDO));
+        Assertions.assertTrue(compareTaskConfigDO(taskConfigDO, taskConfigRepository.queryById(-1)));
 
         Assertions.assertEquals(1, taskConfigRepository.deleteById(-1));
     }
@@ -95,16 +95,16 @@ public class TaskConfigRepositoryTest {
         LoggerUtil.info(LOGGER, "testTaskConfigQueryByName() started...");
 
         taskConfigRepository.deleteById(-1);
-        TaskConfigDO TaskConfigDO = new TaskConfigDO();
-        TaskConfigDO.setDescription("des");
-        TaskConfigDO.setServiceName("sername");
-        TaskConfigDO.setExtInfo("ext");
-        TaskConfigDO.setId(-1);
-        TaskConfigDO.setName("na");
-        TaskConfigDO.setStatus("sta");
-        Assertions.assertEquals(1, (long) taskConfigRepository.insert(TaskConfigDO));
+        TaskConfigDO taskConfigDO = new TaskConfigDO();
+        taskConfigDO.setDescription("des");
+        taskConfigDO.setServiceName("sername");
+        taskConfigDO.setExtInfo("ext");
+        taskConfigDO.setId(-1);
+        taskConfigDO.setName("na");
+        taskConfigDO.setStatus("sta");
+        Assertions.assertEquals(1, (long) taskConfigRepository.insert(taskConfigDO));
 
-        Assertions.assertTrue(compareTaskConfigDO(TaskConfigDO, taskConfigRepository.queryByName("na")));
+        Assertions.assertTrue(compareTaskConfigDO(taskConfigDO, taskConfigRepository.queryByName("na")));
 
         Assertions.assertEquals(1, taskConfigRepository.deleteById(-1));
     }

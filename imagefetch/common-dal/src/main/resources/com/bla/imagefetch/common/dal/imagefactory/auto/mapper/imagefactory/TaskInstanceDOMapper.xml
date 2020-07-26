@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bla.imagefetch.common.dal.imagefactory.auto.mapper.TaskInstanceDOMapper">
+    <!-- 自动生成,请修改 TASK_INSTANCE.xml -->
+    <resultMap id="BaseResultMap"  type="com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO">
+        <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="NAME" property="name" jdbcType="VARCHAR" javaType="String"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR" javaType="String"/>
+        <result column="CONFIG_NAME" property="configName" jdbcType="VARCHAR" javaType="String"/>
+        <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" javaType="String"/>
+        <result column="SERVICE_NAME" property="serviceName" jdbcType="VARCHAR" javaType="String"/>
+        <result column="PRIORITY" property="priority" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="TOTAL_NUM" property="totalNum" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="HANDLE_NUM" property="handleNum" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+        <result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP" javaType="java.util.Date"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        ID,NAME,STATUS,CONFIG_NAME,DESCRIPTION,SERVICE_NAME,PRIORITY,TOTAL_NUM,HANDLE_NUM,GMT_CREATE,GMT_MODIFIED
+    </sql>
+
+    <sql id="Base_SF_Column_List">
+        sf.ID,sf.NAME,sf.STATUS,sf.CONFIG_NAME,sf.DESCRIPTION,sf.SERVICE_NAME,sf.PRIORITY,sf.TOTAL_NUM,sf.HANDLE_NUM,sf.GMT_CREATE,sf.GMT_MODIFIED
+    </sql>
+
+
+    <!--不带Id插入表:task_instance-->
+    <insert id="insertWithoutID"  >
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT
+            LAST_INSERT_ID()
+        </selectKey>
+        <![CDATA[
+        INSERT INTO task_instance(
+            ID
+            ,NAME
+            ,DESCRIPTION
+            ,CONFIG_NAME
+            ,STATUS
+            ,PRIORITY
+            ,TOTAL_NUM
+            ,HANDLE_NUM
+            ,SERVICE_NAME
+            ,GMT_CREATE
+            ,GMT_MODIFIED
+        )VALUES(
+             null
+            , #{name,jdbcType=VARCHAR}
+            , #{description,jdbcType=VARCHAR}
+            , #{configName,jdbcType=VARCHAR}
+            , #{status,jdbcType=VARCHAR}
+            , #{priority,jdbcType=VARCHAR}
+            , #{totalNum,jdbcType=VARCHAR}
+            , #{handleNum,jdbcType=VARCHAR}
+            , #{serviceName,jdbcType=VARCHAR}
+            , now()
+            , now()
+        )
+        ]]>
+    </insert>
+
+    <!--带Id插入表:task_instance-->
+    <insert id="insertWithID"  >
+        <![CDATA[
+        INSERT INTO task_instance(
+            ID
+            ,NAME
+            ,DESCRIPTION
+            ,CONFIG_NAME
+            ,STATUS
+            ,PRIORITY
+            ,TOTAL_NUM
+            ,HANDLE_NUM
+            ,SERVICE_NAME
+            ,GMT_CREATE
+            ,GMT_MODIFIED
+        )VALUES(
+             #{id,jdbcType=INTEGER}
+            , #{name,jdbcType=VARCHAR}
+            , #{description,jdbcType=VARCHAR}
+            , #{configName,jdbcType=VARCHAR}
+            , #{status,jdbcType=VARCHAR}
+            , #{priority,jdbcType=VARCHAR}
+            , #{totalNum,jdbcType=VARCHAR}
+            , #{handleNum,jdbcType=VARCHAR}
+            , #{serviceName,jdbcType=VARCHAR}
+            , now()
+            , now()
+        )
+        ]]>
+    </insert>
+
+    <!--根据Id全量更新表:task_instance-->
+    <update id="updateAll"  >
+        UPDATE /*MS-TASK-INSTANCE-UPDATEALL*/ task_instance
+        SET
+        GMT_MODIFIED     = now()
+        ,NAME            = #{name,jdbcType=VARCHAR}
+        ,DESCRIPTION     = #{description,jdbcType=VARCHAR}
+        ,CONFIG_NAME     = #{configName,jdbcType=VARCHAR}
+        ,STATUS          = #{status,jdbcType=VARCHAR}
+        ,PRIORITY        = #{priority,jdbcType=VARCHAR}
+        ,TOTAL_NUM       = #{totalNum,jdbcType=VARCHAR}
+        ,HANDLE_NUM      = #{handleNum,jdbcType=VARCHAR}
+        ,SERVICE_NAME    = #{serviceName,jdbcType=VARCHAR}
+        WHERE
+        ID              = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--根据Id删除数据:task_instance-->
+    <delete id="deleteById"  >
+        <![CDATA[
+        DELETE /*MS-TASK-INSTANCE-DELETEBYID*/ FROM task_instance
+        WHERE
+            ID = #{id,jdbcType=INTEGER}
+        ]]>
+    </delete>
+
+    <!--根据Id获取数据:task_instance-->
+    <select id="queryById" resultMap="BaseResultMap" >
+        SELECT /*MS-TASK-INSTANCE-QUERYBYID*/  <include refid="Base_Column_List" />
+        FROM task_instance
+        WHERE
+        <![CDATA[
+            ID = #{id,jdbcType=INTEGER}
+        ]]>
+    </select>
+
+    <!--根据普通索引Name获取数据:task_instance-->
+    <select id="queryByName" resultMap="BaseResultMap" >
+        SELECT /*MS-TASK-INSTANCE-QUERYBYNAME*/  <include refid="Base_Column_List" />
+        FROM task_instance
+        WHERE
+        <![CDATA[
+            NAME   = #{name,jdbcType=VARCHAR}
+        ]]>
+    </select>
+</mapper>

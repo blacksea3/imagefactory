@@ -1,18 +1,21 @@
 <!DOCTYPE table SYSTEM "../config/table-config-1.0.dtd">
-<table sqlname="task_config" physicalName="task_config" remark="任务配置表">
+<table sqlname="task_instance" physicalName="task_instance" remark="任务实例表">
 
-    <operation name="insertWithoutID" paramtype="object" remark="不带Id插入表:task_config">
+    <operation name="insertWithoutID" paramtype="object" remark="不带Id插入表:task_instance">
         <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
             SELECT
             LAST_INSERT_ID()
         </selectKey>
         <![CDATA[
-        INSERT INTO task_config(
+        INSERT INTO task_instance(
             ID
             ,NAME
             ,DESCRIPTION
+            ,CONFIG_NAME
             ,STATUS
-            ,EXT_INFO
+            ,PRIORITY
+            ,TOTAL_NUM
+            ,HANDLE_NUM
             ,SERVICE_NAME
             ,GMT_CREATE
             ,GMT_MODIFIED
@@ -20,8 +23,11 @@
              null
             , #{name,jdbcType=VARCHAR}
             , #{description,jdbcType=VARCHAR}
+            , #{configName,jdbcType=VARCHAR}
             , #{status,jdbcType=VARCHAR}
-            , #{extInfo,jdbcType=VARCHAR}
+            , #{priority,jdbcType=VARCHAR}
+            , #{totalNum,jdbcType=VARCHAR}
+            , #{handleNum,jdbcType=VARCHAR}
             , #{serviceName,jdbcType=VARCHAR}
             , now()
             , now()
@@ -29,14 +35,17 @@
         ]]>
     </operation>
 
-    <operation name="insertWithID" paramtype="object" remark="带Id插入表:task_config">
+    <operation name="insertWithID" paramtype="object" remark="带Id插入表:task_instance">
         <![CDATA[
-        INSERT INTO task_config(
+        INSERT INTO task_instance(
             ID
             ,NAME
             ,DESCRIPTION
+            ,CONFIG_NAME
             ,STATUS
-            ,EXT_INFO
+            ,PRIORITY
+            ,TOTAL_NUM
+            ,HANDLE_NUM
             ,SERVICE_NAME
             ,GMT_CREATE
             ,GMT_MODIFIED
@@ -44,8 +53,11 @@
              #{id,jdbcType=INTEGER}
             , #{name,jdbcType=VARCHAR}
             , #{description,jdbcType=VARCHAR}
+            , #{configName,jdbcType=VARCHAR}
             , #{status,jdbcType=VARCHAR}
-            , #{extInfo,jdbcType=VARCHAR}
+            , #{priority,jdbcType=VARCHAR}
+            , #{totalNum,jdbcType=VARCHAR}
+            , #{handleNum,jdbcType=VARCHAR}
             , #{serviceName,jdbcType=VARCHAR}
             , now()
             , now()
@@ -53,30 +65,33 @@
         ]]>
     </operation>
 
-    <operation name="updateAll" paramtype="object" remark="根据Id全量更新表:task_config">
-        UPDATE task_config
+    <operation name="updateAll" paramtype="object" remark="根据Id全量更新表:task_instance">
+        UPDATE task_instance
         SET
         GMT_MODIFIED     = now()
         ,NAME            = #{name,jdbcType=VARCHAR}
         ,DESCRIPTION     = #{description,jdbcType=VARCHAR}
+        ,CONFIG_NAME     = #{configName,jdbcType=VARCHAR}
         ,STATUS          = #{status,jdbcType=VARCHAR}
-        ,EXT_INFO        = #{extInfo,jdbcType=VARCHAR}
+        ,PRIORITY        = #{priority,jdbcType=VARCHAR}
+        ,TOTAL_NUM       = #{totalNum,jdbcType=VARCHAR}
+        ,HANDLE_NUM      = #{handleNum,jdbcType=VARCHAR}
         ,SERVICE_NAME    = #{serviceName,jdbcType=VARCHAR}
         WHERE
         ID              = #{id,jdbcType=INTEGER}
     </operation>
 
-    <operation name="deleteById"  remark="根据Id删除数据:task_config">
+    <operation name="deleteById"  remark="根据Id删除数据:task_instance">
         <![CDATA[
-        DELETE FROM task_config
+        DELETE FROM task_instance
         WHERE
             ID = #{id,jdbcType=INTEGER}
         ]]>
     </operation>
 
-    <operation name="queryById" multiplicity="one" remark="根据Id获取数据:task_config">
+    <operation name="queryById" multiplicity="one" remark="根据Id获取数据:task_instance">
         SELECT *
-        FROM task_config
+        FROM task_instance
         WHERE
         <![CDATA[
             ID = #{id,jdbcType=INTEGER}
@@ -84,9 +99,9 @@
     </operation>
 
     <!-- 根据唯一索引查询数据 -->
-    <operation name="queryByName" multiplicity="one" remark="根据普通索引Name获取数据:task_config">
+    <operation name="queryByName" multiplicity="one" remark="根据普通索引Name获取数据:task_instance">
         SELECT *
-        FROM task_config
+        FROM task_instance
         WHERE
         <![CDATA[
             NAME   = #{name,jdbcType=VARCHAR}

@@ -84,7 +84,7 @@
     </operation>
 
     <!-- 根据唯一索引查询数据 -->
-    <operation name="queryByName" multiplicity="one" remark="根据普通索引Name获取数据:task_detail">
+    <operation name="queryByName" multiplicity="one" remark="根据普通索引Name获取数据:service_config">
         SELECT *
         FROM service_config
         WHERE

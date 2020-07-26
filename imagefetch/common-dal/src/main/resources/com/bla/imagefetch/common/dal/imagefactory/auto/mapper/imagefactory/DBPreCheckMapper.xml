@@ -14,6 +14,15 @@
         GROUP BY TABLE_NAME
     UNION ALL
         SELECT
+            COUNT(*)= 11 as fg,'task_instance' as tb_name,group_concat(COLUMN_NAME) db_columns,
+            'ID,NAME,STATUS,CONFIG_NAME,DESCRIPTION,SERVICE_NAME,PRIORITY,TOTAL_NUM,HANDLE_NUM,GMT_CREATE,GMT_MODIFIED' exp_columns
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE
+            TABLE_NAME = 'task_instance'
+            AND COLUMN_NAME in('ID','NAME','STATUS','CONFIG_NAME','DESCRIPTION','SERVICE_NAME','PRIORITY','TOTAL_NUM','HANDLE_NUM','GMT_CREATE','GMT_MODIFIED')
+        GROUP BY TABLE_NAME
+    UNION ALL
+        SELECT
             COUNT(*)= 8 as fg,'service_config' as tb_name,group_concat(COLUMN_NAME) db_columns,
             'ID,NAME,EXT_INFO,SYS_NAME,BEAN_NAME,BEAN_TYPE,GMT_CREATE,GMT_MODIFIED' exp_columns
         FROM INFORMATION_SCHEMA.COLUMNS
