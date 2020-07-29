@@ -108,4 +108,45 @@
         ]]>
     </operation>
 
+    <operation name="queryTaskInstanceNotEqualSpecificStatus" multiplicity="many" remark="查询status不为finish的任务,取最高优先级"
+    paramtype="primitive">
+        SELECT *
+        FROM task_instance
+        WHERE
+        <![CDATA[
+            STATUS   != #{status,jdbcType=VARCHAR}
+        ]]>
+        ORDER BY PRIORITY
+        LIMIT
+        #{limit,jdbcType=INTEGER}
+    </operation>
+
+    <operation name="updateStatus" paramtype="primitive" remark="根据Id更新表状态">
+        UPDATE task_instance
+        SET
+        GMT_MODIFIED     = now()
+        ,STATUS          = #{status,jdbcType=VARCHAR}
+        WHERE
+        ID              = #{id,jdbcType=INTEGER}
+    </operation>
+
+    <operation name="updateHandleNumAddOne" paramtype="primitive" remark="根据Id更新表处理数量">
+        UPDATE task_instance
+        SET
+        GMT_MODIFIED     = now()
+        ,HANDLE_NUM      = HANDLE_NUM + 1
+        WHERE
+        ID               = #{id,jdbcType=INTEGER}
+    </operation>
+
+    <operation name="queryByIdWithLineLock" multiplicity="one" remark="根据Id获取数据,带行锁:task_instance">
+        SELECT *
+        FROM task_instance
+        WHERE
+        <![CDATA[
+            ID = #{id,jdbcType=INTEGER}
+        ]]>
+        FOR UPDATE
+    </operation>
+
 </table>

@@ -15,4 +15,8 @@ public interface TaskInstanceRepository {
     Long deleteById(Integer id);
     TaskInstanceDO queryById(Integer id);
     TaskInstanceDO queryByName(String name);
+
+    TaskInstanceDO queryHighestPriority();
+
+    boolean updateStatusByTotalNumAndHandleNum(Integer id);
 }

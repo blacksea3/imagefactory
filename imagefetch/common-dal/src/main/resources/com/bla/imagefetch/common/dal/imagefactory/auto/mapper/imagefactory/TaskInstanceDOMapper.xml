@@ -137,4 +137,48 @@
             NAME   = #{name,jdbcType=VARCHAR}
         ]]>
     </select>
+
+    <!--查询status不为finish的任务,取最高优先级-->
+    <select id="queryTaskInstanceNotEqualSpecificStatus" resultMap="BaseResultMap" >
+        SELECT /*MS-TASK-INSTANCE-QUERYTASKINSTANCENOTEQUALSPECIFICSTATUS*/  <include refid="Base_Column_List" />
+        FROM task_instance
+        WHERE
+        <![CDATA[
+            STATUS   != #{status,jdbcType=VARCHAR}
+        ]]>
+        ORDER BY PRIORITY
+        LIMIT
+        #{limit,jdbcType=INTEGER}
+    </select>
+
+    <!--根据Id更新表状态-->
+    <update id="updateStatus"  >
+        UPDATE /*MS-TASK-INSTANCE-UPDATESTATUS*/ task_instance
+        SET
+        GMT_MODIFIED     = now()
+        ,STATUS          = #{status,jdbcType=VARCHAR}
+        WHERE
+        ID              = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--根据Id更新表处理数量-->
+    <update id="updateHandleNumAddOne"  >
+        UPDATE /*MS-TASK-INSTANCE-UPDATEHANDLENUMADDONE*/ task_instance
+        SET
+        GMT_MODIFIED     = now()
+        ,HANDLE_NUM      = HANDLE_NUM + 1
+        WHERE
+        ID               = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!--根据Id获取数据,带行锁:task_instance-->
+    <select id="queryByIdWithLineLock" resultMap="BaseResultMap" >
+        SELECT /*MS-TASK-INSTANCE-QUERYBYIDWITHLINELOCK*/  <include refid="Base_Column_List" />
+        FROM task_instance
+        WHERE
+        <![CDATA[
+            ID = #{id,jdbcType=INTEGER}
+        ]]>
+        FOR UPDATE
+    </select>
 </mapper>

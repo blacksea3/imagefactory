@@ -3,6 +3,7 @@ package com.bla.imagefetch.common.dal.imagefactory.auto.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
+import java.util.List;
 import com.bla.imagefetch.common.dal.imagefactory.auto.mapper.TaskInstanceDOMapper;
 
 /**
@@ -62,5 +63,39 @@ public class TaskInstanceDAO{
      */
     public TaskInstanceDO queryByName(String name){
         return taskInstanceDOMapper.queryByName(name);
+    }
+    /**
+     * desc:查询status不为finish的任务,取最高优先级.<br/>
+     * @param status status
+     * @param limit limit
+     * @return List<TaskInstanceDO>
+     */
+    public List<TaskInstanceDO> queryTaskInstanceNotEqualSpecificStatus(String status,Integer limit){
+        return taskInstanceDOMapper.queryTaskInstanceNotEqualSpecificStatus(status, limit);
+    }
+    /**
+     * desc:根据Id更新表状态.<br/>
+     * @param status status
+     * @param id id
+     * @return Long
+     */
+    public Long updateStatus(String status,Integer id){
+        return taskInstanceDOMapper.updateStatus(status, id);
+    }
+    /**
+     * desc:根据Id更新表处理数量.<br/>
+     * @param id id
+     * @return Long
+     */
+    public Long updateHandleNumAddOne(Integer id){
+        return taskInstanceDOMapper.updateHandleNumAddOne(id);
+    }
+    /**
+     * desc:根据Id获取数据,带行锁:task_instance.<br/>
+     * @param id id
+     * @return TaskInstanceDO
+     */
+    public TaskInstanceDO queryByIdWithLineLock(Integer id){
+        return taskInstanceDOMapper.queryByIdWithLineLock(id);
     }
 }

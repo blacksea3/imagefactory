@@ -1,6 +1,7 @@
 package com.bla.imagefetch.common.dal.imagefactory.auto.mapper;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -52,4 +53,34 @@ public interface TaskInstanceDOMapper{
      * @return TaskInstanceDO
      */
     TaskInstanceDO queryByName(@Param("name")String name);
+    /**
+     * desc:查询status不为finish的任务,取最高优先级.<br/>
+     * descSql =  SELECT * FROM task_instance WHERE <![CDATA[ STATUS != #{status,jdbcType=VARCHAR} ]]> ORDER BY PRIORITY LIMIT #{limit,jdbcType=INTEGER}
+     * @param status status
+     * @param limit limit
+     * @return List<TaskInstanceDO>
+     */
+    List<TaskInstanceDO> queryTaskInstanceNotEqualSpecificStatus(@Param("status")String status,@Param("limit")Integer limit);
+    /**
+     * desc:根据Id更新表状态.<br/>
+     * descSql =  UPDATE task_instance SET GMT_MODIFIED = now() ,STATUS = #{status,jdbcType=VARCHAR} WHERE ID = #{id,jdbcType=INTEGER}
+     * @param status status
+     * @param id id
+     * @return Long
+     */
+    Long updateStatus(@Param("status")String status,@Param("id")Integer id);
+    /**
+     * desc:根据Id更新表处理数量.<br/>
+     * descSql =  UPDATE task_instance SET GMT_MODIFIED = now() ,HANDLE_NUM = HANDLE_NUM + 1 WHERE ID = #{id,jdbcType=INTEGER}
+     * @param id id
+     * @return Long
+     */
+    Long updateHandleNumAddOne(Integer id);
+    /**
+     * desc:根据Id获取数据,带行锁:task_instance.<br/>
+     * descSql =  SELECT * FROM task_instance WHERE <![CDATA[ ID = #{id,jdbcType=INTEGER} ]]> FOR UPDATE
+     * @param id id
+     * @return TaskInstanceDO
+     */
+    TaskInstanceDO queryByIdWithLineLock(Integer id);
 }
