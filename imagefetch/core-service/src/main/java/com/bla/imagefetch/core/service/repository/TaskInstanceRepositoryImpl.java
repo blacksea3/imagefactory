@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -101,7 +103,6 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     }
 
     /**
-     * TODO:事务RC隔离级别
      *
      * 根据总数量和已处理数量，更新已处理数量和任务实例状态
      *
@@ -111,6 +112,7 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
      * @return boolean 执行结果
      */
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public boolean updateStatusByTotalNumAndHandleNum(Integer id) {
         if (id == null){
             return false;
@@ -156,6 +158,8 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
                 return false;
             }
         }
+
+        //TODO:查找此任务实例的原子任务，如果找不到，那么返回false，否则执行taskInstanceDOMapper.updateHandleNumAddOne(id) == 1
 
         return taskInstanceDOMapper.updateHandleNumAddOne(id) == 1;
     }
