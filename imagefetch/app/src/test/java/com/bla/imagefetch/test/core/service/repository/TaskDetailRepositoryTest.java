@@ -160,6 +160,9 @@ public class TaskDetailRepositoryTest {
         if (expected == null){
             return actual == null;
         }else{
+            if (actual == null){
+                return false;
+            }
             return (expected.getId().equals(actual.getId())) &&
                     (expected.getContent().equals(actual.getContent())) &&
                     (expected.getExtInfo().equals(actual.getExtInfo())) &&

@@ -122,6 +122,9 @@ public class TaskConfigRepositoryTest {
         if (expected == null){
             return actual == null;
         }else{
+            if (actual == null){
+                return false;
+            }
             return (expected.getId().equals(actual.getId())) &&
                     (expected.getDescription().equals(actual.getDescription())) &&
                     (expected.getExtInfo().equals(actual.getExtInfo())) &&

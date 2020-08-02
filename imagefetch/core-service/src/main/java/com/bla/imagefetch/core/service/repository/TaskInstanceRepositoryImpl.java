@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,6 +45,9 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
 
     @Autowired
     private TaskDetailDOMapper taskDetailDOMapper;
+
+    @Autowired
+    private TaskDetailRepository taskDetailRepository;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -108,73 +112,75 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     }
 
     /**
-     *
      * 根据总数量和已处理数量，更新已处理数量和任务实例状态
      *
      * @author blacksea3(jxt)
-     * @date 2020/7/29
-
-     * @return boolean 执行结果
+     * @date 2020/8/2
+     * @param id:
+     * @return java.util.List<java.lang.Integer> 执行结果, 空表示内部逻辑出错
      */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public boolean updateStatusByTotalNumAndHandleNum(Integer id) {
+    public List<Integer> updateStatusByTotalNumAndHandleNum(Integer id) {
         if (id == null){
-            return false;
+            return null;
         }
 
         TaskInstanceDO taskInstanceDO = taskInstanceDOMapper.queryByIdWithLineLock(id);
         if (taskInstanceDO == null){
-            return false;
+            return null;
         }
         Integer handleNum = taskInstanceDO.getHandleNum();
         Integer totalNum = taskInstanceDO.getTotalNum();
         //已经全完成了，试图增加处理数量动作执行失败
         if (handleNum >= totalNum){
-            return false;
+            return null;
         }
         //已处理数量<0
         if (handleNum < 0){
-            return false;
+            return null;
         }
 
         String status = taskInstanceDO.getStatus();
         //任务实例已经结束了，为何还试图增加处理数量动作？置为失败
         if (status.equals(taskInstanceStatus.FINISH._val)){
-            return false;
+            return null;
         }
 
         if (handleNum == 0){    //没有处理过任何此任务实例的任务
             if (status.equals(taskInstanceStatus.INIT._val)){   //检查任务实例状态
                 if (1 != taskInstanceDOMapper.updateStatus(taskInstanceStatus.RUNNING._val, id)){
-                    return false;
+                    return null;
                 }
             }else{
-                return false;
+                return null;
             }
         }else{  //处理过此任务实例的任务
             if (status.equals(taskInstanceStatus.RUNNING._val)){
                 if (handleNum == (totalNum - 1)){
                     if (1 != taskInstanceDOMapper.updateStatus(taskInstanceStatus.FINISH._val, id)){
-                        return false;
+                        return null;
                     }
                 }
             }else{
-                return false;
+                return null;
             }
         }
 
-        //TODO:查找此任务实例的原子任务，如果找不到，那么返回false，否则执行taskInstanceDOMapper.updateHandleNumAddOne(id) == 1
         List<TaskDetailDO> taskDetailDOs = taskDetailDOMapper.queryByInstanceNameAndStatus("init", taskInstanceDO.getName());
         if (taskDetailDOs.isEmpty()){
-            return false;
+            return null;
         }else{
             TaskDetailDO taskDetailDO = taskDetailDOs.get(0);
-            //taskInstanceDOMapper.
+            taskDetailRepository.setReadyStatus(taskDetailDO.getId());
+
+            if (taskInstanceDOMapper.updateHandleNumAddOne(id) != 1){
+                return null;
+            }else{
+                List<Integer> res = new ArrayList<>();
+                res.add(taskDetailDO.getId());
+                return res;
+            }
         }
-
-
-
-        return taskInstanceDOMapper.updateHandleNumAddOne(id) == 1;
     }
 }

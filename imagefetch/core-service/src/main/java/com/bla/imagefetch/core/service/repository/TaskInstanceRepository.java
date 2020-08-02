@@ -2,6 +2,8 @@ package com.bla.imagefetch.core.service.repository;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
 
+import java.util.List;
+
 /**
  * InterfaceName TaskInstanceRepository
  * 任务实例仓库接口
@@ -18,5 +20,5 @@ public interface TaskInstanceRepository {
 
     TaskInstanceDO queryHighestPriority();
 
-    boolean updateStatusByTotalNumAndHandleNum(Integer id);
+    List<Integer> updateStatusByTotalNumAndHandleNum(Integer id);
 }
