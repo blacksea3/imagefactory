@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>imagefetch</artifactId>
+        <groupId>com.bla</groupId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>upper-service</artifactId>
+    <version>0.0.1</version>
+
+    <dependencies>
+        <!-- 项目内其他模块 start -->
+        <dependency>
+            <groupId>com.bla</groupId>
+            <artifactId>common-util</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bla</groupId>
+            <artifactId>core-service</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <!-- 项目内其他模块 end -->
+
+        <!-- quartz start -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz-jobs</artifactId>
+        </dependency>
+        <!-- quartz end -->
+    </dependencies>
+
+    <!-- 作用:打一个可运行的包 -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

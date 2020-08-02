@@ -1,4 +1,4 @@
-package com.bla.imagefetch.app.quartz;
+package com.bla.imagefetch.upper.service.quartz;
 
 import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.LoggerUtil;
