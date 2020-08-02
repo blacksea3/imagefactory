@@ -32,12 +32,12 @@
         GROUP BY TABLE_NAME
     UNION ALL
         SELECT
-            COUNT(*)= 8 as fg,'task_detail' as tb_name,group_concat(COLUMN_NAME) db_columns,
-            'ID,SCRIPT,CONTENT,EXT_INFO,SERVICE_NAME,INSTANCE_NAME,GMT_CREATE,GMT_MODIFIED' exp_columns
+            COUNT(*)= 9 as fg,'task_detail' as tb_name,group_concat(COLUMN_NAME) db_columns,
+            'ID,SCRIPT,STATUS,CONTENT,EXT_INFO,SERVICE_NAME,INSTANCE_NAME,GMT_CREATE,GMT_MODIFIED' exp_columns
         FROM INFORMATION_SCHEMA.COLUMNS
         WHERE
             TABLE_NAME = 'task_detail'
-            AND COLUMN_NAME in('ID','SCRIPT','CONTENT','EXT_INFO','SERVICE_NAME','INSTANCE_NAME','GMT_CREATE','GMT_MODIFIED')
+            AND COLUMN_NAME in('ID','SCRIPT','STATUS','CONTENT','EXT_INFO','SERVICE_NAME','INSTANCE_NAME','GMT_CREATE','GMT_MODIFIED')
         GROUP BY TABLE_NAME
         )a
         WHERE fg=0

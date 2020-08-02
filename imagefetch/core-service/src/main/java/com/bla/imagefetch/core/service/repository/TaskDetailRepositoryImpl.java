@@ -26,6 +26,19 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     @Autowired
     TaskDetailDOMapper taskDetailDOMapper;
 
+    /** 原子任务状态枚举类，初始化，准备态，成功态，失败态 */
+    private enum taskDetailStatus{
+        INIT("init"),
+        READY("ready"),
+        SUCCESS("success"),
+        FAIL("fail");
+
+        private String _val;
+        taskDetailStatus(String val){
+            this._val = val;
+        }
+    };
+
     @Override
     public Long insert(TaskDetailDO entity) {
         if (entity.getId() == null){
@@ -36,11 +49,47 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long update(TaskDetailDO entity) {
+    public Long updateFields(TaskDetailDO entity) {
         if (entity.getId() == null){
             return null;
         }else{
             return taskDetailDOMapper.updateAll(entity);
+        }
+    }
+
+    @Override
+    public Long setReadyStatus(Integer id) {
+        if (id == null){
+            return null;
+        }else{
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setId(id);
+            taskDetailDO.setStatus(taskDetailStatus.READY._val);
+            return taskDetailDOMapper.updateAll(taskDetailDO);
+        }
+    }
+
+    @Override
+    public Long setSuccessStatus(Integer id) {
+        if (id == null){
+            return null;
+        }else{
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setId(id);
+            taskDetailDO.setStatus(taskDetailStatus.SUCCESS._val);
+            return taskDetailDOMapper.updateAll(taskDetailDO);
+        }
+    }
+
+    @Override
+    public Long setFailStatus(Integer id) {
+        if (id == null){
+            return null;
+        }else{
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setId(id);
+            taskDetailDO.setStatus(taskDetailStatus.FAIL._val);
+            return taskDetailDOMapper.updateAll(taskDetailDO);
         }
     }
 
@@ -62,12 +111,22 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
         }
     }
 
+    /**
+     * 根据实例名和状态查找任务们，状态可空（表示不使用此条件），实例名不可空
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/2
+     * @param instanceName: 实例名
+     * @param status: 状态
+     * @return java.util.List<com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO>
+     */
     @Override
-    public List<TaskDetailDO> queryByInstanceName(String instanceName) {
+    public List<TaskDetailDO> queryByInstanceNameAndStatus(String instanceName, String status) {
         if (instanceName == null){
             return null;
         }else{
-            return taskDetailDOMapper.queryByInstanceName(instanceName);
+            //注意参数顺序
+            return taskDetailDOMapper.queryByInstanceNameAndStatus(status, instanceName);
         }
     }
 

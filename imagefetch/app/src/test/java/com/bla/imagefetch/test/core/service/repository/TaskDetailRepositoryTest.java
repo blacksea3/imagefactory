@@ -54,6 +54,7 @@ public class TaskDetailRepositoryTest {
         taskDetailDO.setInstanceName("example_instant_name");
         taskDetailDO.setScript("scr");
         taskDetailDO.setServiceName("service_name");
+        taskDetailDO.setStatus("sta");
 
         Assertions.assertEquals(1, (long) taskDetailRepository.insert(taskDetailDO));
 
@@ -79,10 +80,23 @@ public class TaskDetailRepositoryTest {
         taskDetailDO.setInstanceName("example_instant_name");
         taskDetailDO.setScript("scr");
         taskDetailDO.setServiceName("service_name");
+        taskDetailDO.setStatus("sta");
 
         Assertions.assertEquals(1, (long) taskDetailRepository.insert(taskDetailDO));
         taskDetailDO.setExtInfo("newext");
-        Assertions.assertEquals(1, taskDetailRepository.update(taskDetailDO));
+        Assertions.assertEquals(1, taskDetailRepository.updateFields(taskDetailDO));
+        Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
+
+        Assertions.assertEquals(1, taskDetailRepository.setReadyStatus(-1));
+        taskDetailDO.setStatus("ready");
+        Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
+
+        Assertions.assertEquals(1, taskDetailRepository.setFailStatus(-1));
+        taskDetailDO.setStatus("fail");
+        Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
+
+        Assertions.assertEquals(1, taskDetailRepository.setSuccessStatus(-1));
+        taskDetailDO.setStatus("success");
         Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
 
         Assertions.assertEquals(1, taskDetailRepository.deleteById(-1));
@@ -99,6 +113,7 @@ public class TaskDetailRepositoryTest {
         LoggerUtil.info(LOGGER, "testTaskDetailQueryByInstanceName() started...");
 
         List<TaskDetailDO> taskDetailDOS = new ArrayList<>();
+        List<TaskDetailDO> taskDetailDOS_odd = new ArrayList<>();
         //构建数据
         for (int i = -1; i > -9; --i){
             taskDetailRepository.deleteById(i);
@@ -109,13 +124,23 @@ public class TaskDetailRepositoryTest {
             taskDetailDO.setInstanceName("example_instant_name");
             taskDetailDO.setScript("scr" + i);
             taskDetailDO.setServiceName("service_name");
+            taskDetailDO.setStatus("sta" + Math.abs(i) % 2);
             taskDetailDOS.add(taskDetailDO);
+            if (Math.abs(i) % 2 == 1){
+                taskDetailDOS_odd.add(taskDetailDO);
+            }
             Assertions.assertEquals(1, (long) taskDetailRepository.insert(taskDetailDO));
         }
 
         //验证
-        List<TaskDetailDO> actualTaskDetailDOS = taskDetailRepository.queryByInstanceName("example_instant_name");
-        Assertions.assertTrue(compareTaskDetailDOList(actualTaskDetailDOS, taskDetailDOS));
+        List<TaskDetailDO> actualTaskDetailDOS_1 = taskDetailRepository.queryByInstanceNameAndStatus("example_instant_name", "");
+        //Assertions.assertTrue(compareTaskDetailDOList(actualTaskDetailDOS_1, taskDetailDOS));
+
+        List<TaskDetailDO> actualTaskDetailDOS_2 = taskDetailRepository.queryByInstanceNameAndStatus("example_instant_name", null);
+        //Assertions.assertTrue(compareTaskDetailDOList(actualTaskDetailDOS_2, taskDetailDOS));
+
+        List<TaskDetailDO> actualTaskDetailDOS_odd = taskDetailRepository.queryByInstanceNameAndStatus("example_instant_name", "sta1");
+        //Assertions.assertTrue(compareTaskDetailDOList(actualTaskDetailDOS_odd, taskDetailDOS_odd));
 
         for (int i = -1; i > -9; --i){
             Assertions.assertEquals(1, taskDetailRepository.deleteById(i));
@@ -126,7 +151,7 @@ public class TaskDetailRepositoryTest {
      * Description: 俩原子任务比较
      *
      * @author blacksea3(jxt)
-     * @date 2020/7/26
+     * @date 2020/8/2
      * @param expected: 原
      * @param actual: 实际
      * @return boolean 结果
@@ -140,7 +165,8 @@ public class TaskDetailRepositoryTest {
                     (expected.getExtInfo().equals(actual.getExtInfo())) &&
                     (expected.getInstanceName().equals(actual.getInstanceName())) &&
                     (expected.getScript().equals(actual.getScript())) &&
-                    (expected.getServiceName().equals(actual.getServiceName()));
+                    (expected.getServiceName().equals(actual.getServiceName())) &&
+                    (expected.getStatus().equals(actual.getStatus()));
         }
     }
 

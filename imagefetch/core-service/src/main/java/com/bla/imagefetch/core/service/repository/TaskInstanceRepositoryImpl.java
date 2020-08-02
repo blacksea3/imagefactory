@@ -1,6 +1,8 @@
 package com.bla.imagefetch.core.service.repository;
 
+import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
+import com.bla.imagefetch.common.dal.imagefactory.auto.mapper.TaskDetailDOMapper;
 import com.bla.imagefetch.common.dal.imagefactory.auto.mapper.TaskInstanceDOMapper;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import org.slf4j.Logger;
@@ -39,6 +41,9 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
 
     @Autowired
     private TaskInstanceDOMapper taskInstanceDOMapper;
+
+    @Autowired
+    private TaskDetailDOMapper taskDetailDOMapper;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -160,6 +165,15 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
         }
 
         //TODO:查找此任务实例的原子任务，如果找不到，那么返回false，否则执行taskInstanceDOMapper.updateHandleNumAddOne(id) == 1
+        List<TaskDetailDO> taskDetailDOs = taskDetailDOMapper.queryByInstanceNameAndStatus("init", taskInstanceDO.getName());
+        if (taskDetailDOs.isEmpty()){
+            return false;
+        }else{
+            TaskDetailDO taskDetailDO = taskDetailDOs.get(0);
+            //taskInstanceDOMapper.
+        }
+
+
 
         return taskInstanceDOMapper.updateHandleNumAddOne(id) == 1;
     }

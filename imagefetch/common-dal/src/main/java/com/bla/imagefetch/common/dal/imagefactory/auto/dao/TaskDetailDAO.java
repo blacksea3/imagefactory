@@ -41,7 +41,7 @@ public class TaskDetailDAO{
         return taskDetailDOMapper.insertBatchWithoutID(list);
     }
     /**
-     * desc:根据Id全量更新表:task_detail.<br/>
+     * desc:根据Id和非null项部分更新表:task_detail.<br/>
      * @param entity entity
      * @return Long
      */
@@ -65,11 +65,12 @@ public class TaskDetailDAO{
         return taskDetailDOMapper.queryById(id);
     }
     /**
-     * desc:根据普通索引InstanceName获取数据:task_detail.<br/>
+     * desc:根据普通索引InstanceName和可选的status获取数据:task_detail.<br/>
+     * @param status status
      * @param instanceName instanceName
      * @return List<TaskDetailDO>
      */
-    public List<TaskDetailDO> queryByInstanceName(String instanceName){
-        return taskDetailDOMapper.queryByInstanceName(instanceName);
+    public List<TaskDetailDO> queryByInstanceNameAndStatus(String status,String instanceName){
+        return taskDetailDOMapper.queryByInstanceNameAndStatus(status, instanceName);
     }
 }

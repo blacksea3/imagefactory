@@ -5,6 +5,7 @@
     <resultMap id="BaseResultMap"  type="com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO">
         <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer"/>
         <result column="SCRIPT" property="script" jdbcType="VARCHAR" javaType="String"/>
+        <result column="STATUS" property="status" jdbcType="VARCHAR" javaType="String"/>
         <result column="CONTENT" property="content" jdbcType="VARCHAR" javaType="String"/>
         <result column="EXT_INFO" property="extInfo" jdbcType="VARCHAR" javaType="String"/>
         <result column="SERVICE_NAME" property="serviceName" jdbcType="VARCHAR" javaType="String"/>
@@ -16,11 +17,11 @@
 
     <sql id="Base_SF_Column_List">
         sf.ID,sf.SCRIPT,sf.CONTENT,sf.EXT_INFO,sf.SERVICE_NAME
-        ,sf.INSTANCE_NAME,sf.GMT_CREATE,sf.GMT_MODIFIED
+        ,sf.INSTANCE_NAME,sf.STATUS,sf.GMT_CREATE,sf.GMT_MODIFIED
     </sql>
     <sql id="Base_Column_List">
         ID,SCRIPT,CONTENT,EXT_INFO,SERVICE_NAME 
-        ,INSTANCE_NAME,GMT_CREATE,GMT_MODIFIED
+        ,INSTANCE_NAME,STATUS,GMT_CREATE,GMT_MODIFIED
     </sql>
 
 
@@ -38,6 +39,7 @@
             ,EXT_INFO
             ,SERVICE_NAME
             ,INSTANCE_NAME
+            ,STATUS
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
@@ -47,6 +49,7 @@
             , #{extInfo,jdbcType=VARCHAR}
             , #{serviceName,jdbcType=VARCHAR}
             , #{instanceName,jdbcType=VARCHAR}
+            , #{status,jdbcType=VARCHAR}
             , now()
             , now()
         )
@@ -63,6 +66,7 @@
             ,EXT_INFO
             ,SERVICE_NAME
             ,INSTANCE_NAME
+            ,STATUS
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
@@ -72,6 +76,7 @@
             , #{extInfo,jdbcType=VARCHAR}
             , #{serviceName,jdbcType=VARCHAR}
             , #{instanceName,jdbcType=VARCHAR}
+            , #{status,jdbcType=VARCHAR}
             , now()
             , now()
         )
@@ -87,6 +92,7 @@
             ,EXT_INFO
             ,SERVICE_NAME
             ,INSTANCE_NAME
+            ,STATUS
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES
@@ -98,22 +104,36 @@
                 , #{item.extInfo,jdbcType=VARCHAR}
                 , #{item.serviceName,jdbcType=VARCHAR}
                 , #{item.instanceName,jdbcType=VARCHAR}
+                , #{status,jdbcType=VARCHAR}
                 , now()
                 , now()
             )
         </foreach>
     </insert>
 
-    <!--根据Id全量更新表:task_detail-->
+    <!--根据Id和非null项部分更新表:task_detail-->
     <update id="updateAll"  >
         UPDATE /*MS-TASK-DETAIL-UPDATEALL*/ task_detail
         SET
             GMT_MODIFIED     = now()
+        <if test="script != null and script != &quot;&quot;">
             ,SCRIPT          = #{script,jdbcType=VARCHAR}
+        </if>
+        <if test="content != null and content != &quot;&quot;">
             ,CONTENT         = #{content,jdbcType=VARCHAR}
+        </if>
+        <if test="extInfo != null and extInfo != &quot;&quot;">
             ,EXT_INFO        = #{extInfo,jdbcType=VARCHAR}
+        </if>
+        <if test="serviceName != null and serviceName != &quot;&quot;">
             ,SERVICE_NAME    = #{serviceName,jdbcType=VARCHAR}
-            ,INSTANCE_NAME    = #{instanceName,jdbcType=VARCHAR}
+        </if>
+        <if test="instanceName != null and instanceName != &quot;&quot;">
+            ,INSTANCE_NAME   = #{instanceName,jdbcType=VARCHAR}
+        </if>
+        <if test="status != null and status != &quot;&quot;">
+            ,STATUS          = #{status,jdbcType=VARCHAR}
+        </if>
         WHERE
             ID              = #{id,jdbcType=INTEGER}
     </update>
@@ -137,13 +157,15 @@
         ]]>
     </select>
 
-    <!--根据普通索引InstanceName获取数据:task_detail-->
-    <select id="queryByInstanceName" resultMap="BaseResultMap" >
-        SELECT /*MS-TASK-DETAIL-QUERYBYINSTANCENAME*/  <include refid="Base_Column_List" />
+    <!--根据普通索引InstanceName和可选的status获取数据:task_detail-->
+    <select id="queryByInstanceNameAndStatus" resultMap="BaseResultMap" >
+        SELECT /*MS-TASK-DETAIL-QUERYBYINSTANCENAMEANDSTATUS*/  <include refid="Base_Column_List" />
         FROM task_detail
         WHERE
-        <![CDATA[
-            INSTANCE_NAME   = #{instanceName,jdbcType=VARCHAR}
-        ]]>
+        INSTANCE_NAME   = #{instanceName,jdbcType=VARCHAR}
+        <if test="status != null and status != ''">
+            AND
+            STATUS          = #{status,jdbcType=VARCHAR}
+        </if>
     </select>
 </mapper>

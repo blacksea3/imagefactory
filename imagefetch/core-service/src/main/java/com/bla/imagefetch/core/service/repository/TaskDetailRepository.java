@@ -11,9 +11,12 @@ import java.util.List;
  * @date 2020/7/25 23:11
  */
 public interface TaskDetailRepository {
-    Long insert(TaskDetailDO entity);
-    Long update(TaskDetailDO entity);
+    Long insert(TaskDetailDO taskDetailDO);
+    Long updateFields(TaskDetailDO taskDetailDO);
+    Long setReadyStatus(Integer id);
+    Long setSuccessStatus(Integer id);
+    Long setFailStatus(Integer id);
     Long deleteById(Integer id);
     TaskDetailDO queryById(Integer id);
-    List<TaskDetailDO> queryByInstanceName(String instanceName);
+    List<TaskDetailDO> queryByInstanceNameAndStatus(String instanceName, String status);
 }

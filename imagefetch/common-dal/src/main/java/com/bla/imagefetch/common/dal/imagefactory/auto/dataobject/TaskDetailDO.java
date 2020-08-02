@@ -16,6 +16,10 @@ public class TaskDetailDO{
      */
     private String script;
     /**
+     * status 状态.
+     */
+    private String status;
+    /**
      * content 内容.
      */
     private String content;
@@ -70,6 +74,22 @@ public class TaskDetailDO{
      */
     public String getScript(){
         return script;
+    }
+
+    /**
+     * Set status 状态.
+     */
+    public void setStatus(String status){
+        this.status = status;
+    }
+
+    /**
+     * Get status 状态.
+     *
+     * @return the string
+     */
+    public String getStatus(){
+        return status;
     }
 
     /**
