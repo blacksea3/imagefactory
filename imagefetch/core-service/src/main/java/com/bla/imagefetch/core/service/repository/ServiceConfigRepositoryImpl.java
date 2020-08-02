@@ -31,7 +31,8 @@ public class ServiceConfigRepositoryImpl implements ServiceConfigRepository, Ini
     @Override
     public Integer insert(ServiceConfigDO serviceConfigDO) {
         if (serviceConfigDO.getId() == null){
-            return serviceConfigDOMapper.insertWithoutID(serviceConfigDO);
+            serviceConfigDOMapper.insertWithoutID(serviceConfigDO);
+            return serviceConfigDO.getId();
         }else{
             return serviceConfigDOMapper.insertWithID(serviceConfigDO);
         }

@@ -42,7 +42,8 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     @Override
     public Integer insert(TaskDetailDO entity) {
         if (entity.getId() == null){
-            return taskDetailDOMapper.insertWithoutID(entity);
+            taskDetailDOMapper.insertWithoutID(entity);
+            return entity.getId();
         }else{
             return taskDetailDOMapper.insertWithID(entity);
         }

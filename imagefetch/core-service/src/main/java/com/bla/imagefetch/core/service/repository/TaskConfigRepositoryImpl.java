@@ -32,7 +32,8 @@ public class TaskConfigRepositoryImpl implements TaskConfigRepository, Initializ
     @Override
     public Integer insert(TaskConfigDO taskConfigDO) {
         if (taskConfigDO.getId() == null){
-            return taskConfigDOMapper.insertWithoutID(taskConfigDO);
+            taskConfigDOMapper.insertWithoutID(taskConfigDO);
+            return taskConfigDO.getId();
         }else{
             return taskConfigDOMapper.insertWithID(taskConfigDO);
         }

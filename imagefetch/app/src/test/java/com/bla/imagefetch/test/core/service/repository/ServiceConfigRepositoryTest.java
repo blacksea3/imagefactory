@@ -122,7 +122,7 @@ public class ServiceConfigRepositoryTest {
      * @param actual: 实际
      * @return boolean 结果
      */
-    private boolean compareServiceConfigDO(ServiceConfigDO expected, ServiceConfigDO actual){
+    public boolean compareServiceConfigDO(ServiceConfigDO expected, ServiceConfigDO actual){
         if (expected == null){
             return actual == null;
         }else{

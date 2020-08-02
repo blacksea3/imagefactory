@@ -57,7 +57,8 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     @Override
     public Integer insert(TaskInstanceDO taskInstanceDO) {
         if (taskInstanceDO.getId() == null){
-            return taskInstanceDOMapper.insertWithoutID(taskInstanceDO);
+            taskInstanceDOMapper.insertWithoutID(taskInstanceDO);
+            return taskInstanceDO.getId();
         }else{
             return taskInstanceDOMapper.insertWithID(taskInstanceDO);
         }
