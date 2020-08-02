@@ -29,7 +29,7 @@ public class ServiceConfigRepositoryImpl implements ServiceConfigRepository, Ini
     }
 
     @Override
-    public Long insert(ServiceConfigDO serviceConfigDO) {
+    public Integer insert(ServiceConfigDO serviceConfigDO) {
         if (serviceConfigDO.getId() == null){
             return serviceConfigDOMapper.insertWithoutID(serviceConfigDO);
         }else{
@@ -38,7 +38,7 @@ public class ServiceConfigRepositoryImpl implements ServiceConfigRepository, Ini
     }
 
     @Override
-    public Long update(ServiceConfigDO serviceConfigDO) {
+    public Integer update(ServiceConfigDO serviceConfigDO) {
         if (serviceConfigDO.getId() == null){
             return null;
         }else{
@@ -47,7 +47,7 @@ public class ServiceConfigRepositoryImpl implements ServiceConfigRepository, Ini
     }
 
     @Override
-    public Long deleteById(Integer id) {
+    public Integer deleteById(Integer id) {
         if (id == null){
             return null;
         }else{

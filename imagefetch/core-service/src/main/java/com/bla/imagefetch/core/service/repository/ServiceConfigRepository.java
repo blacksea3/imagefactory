@@ -12,9 +12,9 @@ import java.util.List;
  * @date 2020/7/26 22:46
  */
 public interface ServiceConfigRepository {
-    Long insert(ServiceConfigDO serviceConfigDO);
-    Long update(ServiceConfigDO serviceConfigDO);
-    Long deleteById(Integer id);
+    Integer insert(ServiceConfigDO serviceConfigDO);
+    Integer update(ServiceConfigDO serviceConfigDO);
+    Integer deleteById(Integer id);
     ServiceConfigDO queryById(Integer id);
     ServiceConfigDO queryByName(String name);
 }

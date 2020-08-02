@@ -11,7 +11,7 @@ import com.bla.imagefetch.upper.service.VO.TaskInstanceAndDetailVO;
  * @date 2020/8/2 20:51
  */
 public interface ImageTask {
-    void addServiceConfig(ServiceConfigVO serviceConfigVO) throws RuntimeException;
-    void addTaskConfig(TaskConfigVO taskConfigVO) throws RuntimeException;
+    Integer addServiceConfig(ServiceConfigVO serviceConfigVO) throws RuntimeException;
+    Integer addTaskConfig(TaskConfigVO taskConfigVO) throws RuntimeException;
     void addTasks(TaskInstanceAndDetailVO taskInstanceAndDetailVO) throws RuntimeException;
 }

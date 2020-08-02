@@ -1,7 +1,5 @@
 package com.bla.imagefetch.upper.service.task;
 
-import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigDO;
-import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.ServiceConfigRepository;
 import com.bla.imagefetch.core.service.repository.TaskConfigRepository;
@@ -41,16 +39,22 @@ public class ImageTaskImpl implements ImageTask, InitializingBean {
     private TaskDetailRepository taskDetailRepository;
 
     @Override
-    public void addServiceConfig(ServiceConfigVO serviceConfigVO) throws RuntimeException {
-        if (serviceConfigRepository.insert(VOConvertToDO.VOServiceConfigDO(serviceConfigVO)) != 1){
+    public Integer addServiceConfig(ServiceConfigVO serviceConfigVO) throws RuntimeException {
+        Integer ret = serviceConfigRepository.insert(VOConvertToDO.VOServiceConfigDO(serviceConfigVO));
+        if (ret == null){
             throw new RuntimeException("serviceConfigRepository.insert != 1");
+        }else{
+            return ret;
         }
     }
 
     @Override
-    public void addTaskConfig(TaskConfigVO taskConfigVO) throws RuntimeException {
-        if (taskConfigRepository.insert(VOConvertToDO.VOTaskConfigDO(taskConfigVO)) != 1){
+    public Integer addTaskConfig(TaskConfigVO taskConfigVO) throws RuntimeException {
+        Integer ret = taskConfigRepository.insert(VOConvertToDO.VOTaskConfigDO(taskConfigVO));
+        if (ret == null){
             throw new RuntimeException("taskConfigRepository.insert != 1");
+        }else{
+            return ret;
         }
     }
 

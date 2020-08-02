@@ -40,7 +40,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     };
 
     @Override
-    public Long insert(TaskDetailDO entity) {
+    public Integer insert(TaskDetailDO entity) {
         if (entity.getId() == null){
             return taskDetailDOMapper.insertWithoutID(entity);
         }else{
@@ -49,7 +49,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long updateFields(TaskDetailDO entity) {
+    public Integer updateFields(TaskDetailDO entity) {
         if (entity.getId() == null){
             return null;
         }else{
@@ -58,7 +58,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long setReadyStatus(Integer id) {
+    public Integer setReadyStatus(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -70,7 +70,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long setSuccessStatus(Integer id) {
+    public Integer setSuccessStatus(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -82,7 +82,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long setFailStatus(Integer id) {
+    public Integer setFailStatus(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -94,7 +94,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long deleteById(Integer id) {
+    public Integer deleteById(Integer id) {
         if (id == null){
             return null;
         }else{

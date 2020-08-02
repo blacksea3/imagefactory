@@ -19,33 +19,33 @@ public class TaskInstanceDAO{
     /**
      * desc:不带Id插入表:task_instance.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long insertWithoutID(TaskInstanceDO entity){
+    public Integer insertWithoutID(TaskInstanceDO entity){
         return taskInstanceDOMapper.insertWithoutID(entity);
     }
     /**
      * desc:带Id插入表:task_instance.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long insertWithID(TaskInstanceDO entity){
+    public Integer insertWithID(TaskInstanceDO entity){
         return taskInstanceDOMapper.insertWithID(entity);
     }
     /**
      * desc:根据Id全量更新表:task_instance.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long updateAll(TaskInstanceDO entity){
+    public Integer updateAll(TaskInstanceDO entity){
         return taskInstanceDOMapper.updateAll(entity);
     }
     /**
      * desc:根据Id删除数据:task_instance.<br/>
      * @param id id
-     * @return Long
+     * @return Integer
      */
-    public Long deleteById(Integer id){
+    public Integer deleteById(Integer id){
         return taskInstanceDOMapper.deleteById(id);
     }
     /**
@@ -77,17 +77,17 @@ public class TaskInstanceDAO{
      * desc:根据Id更新表状态.<br/>
      * @param status status
      * @param id id
-     * @return Long
+     * @return Integer
      */
-    public Long updateStatus(String status,Integer id){
+    public Integer updateStatus(String status,Integer id){
         return taskInstanceDOMapper.updateStatus(status, id);
     }
     /**
      * desc:根据Id更新表处理数量.<br/>
      * @param id id
-     * @return Long
+     * @return Integer
      */
-    public Long updateHandleNumAddOne(Integer id){
+    public Integer updateHandleNumAddOne(Integer id){
         return taskInstanceDOMapper.updateHandleNumAddOne(id);
     }
     /**

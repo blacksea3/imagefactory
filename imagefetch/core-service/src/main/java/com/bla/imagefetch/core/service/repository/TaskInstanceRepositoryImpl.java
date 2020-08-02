@@ -55,7 +55,7 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     }
 
     @Override
-    public Long insert(TaskInstanceDO taskInstanceDO) {
+    public Integer insert(TaskInstanceDO taskInstanceDO) {
         if (taskInstanceDO.getId() == null){
             return taskInstanceDOMapper.insertWithoutID(taskInstanceDO);
         }else{
@@ -64,7 +64,7 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     }
 
     @Override
-    public Long update(TaskInstanceDO taskInstanceDO) {
+    public Integer update(TaskInstanceDO taskInstanceDO) {
         if (taskInstanceDO.getId() == null){
             return null;
         }else{
@@ -73,7 +73,7 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     }
 
     @Override
-    public Long deleteById(Integer id) {
+    public Integer deleteById(Integer id) {
         if (id == null){
             return null;
         }else{

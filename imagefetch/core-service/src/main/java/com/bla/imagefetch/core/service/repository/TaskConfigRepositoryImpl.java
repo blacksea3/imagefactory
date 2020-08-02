@@ -30,7 +30,7 @@ public class TaskConfigRepositoryImpl implements TaskConfigRepository, Initializ
     }
 
     @Override
-    public Long insert(TaskConfigDO taskConfigDO) {
+    public Integer insert(TaskConfigDO taskConfigDO) {
         if (taskConfigDO.getId() == null){
             return taskConfigDOMapper.insertWithoutID(taskConfigDO);
         }else{
@@ -39,7 +39,7 @@ public class TaskConfigRepositoryImpl implements TaskConfigRepository, Initializ
     }
 
     @Override
-    public Long update(TaskConfigDO taskConfigDO) {
+    public Integer update(TaskConfigDO taskConfigDO) {
         if (taskConfigDO.getId() == null){
             return null;
         }else{
@@ -48,7 +48,7 @@ public class TaskConfigRepositoryImpl implements TaskConfigRepository, Initializ
     }
 
     @Override
-    public Long deleteById(Integer id) {
+    public Integer deleteById(Integer id) {
         if (id == null){
             return null;
         }else{

@@ -12,9 +12,9 @@ import java.util.List;
  * @date 2020/7/26 23:25
  */
 public interface TaskInstanceRepository {
-    Long insert(TaskInstanceDO taskInstanceDO);
-    Long update(TaskInstanceDO taskInstanceDO);
-    Long deleteById(Integer id);
+    Integer insert(TaskInstanceDO taskInstanceDO);
+    Integer update(TaskInstanceDO taskInstanceDO);
+    Integer deleteById(Integer id);
     TaskInstanceDO queryById(Integer id);
     TaskInstanceDO queryByName(String name);
 

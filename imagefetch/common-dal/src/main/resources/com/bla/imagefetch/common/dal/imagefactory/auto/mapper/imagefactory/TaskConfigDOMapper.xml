@@ -110,7 +110,7 @@
         ]]>
     </select>
 
-    <!--根据普通索引Name获取数据:task_detail-->
+    <!--根据普通索引Name获取数据:task_config-->
     <select id="queryByName" resultMap="BaseResultMap" >
         SELECT /*MS-TASK-CONFIG-QUERYBYNAME*/  <include refid="Base_Column_List" />
         FROM task_config
