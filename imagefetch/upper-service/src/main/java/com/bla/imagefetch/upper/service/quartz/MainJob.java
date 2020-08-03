@@ -19,10 +19,10 @@ public class MainJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        LoggerUtil.info(LOGGER, "triggered");
-        for (String string:FileUtil.findAllPicFiles("../系统分析")){
-            LoggerUtil.info(LOGGER, string);
-        }
+        LoggerUtil.info(LOGGER, "MainJob triggered");
+        //for (String string:FileUtil.findAllPicFiles("../系统分析")){
+        //    LoggerUtil.info(LOGGER, string);
+        //}
 
         //LoggerUtil.info(LOGGER,
         //        "Hello world!:" + jobExecutionContext.getJobDetail().getKey());

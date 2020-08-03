@@ -3,6 +3,8 @@ package com.bla.imagefetch.common.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,10 +15,9 @@ import java.util.List;
  */
 public class FileUtil {
 
-    private Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtil.class);
 
     private enum PIC_SUFFIX{
-        IMG("img"),
         PNG("png"),
         JPG("jpg"),
         JPEG("jpeg");
@@ -40,8 +41,36 @@ public class FileUtil {
      */
     public static List<String> findAllPicFiles(String directory){
         List<String> ret = new ArrayList<>();
-        for(PIC_SUFFIX pic : PIC_SUFFIX.values()){
-            ret.add(pic.getName());
+
+        LoggerUtil.trace(LOGGER, System.getProperty("user.dir"));
+
+        //previous Maybe xxx/imagefetch/app
+        Path dir = new File(System.getProperty("user.dir")).toPath();
+
+        Path rootDirPath = dir.getParent().getParent();
+        LoggerUtil.trace(LOGGER, rootDirPath.toString() + "\\" + directory);
+
+        File rootDir = new File(rootDirPath.toString() + "\\" + directory);
+        File[] allFiles = rootDir.listFiles();
+
+        if (allFiles == null){
+            return ret;
+        }
+
+        for (File file:allFiles){
+            String name = file.getName();
+
+            boolean found = false;
+            for(PIC_SUFFIX pic : PIC_SUFFIX.values()){
+                if (name.endsWith(pic.getName())){
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found){
+                ret.add(name);
+            }
         }
         return ret;
     }
