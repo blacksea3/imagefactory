@@ -118,7 +118,7 @@ public class TaskConfigRepositoryTest {
      * @param actual: 实际
      * @return boolean 结果
      */
-    private boolean compareTaskConfigDO(TaskConfigDO expected, TaskConfigDO actual){
+    public boolean compareTaskConfigDO(TaskConfigDO expected, TaskConfigDO actual){
         if (expected == null){
             return actual == null;
         }else{
@@ -127,7 +127,10 @@ public class TaskConfigRepositoryTest {
             }
             return (expected.getId().equals(actual.getId())) &&
                     (expected.getDescription().equals(actual.getDescription())) &&
-                    (expected.getExtInfo().equals(actual.getExtInfo())) &&
+                    (
+                            (expected.getExtInfo() == null && actual.getExtInfo() == null) ||
+                            expected.getExtInfo().equals(actual.getExtInfo())
+                    ) &&
                     (expected.getServiceName().equals(actual.getServiceName())) &&
                     (expected.getName().equals(actual.getName())) &&
                     (expected.getStatus().equals(actual.getStatus()));

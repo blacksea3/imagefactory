@@ -27,7 +27,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     TaskDetailDOMapper taskDetailDOMapper;
 
     /** 原子任务状态枚举类，初始化，准备态，成功态，失败态 */
-    private enum taskDetailStatus{
+    public enum taskDetailStatus{
         INIT("init"),
         READY("ready"),
         SUCCESS("success"),
@@ -36,6 +36,10 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
         private String _val;
         taskDetailStatus(String val){
             this._val = val;
+        }
+
+        public String get_val() {
+            return _val;
         }
     };
 

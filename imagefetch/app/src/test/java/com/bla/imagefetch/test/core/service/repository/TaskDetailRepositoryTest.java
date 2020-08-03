@@ -174,6 +174,31 @@ public class TaskDetailRepositoryTest {
     }
 
     /**
+     * Description: 俩原子任务比较, 不带ID
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/2
+     * @param expected: 原
+     * @param actual: 实际
+     * @return boolean 结果
+     */
+    public boolean compareTaskDetailDOWithoutID(TaskDetailDO expected, TaskDetailDO actual){
+        if (expected == null){
+            return actual == null;
+        }else{
+            if (actual == null){
+                return false;
+            }
+            return ((expected.getContent().equals(actual.getContent())) &&
+                    (expected.getExtInfo().equals(actual.getExtInfo())) &&
+                    (expected.getInstanceName().equals(actual.getInstanceName())) &&
+                    (expected.getScript().equals(actual.getScript())) &&
+                    (expected.getServiceName().equals(actual.getServiceName())) &&
+                    (expected.getStatus().equals(actual.getStatus())));
+        }
+    }
+
+    /**
      * Description: 俩原子任务列表比较, 顺序不定, O(N^2)
      *
      * @author blacksea3(jxt)

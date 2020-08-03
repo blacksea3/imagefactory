@@ -184,4 +184,54 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
             }
         }
     }
+
+    /**
+     * 事务:RC, 双写:任务示例和原子任务，针对图片任务设置
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/3
+     * @param files: 文件们
+     * @param directory 文件夹
+     * @param serviceConfig 服务配置名
+     * @param taskConfig 任务配置名
+     * @return boolean
+     */
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public boolean insertTaskInstanceAndTaskDetailForImages(String directory, List<String> files, String serviceConfig, String taskConfig) {
+        if (directory == null || files == null || serviceConfig == null || taskConfig == null){
+            return false;
+        }
+
+        if (files.isEmpty()){   //空的, 无需添加任务
+            return false;
+        }
+
+        TaskInstanceDO taskInstanceDO = new TaskInstanceDO();
+
+        taskInstanceDO.setTotalNum(files.size());
+        taskInstanceDO.setHandleNum(0);
+        taskInstanceDO.setStatus(taskInstanceStatus.INIT._val);
+        taskInstanceDO.setPriority(1);
+        taskInstanceDO.setDescription("");
+        taskInstanceDO.setServiceName(serviceConfig);
+        taskInstanceDO.setConfigName(taskConfig);
+        taskInstanceDO.setName(directory);
+
+        taskInstanceDOMapper.insertWithoutID(taskInstanceDO);
+
+        for (String filename:files){
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setStatus(TaskDetailRepositoryImpl.taskDetailStatus.INIT.get_val());
+            taskDetailDO.setScript("");
+            taskDetailDO.setExtInfo("");
+            taskDetailDO.setServiceName(serviceConfig);
+            taskDetailDO.setInstanceName(directory);
+            taskDetailDO.setContent(filename);
+
+            taskDetailDOMapper.insertWithoutID(taskDetailDO);
+        }
+
+        return true;
+    }
 }
