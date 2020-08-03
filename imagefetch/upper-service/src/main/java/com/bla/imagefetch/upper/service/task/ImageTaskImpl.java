@@ -2,6 +2,7 @@ package com.bla.imagefetch.upper.service.task;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigDO;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
+import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.ServiceConfigRepository;
 import com.bla.imagefetch.core.service.repository.TaskConfigRepository;
@@ -77,10 +78,8 @@ public class ImageTaskImpl implements ImageTask, InitializingBean {
         if (serviceConfigDO == null){
             throw new RuntimeException("添加任务时找不到对应的service_config");
         }
-        //TODO:根据文件夹路径寻找图片们，返回List<String>图片名
-        List<String> files = new ArrayList<>();
-        files.add("test_filename_1");
-        files.add("test_filename_2");
+
+        List<String> files = FileUtil.findAllPicFiles(directory);
 
         if (!taskInstanceRepository.insertTaskInstanceAndTaskDetailForImages(
                 directory, files, serviceConfigName, taskConfigName)){

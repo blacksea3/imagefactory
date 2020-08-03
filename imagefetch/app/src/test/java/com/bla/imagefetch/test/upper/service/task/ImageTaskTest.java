@@ -91,13 +91,19 @@ public class ImageTaskTest {
         Assertions.assertEquals(1, taskConfigRepository.deleteById(ret));
     }
 
+    /**
+     * Description: 请注意:测试这个方法时，手动设置磁盘文件
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/3
+     */
+    //TODO:logging trace失效，想要给common.util包改成logging trace级别
+    //TODO:中文文件名待测试
+
     @Test
     void testAddTasks(){
         {
             //taskConfig不存在
-            List<String> files = new ArrayList<>();
-            files.add("test_filename_1");
-            files.add("test_filename_2");
 
             serviceConfigRepository.deleteById(-1);
             ServiceConfigDO serviceConfigDO = new ServiceConfigDO();
@@ -125,10 +131,6 @@ public class ImageTaskTest {
 
         {
             //serviceConfig不存在
-            List<String> files = new ArrayList<>();
-            files.add("test_filename_1");
-            files.add("test_filename_2");
-
             taskConfigRepository.deleteById(-1);
             TaskConfigDO taskConfigDO = new TaskConfigDO();
             taskConfigDO.setDescription("des");
@@ -142,7 +144,7 @@ public class ImageTaskTest {
             TaskInstanceAndDetailVO taskInstanceAndDetailVO = new TaskInstanceAndDetailVO();
             taskInstanceAndDetailVO.setConfigName("example_task_config_name");
             taskInstanceAndDetailVO.setServiceName("example_service_name");
-            taskInstanceAndDetailVO.setDirectory("../images/20200803");
+            taskInstanceAndDetailVO.setDirectory("images\\20200803");
 
             Assertions.assertThrows(RuntimeException.class,
                     () -> {
@@ -172,8 +174,10 @@ public class ImageTaskTest {
 
             //数据准备
             List<String> files = new ArrayList<>();
-            files.add("test_filename_1");
-            files.add("test_filename_2");
+            files.add("test.jpeg");
+            files.add("test.jpg");
+            files.add("test.png");
+            files.add("exm.jpeg");
 
             //手动插入配置数据
             taskConfigRepository.deleteById(-1);
@@ -200,7 +204,7 @@ public class ImageTaskTest {
             TaskInstanceAndDetailVO taskInstanceAndDetailVO = new TaskInstanceAndDetailVO();
             taskInstanceAndDetailVO.setConfigName("example_task_config_name");
             taskInstanceAndDetailVO.setServiceName("example_service_config_name");
-            taskInstanceAndDetailVO.setDirectory("example_dir");
+            taskInstanceAndDetailVO.setDirectory("images\\20200803");
 
             imageTask.addTasks(taskInstanceAndDetailVO);
 
@@ -213,14 +217,14 @@ public class ImageTaskTest {
             expected.setDescription("");
             expected.setServiceName("example_service_config_name");
             expected.setConfigName("example_task_config_name");
-            expected.setName("example_dir");
+            expected.setName("images\\20200803");
 
             TaskInstanceRepositoryTest taskInstanceRepositoryTest = new TaskInstanceRepositoryTest();
-            TaskInstanceDO actual = taskInstanceRepository.queryByName("example_dir");
+            TaskInstanceDO actual = taskInstanceRepository.queryByName("images\\20200803");
             Assertions.assertTrue(taskInstanceRepositoryTest.compareTaskInstanceDOWithoutID(expected, actual));
             TaskDetailRepositoryTest taskDetailRepositoryTest = new TaskDetailRepositoryTest();
-            List<TaskDetailDO> actuals = taskDetailRepository.queryByInstanceNameAndStatus("example_dir", null);
-            Assertions.assertEquals(2, actuals.size());
+            List<TaskDetailDO> actuals = taskDetailRepository.queryByInstanceNameAndStatus("images\\20200803", null);
+            Assertions.assertEquals(files.size(), actuals.size());
 
             for (String filename:files){
                 TaskDetailDO taskDetailDO = new TaskDetailDO();
@@ -228,11 +232,15 @@ public class ImageTaskTest {
                 taskDetailDO.setScript("");
                 taskDetailDO.setExtInfo("");
                 taskDetailDO.setServiceName("example_service_config_name");
-                taskDetailDO.setInstanceName("example_dir");
+                taskDetailDO.setInstanceName("images\\20200803");
                 taskDetailDO.setContent(filename);
 
-                Assertions.assertTrue(taskDetailRepositoryTest.compareTaskDetailDOWithoutID(taskDetailDO, actuals.get(0)) ||
-                        taskDetailRepositoryTest.compareTaskDetailDOWithoutID(taskDetailDO, actuals.get(1)));
+                boolean findCompared = false;
+                for (TaskDetailDO taskDetailDO1:actuals){
+                    findCompared |= taskDetailRepositoryTest.compareTaskDetailDOWithoutID(taskDetailDO, taskDetailDO1);
+                }
+
+                Assertions.assertTrue(findCompared);
             }
 
             //删除数据
@@ -242,6 +250,8 @@ public class ImageTaskTest {
             Assertions.assertEquals(1, taskInstanceRepository.deleteById(actual.getId()));
             Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(0).getId()));
             Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(1).getId()));
+            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(2).getId()));
+            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(3).getId()));
         }
     }
 
