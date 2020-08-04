@@ -102,7 +102,6 @@ public class ImageTaskTest {
      * @author blacksea3(jxt)
      * @date 2020/8/3
      */
-    //TODO:logging trace失效，想要给common.util包改成logging trace级别
     //TODO:中文文件名待测试
 
     @Test

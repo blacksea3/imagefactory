@@ -1,0 +1,9 @@
+logging:
+  level:
+    com:
+      bla:
+        imagefetch:
+          app: info
+spring:
+  profiles:
+    active: commonDal, commonUtil, coreService
