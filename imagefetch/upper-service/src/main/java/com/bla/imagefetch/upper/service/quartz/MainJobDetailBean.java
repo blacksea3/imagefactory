@@ -1,5 +1,6 @@
 package com.bla.imagefetch.upper.service.quartz;
 
+import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.upper.service.quartz.config.MyJobFactory;
 import com.bla.imagefetch.upper.service.quartz.config.QuartzConfiguration;
@@ -8,6 +9,7 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +24,9 @@ import javax.annotation.Resource;
 public class MainJobDetailBean implements InitializingBean {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MainJobDetailBean.class);
+
+    @Autowired
+    private GlobalConstant globalConstant;
 
     /**
      * bean请查看
@@ -61,7 +66,7 @@ public class MainJobDetailBean implements InitializingBean {
                 .usingJobData("job_trigger_param","job_trigger_param1")
                 .startNow()
                 //.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(5).repeatForever())
-                .withSchedule(CronScheduleBuilder.cronSchedule("0/2 * * * * ? *"))
+                .withSchedule(CronScheduleBuilder.cronSchedule(globalConstant.getImageTaskCron()))
                 .build();
         // 注册JobDetail实例到scheduler以及使用对应的Trigger触发时机
         scheduler.scheduleJob(jobDetail,trigger);

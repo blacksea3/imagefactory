@@ -9,3 +9,4 @@ spring:
     active: commonDal, commonUtil, coreService
 
 imageDirectory: E:\imageFactory\images
+imageTaskCron: 0/5 * * * * ? *

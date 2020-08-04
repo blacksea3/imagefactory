@@ -19,4 +19,7 @@ public interface TaskDetailRepository {
     Integer deleteById(Integer id);
     TaskDetailDO queryById(Integer id);
     List<TaskDetailDO> queryByInstanceNameAndStatus(String instanceName, String status);
+
+    boolean setSuccessStatusAndUpdateContent(Integer id, String content);
+    boolean setFailStatusAndUpdateContent(Integer id, String content);
 }

@@ -20,8 +20,15 @@ public class GlobalConstant implements InitializingBean {
     @Value("${imageDirectory}")
     private String imageDirectory;
 
+    @Value("${imageTaskCron}")
+    private String imageTaskCron;
+
     public String getImageDirectory() {
         return imageDirectory;
+    }
+
+    public String getImageTaskCron() {
+        return imageTaskCron;
     }
 
     @Override
@@ -29,7 +36,9 @@ public class GlobalConstant implements InitializingBean {
         if (imageDirectory == null){
             throw new Exception("请在配置文件设置imageDirectory,这将作为图片数据根文件夹");
         }else{
-            LoggerUtil.info(LOGGER, "Bean of GlobalConstant has been initialized, imageDirectory is [", imageDirectory, "]");
+            LoggerUtil.info(LOGGER, "Bean of GlobalConstant has been initialized, " +
+                    "imageDirectory is [", imageDirectory, "]",
+                    ", imageTaskCron is [" + imageTaskCron + "]");
         }
     }
 }

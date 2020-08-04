@@ -99,6 +99,16 @@ public class TaskDetailRepositoryTest {
         taskDetailDO.setStatus("success");
         Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
 
+        Assertions.assertTrue(taskDetailRepository.setFailStatusAndUpdateContent(-1, "conc"));
+        taskDetailDO.setStatus("fail");
+        taskDetailDO.setContent("conc");
+        Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
+
+        Assertions.assertTrue(taskDetailRepository.setSuccessStatusAndUpdateContent(-1, "conc2"));
+        taskDetailDO.setStatus("success");
+        taskDetailDO.setContent("conc2");
+        Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
+
         Assertions.assertEquals(1, taskDetailRepository.deleteById(-1));
     }
 

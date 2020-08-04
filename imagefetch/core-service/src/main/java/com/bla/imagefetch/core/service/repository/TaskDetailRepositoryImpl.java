@@ -136,6 +136,32 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
+    public boolean setSuccessStatusAndUpdateContent(Integer id, String content) {
+        if (id == null){
+            return false;
+        }else{
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setId(id);
+            taskDetailDO.setStatus(taskDetailStatus.SUCCESS._val);
+            taskDetailDO.setContent(content);
+            return taskDetailDOMapper.updateAll(taskDetailDO) == 1;
+        }
+    }
+
+    @Override
+    public boolean setFailStatusAndUpdateContent(Integer id, String content) {
+        if (id == null){
+            return false;
+        }else{
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setId(id);
+            taskDetailDO.setStatus(taskDetailStatus.FAIL._val);
+            taskDetailDO.setContent(content);
+            return taskDetailDOMapper.updateAll(taskDetailDO) == 1;
+        }
+    }
+
+    @Override
     public void afterPropertiesSet() throws Exception {
         LoggerUtil.info(LOGGER, "Bean of TaskDetailRepositoryImpl has been initialized!");
     }

@@ -4,6 +4,8 @@ import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigD
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
+import com.bla.imagefetch.common.util.FileUtil;
+import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.core.service.repository.*;
 import com.bla.imagefetch.test.core.service.repository.ServiceConfigRepositoryTest;
 import com.bla.imagefetch.test.core.service.repository.TaskConfigRepositoryTest;
@@ -14,14 +16,13 @@ import com.bla.imagefetch.upper.service.VO.TaskConfigVO;
 import com.bla.imagefetch.upper.service.VO.TaskInstanceAndDetailVO;
 import com.bla.imagefetch.upper.service.VO.VOConvertToDO;
 import com.bla.imagefetch.upper.service.quartz.MainJobDetailBean;
-import com.bla.imagefetch.upper.service.task.ImageTask;
+import com.bla.imagefetch.upper.service.task.AbstractTask;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +35,7 @@ import java.util.List;
 public class ImageTaskTest {
 
     @Autowired
-    private ImageTask imageTask;
+    private AbstractTask abstractTask;
 
     @Autowired
     private ServiceConfigRepository serviceConfigRepository;
@@ -51,6 +52,9 @@ public class ImageTaskTest {
     @Autowired
     private MainJobDetailBean mainJobDetailBean;
 
+    @Autowired
+    private GlobalConstant globalConstant;
+
     /**
      *
      * @author blacksea3(jxt)
@@ -66,7 +70,7 @@ public class ImageTaskTest {
         serviceConfigVO.setName("example_service_name");
         serviceConfigVO.setSysName("sa");
 
-        Integer ret = imageTask.addServiceConfig(serviceConfigVO);
+        Integer ret = abstractTask.addServiceConfig(serviceConfigVO);
         ServiceConfigDO actual = serviceConfigRepository.queryById(ret);
         ServiceConfigDO expected = VOConvertToDO.VOServiceConfigDO(serviceConfigVO);
         expected.setId(ret);
@@ -85,7 +89,7 @@ public class ImageTaskTest {
         taskConfigVO.setServiceName("example_service_name");
         taskConfigVO.setStatus("valid");
 
-        Integer ret = imageTask.addTaskConfig(taskConfigVO);
+        Integer ret = abstractTask.addTaskConfig(taskConfigVO);
         TaskConfigDO actual = taskConfigRepository.queryById(ret);
         TaskConfigDO expected = VOConvertToDO.VOTaskConfigDO(taskConfigVO);
         expected.setId(ret);
@@ -125,7 +129,7 @@ public class ImageTaskTest {
 
             Assertions.assertThrows(RuntimeException.class,
                     () -> {
-                imageTask.addTasks(taskInstanceAndDetailVO);
+                abstractTask.addTasks(taskInstanceAndDetailVO);
             }
             );
 
@@ -151,7 +155,7 @@ public class ImageTaskTest {
 
             Assertions.assertThrows(RuntimeException.class,
                     () -> {
-                        imageTask.addTasks(taskInstanceAndDetailVO);
+                        abstractTask.addTasks(taskInstanceAndDetailVO);
                     }
             );
 
@@ -167,7 +171,7 @@ public class ImageTaskTest {
 
             Assertions.assertThrows(RuntimeException.class,
                     () -> {
-                        imageTask.addTasks(taskInstanceAndDetailVO);
+                        abstractTask.addTasks(taskInstanceAndDetailVO);
                     }
             );
         }
@@ -176,11 +180,7 @@ public class ImageTaskTest {
             //正常
 
             //数据准备
-            List<String> files = new ArrayList<>();
-            files.add("test.jpeg");
-            files.add("test.jpg");
-            files.add("test.png");
-            files.add("测试.jpeg");
+            List<String> files = FileUtil.findAllPicFiles(globalConstant.getImageDirectory() + "\\" + "20200803");
 
             //手动插入配置数据
             taskConfigRepository.deleteById(-1);
@@ -209,7 +209,7 @@ public class ImageTaskTest {
             taskInstanceAndDetailVO.setServiceName("example_service_config_name");
             taskInstanceAndDetailVO.setDirectory("images\\20200803");
 
-            imageTask.addTasks(taskInstanceAndDetailVO);
+            abstractTask.addTasks(taskInstanceAndDetailVO);
 
             //数据检查
             TaskInstanceDO expected = new TaskInstanceDO();
@@ -220,13 +220,13 @@ public class ImageTaskTest {
             expected.setDescription("");
             expected.setServiceName("example_service_config_name");
             expected.setConfigName("example_task_config_name");
-            expected.setName("images\\20200803");
+            expected.setName("20200803");
 
             TaskInstanceRepositoryTest taskInstanceRepositoryTest = new TaskInstanceRepositoryTest();
-            TaskInstanceDO actual = taskInstanceRepository.queryByName("images\\20200803");
+            TaskInstanceDO actual = taskInstanceRepository.queryByName("20200803");
             Assertions.assertTrue(taskInstanceRepositoryTest.compareTaskInstanceDOWithoutID(expected, actual));
             TaskDetailRepositoryTest taskDetailRepositoryTest = new TaskDetailRepositoryTest();
-            List<TaskDetailDO> actuals = taskDetailRepository.queryByInstanceNameAndStatus("images\\20200803", null);
+            List<TaskDetailDO> actuals = taskDetailRepository.queryByInstanceNameAndStatus("20200803", null);
             Assertions.assertEquals(files.size(), actuals.size());
 
             for (String filename:files){
@@ -235,7 +235,7 @@ public class ImageTaskTest {
                 taskDetailDO.setScript("");
                 taskDetailDO.setExtInfo("");
                 taskDetailDO.setServiceName("example_service_config_name");
-                taskDetailDO.setInstanceName("images\\20200803");
+                taskDetailDO.setInstanceName("20200803");
                 taskDetailDO.setContent(filename);
 
                 boolean findCompared = false;
@@ -251,10 +251,9 @@ public class ImageTaskTest {
             Assertions.assertEquals(1, serviceConfigRepository.deleteById(-1));
 
             Assertions.assertEquals(1, taskInstanceRepository.deleteById(actual.getId()));
-            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(0).getId()));
-            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(1).getId()));
-            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(2).getId()));
-            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(3).getId()));
+            for (TaskDetailDO iterActuals:actuals){
+                Assertions.assertEquals(1, taskDetailRepository.deleteById(iterActuals.getId()));
+            }
         }
     }
 
@@ -264,17 +263,13 @@ public class ImageTaskTest {
             //正常
 
             //数据准备
-            List<String> files = new ArrayList<>();
-            files.add("test.jpeg");
-            files.add("test.jpg");
-            files.add("test.png");
-            files.add("测试.jpeg");
+            List<String> files = FileUtil.findAllPicFiles(globalConstant.getImageDirectory() + "\\" + "20200803");
 
             //预删除数据
             taskConfigRepository.deleteById(-1);
             serviceConfigRepository.deleteById(-1);
-            List<TaskDetailDO> rawActuals = taskDetailRepository.queryByInstanceNameAndStatus("images\\20200803", null);
-            TaskInstanceDO rawActual = taskInstanceRepository.queryByName("images\\20200803");
+            List<TaskDetailDO> rawActuals = taskDetailRepository.queryByInstanceNameAndStatus("20200803", null);
+            TaskInstanceDO rawActual = taskInstanceRepository.queryByName("20200803");
             if (rawActual != null){
                 taskInstanceRepository.deleteById(rawActual.getId());
             }
@@ -298,7 +293,7 @@ public class ImageTaskTest {
 
             serviceConfigRepository.deleteById(-1);
             ServiceConfigDO serviceConfigDO = new ServiceConfigDO();
-            serviceConfigDO.setBeanName("bn");
+            serviceConfigDO.setBeanName("imageStyle");
             serviceConfigDO.setBeanType("bt");
             serviceConfigDO.setExtInfo("ext");
             serviceConfigDO.setId(-1);
@@ -310,9 +305,9 @@ public class ImageTaskTest {
             TaskInstanceAndDetailVO taskInstanceAndDetailVO = new TaskInstanceAndDetailVO();
             taskInstanceAndDetailVO.setConfigName("example_task_config_name");
             taskInstanceAndDetailVO.setServiceName("example_service_config_name");
-            taskInstanceAndDetailVO.setDirectory("images\\20200803");
+            taskInstanceAndDetailVO.setDirectory("20200803");
 
-            imageTask.addTasks(taskInstanceAndDetailVO);
+            abstractTask.addTasks(taskInstanceAndDetailVO);
 
             //数据检查
             TaskInstanceDO expected = new TaskInstanceDO();
@@ -323,13 +318,13 @@ public class ImageTaskTest {
             expected.setDescription("");
             expected.setServiceName("example_service_config_name");
             expected.setConfigName("example_task_config_name");
-            expected.setName("images\\20200803");
+            expected.setName("20200803");
 
             TaskInstanceRepositoryTest taskInstanceRepositoryTest = new TaskInstanceRepositoryTest();
-            TaskInstanceDO actual = taskInstanceRepository.queryByName("images\\20200803");
+            TaskInstanceDO actual = taskInstanceRepository.queryByName("20200803");
             Assertions.assertTrue(taskInstanceRepositoryTest.compareTaskInstanceDOWithoutID(expected, actual));
             TaskDetailRepositoryTest taskDetailRepositoryTest = new TaskDetailRepositoryTest();
-            List<TaskDetailDO> actuals = taskDetailRepository.queryByInstanceNameAndStatus("images\\20200803", null);
+            List<TaskDetailDO> actuals = taskDetailRepository.queryByInstanceNameAndStatus("20200803", null);
             Assertions.assertEquals(files.size(), actuals.size());
 
             for (String filename:files){
@@ -338,7 +333,7 @@ public class ImageTaskTest {
                 taskDetailDO.setScript("");
                 taskDetailDO.setExtInfo("");
                 taskDetailDO.setServiceName("example_service_config_name");
-                taskDetailDO.setInstanceName("images\\20200803");
+                taskDetailDO.setInstanceName("20200803");
                 taskDetailDO.setContent(filename);
 
                 boolean findCompared = false;
@@ -368,10 +363,9 @@ public class ImageTaskTest {
             Assertions.assertEquals(1, serviceConfigRepository.deleteById(-1));
 
             Assertions.assertEquals(1, taskInstanceRepository.deleteById(actual.getId()));
-            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(0).getId()));
-            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(1).getId()));
-            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(2).getId()));
-            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(3).getId()));
+            for (TaskDetailDO iterActuals:actuals){
+                Assertions.assertEquals(1, taskDetailRepository.deleteById(iterActuals.getId()));
+            }
         }
     }
 

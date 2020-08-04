@@ -30,7 +30,7 @@ import java.io.IOException;
  * @author blacksea3(jxt)
  * @date 2020/8/4
  */
-@Component
+@Component("imageStyle")
 public class ImageStyleImpl implements ImageStyle, InitializingBean {
     /** aLiYun client */
     static IAcsClient client = null;
@@ -64,9 +64,11 @@ public class ImageStyleImpl implements ImageStyle, InitializingBean {
             ossurl = fileUtils.upload(fileName);
         } catch (ClientException e) {
             LoggerUtil.error(LOGGER, e, "文件上传失败");
+            return null;
             //e.printStackTrace();
         } catch (IOException e) {
             LoggerUtil.error(LOGGER, e, "文件找不到");
+            return null;
             //e.printStackTrace();
         }
         LoggerUtil.info(LOGGER, "成功生成url:", ossurl);
@@ -104,11 +106,13 @@ public class ImageStyleImpl implements ImageStyle, InitializingBean {
             ret = response.getData().getImageURL();
         } catch (ServerException e) {
             LoggerUtil.error(LOGGER, e,"图片处理失败");
+            return null;
             //e.printStackTrace();
         } catch (ClientException e) {
             LoggerUtil.error(LOGGER, "图片处理失败, ErrCode:", e.getErrCode(),
                     "\tErrMsg:", e.getErrMsg(),
                     "\te.getErrMsg():", e.getRequestId());
+            return null;
         }
         return ret;
     }
