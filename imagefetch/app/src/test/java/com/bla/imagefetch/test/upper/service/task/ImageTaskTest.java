@@ -102,7 +102,6 @@ public class ImageTaskTest {
      * @author blacksea3(jxt)
      * @date 2020/8/3
      */
-    //TODO:中文文件名待测试
 
     @Test
     void testAddTasks(){
@@ -181,7 +180,7 @@ public class ImageTaskTest {
             files.add("test.jpeg");
             files.add("test.jpg");
             files.add("test.png");
-            files.add("exm.jpeg");
+            files.add("测试.jpeg");
 
             //手动插入配置数据
             taskConfigRepository.deleteById(-1);
@@ -269,7 +268,7 @@ public class ImageTaskTest {
             files.add("test.jpeg");
             files.add("test.jpg");
             files.add("test.png");
-            files.add("exm.jpeg");
+            files.add("测试.jpeg");
 
             //预删除数据
             taskConfigRepository.deleteById(-1);
