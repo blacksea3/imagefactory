@@ -2,6 +2,7 @@ package com.bla.imagefetch.upper.service.task;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigDO;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
+import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
 import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.ServiceConfigRepository;
@@ -12,6 +13,7 @@ import com.bla.imagefetch.upper.service.VO.ServiceConfigVO;
 import com.bla.imagefetch.upper.service.VO.TaskConfigVO;
 import com.bla.imagefetch.upper.service.VO.TaskInstanceAndDetailVO;
 import com.bla.imagefetch.upper.service.VO.VOConvertToDO;
+import com.bla.imagefetch.upper.service.quartz.MainJobDetailBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -27,7 +29,7 @@ import java.util.List;
  * @author blacksea3(jxt)
  * @date 2020/8/2 20:52
  */
-@Component
+@Component(value = "myImageTask")
 public class ImageTaskImpl implements ImageTask, InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageTaskImpl.class);
@@ -85,6 +87,44 @@ public class ImageTaskImpl implements ImageTask, InitializingBean {
                 directory, files, serviceConfigName, taskConfigName)){
             throw new RuntimeException("双写:任务实例和原子任务 失败");
         }
+    }
+
+    /**
+     * 执行任务，供定时器调用
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/3
+     */
+    @Override
+    public void executeTask() {
+        //TODO:因为设计问题:以下两个按理在一个事务，可是却拆开了。将导致任务实例可能被重复读取.
+        TaskInstanceDO taskInstanceDO = taskInstanceRepository.queryHighestPriority();
+        if (taskInstanceDO == null){
+            return;
+        }
+
+        List<Integer> taskDetails = taskInstanceRepository.updateStatusByTotalNumAndHandleNum(taskInstanceDO.getId());
+        if (taskDetails.isEmpty()){
+            LoggerUtil.error(LOGGER, "executeTask:原子任务ID列表长度为空");
+            return;
+        }
+
+        if (taskDetails.size() > 1){
+            LoggerUtil.error(LOGGER, "executeTask:原子任务ID列表长度>1");
+            return;
+        }
+
+        Integer taskDetailID = taskDetails.get(0);
+        LoggerUtil.info(LOGGER, "获得原子任务, ID为", String.valueOf(taskDetailID));
+
+        //TODO:仅临时测试
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        taskDetailRepository.setSuccessStatus(taskDetailID);
     }
 
     @Override

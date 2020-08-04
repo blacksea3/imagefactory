@@ -13,9 +13,11 @@ import com.bla.imagefetch.upper.service.VO.ServiceConfigVO;
 import com.bla.imagefetch.upper.service.VO.TaskConfigVO;
 import com.bla.imagefetch.upper.service.VO.TaskInstanceAndDetailVO;
 import com.bla.imagefetch.upper.service.VO.VOConvertToDO;
+import com.bla.imagefetch.upper.service.quartz.MainJobDetailBean;
 import com.bla.imagefetch.upper.service.task.ImageTask;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -45,6 +47,9 @@ public class ImageTaskTest {
 
     @Autowired
     private TaskDetailRepository taskDetailRepository;
+
+    @Autowired
+    private MainJobDetailBean mainJobDetailBean;
 
     /**
      *
@@ -241,6 +246,123 @@ public class ImageTaskTest {
                 }
 
                 Assertions.assertTrue(findCompared);
+            }
+
+            //删除数据
+            Assertions.assertEquals(1, taskConfigRepository.deleteById(-1));
+            Assertions.assertEquals(1, serviceConfigRepository.deleteById(-1));
+
+            Assertions.assertEquals(1, taskInstanceRepository.deleteById(actual.getId()));
+            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(0).getId()));
+            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(1).getId()));
+            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(2).getId()));
+            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(3).getId()));
+        }
+    }
+
+    @Test
+    void testExecuteTask(){
+        {
+            //正常
+
+            //数据准备
+            List<String> files = new ArrayList<>();
+            files.add("test.jpeg");
+            files.add("test.jpg");
+            files.add("test.png");
+            files.add("exm.jpeg");
+
+            //预删除数据
+            taskConfigRepository.deleteById(-1);
+            serviceConfigRepository.deleteById(-1);
+            List<TaskDetailDO> rawActuals = taskDetailRepository.queryByInstanceNameAndStatus("images\\20200803", null);
+            TaskInstanceDO rawActual = taskInstanceRepository.queryByName("images\\20200803");
+            if (rawActual != null){
+                taskInstanceRepository.deleteById(rawActual.getId());
+            }
+            if (rawActuals != null){
+                for (TaskDetailDO iterRawActuals:rawActuals){
+                    taskDetailRepository.deleteById(iterRawActuals.getId());
+                }
+            }
+
+
+            //手动插入配置数据
+            taskConfigRepository.deleteById(-1);
+            TaskConfigDO taskConfigDO = new TaskConfigDO();
+            taskConfigDO.setDescription("des");
+            taskConfigDO.setServiceName("sername");
+            taskConfigDO.setExtInfo("ext");
+            taskConfigDO.setId(-1);
+            taskConfigDO.setName("example_task_config_name");
+            taskConfigDO.setStatus("sta");
+            Assertions.assertEquals(1, (long) taskConfigRepository.insert(taskConfigDO));
+
+            serviceConfigRepository.deleteById(-1);
+            ServiceConfigDO serviceConfigDO = new ServiceConfigDO();
+            serviceConfigDO.setBeanName("bn");
+            serviceConfigDO.setBeanType("bt");
+            serviceConfigDO.setExtInfo("ext");
+            serviceConfigDO.setId(-1);
+            serviceConfigDO.setName("example_service_config_name");
+            serviceConfigDO.setSysName("sys_name");
+            Assertions.assertEquals(1, (long) serviceConfigRepository.insert(serviceConfigDO));
+
+            //执行
+            TaskInstanceAndDetailVO taskInstanceAndDetailVO = new TaskInstanceAndDetailVO();
+            taskInstanceAndDetailVO.setConfigName("example_task_config_name");
+            taskInstanceAndDetailVO.setServiceName("example_service_config_name");
+            taskInstanceAndDetailVO.setDirectory("images\\20200803");
+
+            imageTask.addTasks(taskInstanceAndDetailVO);
+
+            //数据检查
+            TaskInstanceDO expected = new TaskInstanceDO();
+            expected.setTotalNum(files.size());
+            expected.setHandleNum(0);
+            expected.setStatus("init");
+            expected.setPriority(1);
+            expected.setDescription("");
+            expected.setServiceName("example_service_config_name");
+            expected.setConfigName("example_task_config_name");
+            expected.setName("images\\20200803");
+
+            TaskInstanceRepositoryTest taskInstanceRepositoryTest = new TaskInstanceRepositoryTest();
+            TaskInstanceDO actual = taskInstanceRepository.queryByName("images\\20200803");
+            Assertions.assertTrue(taskInstanceRepositoryTest.compareTaskInstanceDOWithoutID(expected, actual));
+            TaskDetailRepositoryTest taskDetailRepositoryTest = new TaskDetailRepositoryTest();
+            List<TaskDetailDO> actuals = taskDetailRepository.queryByInstanceNameAndStatus("images\\20200803", null);
+            Assertions.assertEquals(files.size(), actuals.size());
+
+            for (String filename:files){
+                TaskDetailDO taskDetailDO = new TaskDetailDO();
+                taskDetailDO.setStatus(TaskDetailRepositoryImpl.taskDetailStatus.INIT.get_val());
+                taskDetailDO.setScript("");
+                taskDetailDO.setExtInfo("");
+                taskDetailDO.setServiceName("example_service_config_name");
+                taskDetailDO.setInstanceName("images\\20200803");
+                taskDetailDO.setContent(filename);
+
+                boolean findCompared = false;
+                for (TaskDetailDO taskDetailDO1:actuals){
+                    findCompared |= taskDetailRepositoryTest.compareTaskDetailDOWithoutID(taskDetailDO, taskDetailDO1);
+                }
+
+                Assertions.assertTrue(findCompared);
+            }
+
+            //启动定时器
+            try {
+                mainJobDetailBean.startScheduler();
+            } catch (SchedulerException e) {
+                e.printStackTrace();
+            }
+
+            //等待10s
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
             //删除数据

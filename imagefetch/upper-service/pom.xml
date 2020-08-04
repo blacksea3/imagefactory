@@ -26,7 +26,7 @@
         </dependency>
         <!-- 项目内其他模块 end -->
 
-        <!-- quartz start -->
+        <!-- quartz start
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
@@ -34,8 +34,19 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz-jobs</artifactId>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
         </dependency>
-        <!-- quartz end -->
+
+        <!-- spring-context-support start -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- spring-context-support end -->
     </dependencies>
 
     <!-- 作用:打一个可运行的包 -->

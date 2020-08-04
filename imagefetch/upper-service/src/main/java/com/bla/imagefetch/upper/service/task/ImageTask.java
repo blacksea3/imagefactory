@@ -14,4 +14,6 @@ public interface ImageTask {
     Integer addServiceConfig(ServiceConfigVO serviceConfigVO) throws RuntimeException;
     Integer addTaskConfig(TaskConfigVO taskConfigVO) throws RuntimeException;
     void addTasks(TaskInstanceAndDetailVO taskInstanceAndDetailVO) throws RuntimeException;
+
+    void executeTask();
 }
