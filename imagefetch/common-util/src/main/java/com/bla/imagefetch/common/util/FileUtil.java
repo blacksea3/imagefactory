@@ -76,7 +76,7 @@ public class FileUtil {
             }
 
             if (found){
-                ret.add(directory.toString() + "\\" + directory + "\\" + name);
+                ret.add(directory + "\\" + name);
             }
         }
         return ret;

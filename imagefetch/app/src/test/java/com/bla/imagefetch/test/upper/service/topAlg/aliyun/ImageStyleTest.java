@@ -2,6 +2,7 @@ package com.bla.imagefetch.test.upper.service.topAlg.aliyun;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.bla.imagefetch.common.util.FileUtil;
+import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.upper.service.topAlg.aliyun.ImageStyle;
 import org.apache.ibatis.annotations.Param;
@@ -30,11 +31,14 @@ public class ImageStyleTest {
     @Autowired
     private ImageStyle imageStyle;
 
+    @Autowired
+    private GlobalConstant globalConstant;
+
     @Test
     public void testChangeImageStyle() throws IOException, ClientException {
-        String directory = "images\\20200803";
+        String directory = globalConstant.getImageDirectory() + "\\" + "20200803";
 
-        List<String> imageFiles = FileUtil.findAllPicFiles("images\\20200803");
+        List<String> imageFiles = FileUtil.findAllPicFiles(directory);
         String refImageName = null;
         String sourceImageName = null;
         for (String image:imageFiles){
