@@ -7,3 +7,5 @@ logging:
 spring:
   profiles:
     active: commonDal, commonUtil, coreService
+
+imageDirectory: E:\imageFactory\images

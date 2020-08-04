@@ -1,7 +1,9 @@
 package com.bla.imagefetch.test.common.util;
 
 import com.bla.imagefetch.common.util.FileUtil;
+import com.bla.imagefetch.common.util.GlobalConstant;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -16,9 +18,12 @@ import java.util.List;
 @SpringBootTest
 public class FileUtilTest {
 
+    @Autowired
+    private GlobalConstant globalConstant;
+
     @Test
     void testFindAllPicFiles() {
-        List<String> imageFiles = FileUtil.findAllPicFiles("images\\20200803");
+        List<String> imageFiles = FileUtil.findAllPicFiles(globalConstant.getImageDirectory() + "\\" + "20200803");
         System.out.println(imageFiles);
     }
 

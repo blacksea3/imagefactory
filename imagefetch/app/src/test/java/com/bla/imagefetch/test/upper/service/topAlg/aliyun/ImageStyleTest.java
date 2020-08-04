@@ -2,12 +2,17 @@ package com.bla.imagefetch.test.upper.service.topAlg.aliyun;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.bla.imagefetch.common.util.FileUtil;
+import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.upper.service.topAlg.aliyun.ImageStyle;
 import org.apache.ibatis.annotations.Param;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -20,11 +25,15 @@ import java.util.List;
 @SpringBootTest
 public class ImageStyleTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageStyleTest.class);
+
     @Autowired
     private ImageStyle imageStyle;
 
     @Test
     public void testChangeImageStyle() throws IOException, ClientException {
+        String directory = "images\\20200803";
+
         List<String> imageFiles = FileUtil.findAllPicFiles("images\\20200803");
         String refImageName = null;
         String sourceImageName = null;
@@ -36,7 +45,11 @@ public class ImageStyleTest {
             }
         }
 
-        imageStyle.changeImageStyle(sourceImageName, refImageName);
+        String downloadUrl = imageStyle.changeImageStyle(sourceImageName, refImageName);
+        Assertions.assertNotNull(downloadUrl);
+
+        String ret = FileUtil.downloadFromRemoteUrl(downloadUrl, directory, "res.jpg");
+        LoggerUtil.info(LOGGER, ret);
     }
 
 }

@@ -45,17 +45,19 @@ public class FileUtil {
      * @return java.util.List<java.lang.String>
      */
     public static List<String> findAllPicFiles(String directory){
-        List<String> ret = new ArrayList<>();
+        /*
+        以下已被废弃, 图片根目录被全局配置文件指定, 避免在工具类中硬编码逻辑
 
         LoggerUtil.trace(LOGGER, System.getProperty("user.dir"));
-
         //previous Maybe xxx/imagefetch/app
         Path dir = new File(System.getProperty("user.dir")).toPath();
 
         Path rootDirPath = dir.getParent().getParent();
         LoggerUtil.trace(LOGGER, rootDirPath.toString() + "\\" + directory);
+         */
 
-        File rootDir = new File(rootDirPath.toString() + "\\" + directory);
+        List<String> ret = new ArrayList<>();
+        File rootDir = new File(directory);
         File[] allFiles = rootDir.listFiles();
 
         if (allFiles == null){
@@ -74,7 +76,7 @@ public class FileUtil {
             }
 
             if (found){
-                ret.add(rootDirPath.toString() + "\\" + directory + "\\" + name);
+                ret.add(directory.toString() + "\\" + directory + "\\" + name);
             }
         }
         return ret;

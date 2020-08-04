@@ -316,7 +316,6 @@ public class TaskInstanceRepositoryTest {
             //删除数据
             Assertions.assertEquals(1, taskInstanceRepository.deleteById(-1));
         }
-
     }
 
     @Test
