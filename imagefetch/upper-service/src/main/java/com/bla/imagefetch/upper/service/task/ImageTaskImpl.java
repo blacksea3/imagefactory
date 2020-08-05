@@ -166,7 +166,7 @@ public class ImageTaskImpl implements AbstractTask, InitializingBean {
         String refName = directory + "\\ref.png";
 
         try {
-            String retUrl = imageStyle.changeImageStyle(refName, fileName);
+            String retUrl = imageStyle.changeImageStyle(fileName, refName);
             if (retUrl == null){
                 String temp = "topAlg返回结果为null, 请查看日志";
                 LoggerUtil.error(LOGGER, temp);
