@@ -12,6 +12,10 @@ public class TaskDetailDO{
      */
     private Integer id;
     /**
+     * result RESULT.
+     */
+    private String result;
+    /**
      * script 脚本.
      */
     private String script;
@@ -58,6 +62,22 @@ public class TaskDetailDO{
      */
     public Integer getId(){
         return id;
+    }
+
+    /**
+     * Set result RESULT.
+     */
+    public void setResult(String result){
+        this.result = result;
+    }
+
+    /**
+     * Get result RESULT.
+     *
+     * @return the string
+     */
+    public String getResult(){
+        return result;
     }
 
     /**

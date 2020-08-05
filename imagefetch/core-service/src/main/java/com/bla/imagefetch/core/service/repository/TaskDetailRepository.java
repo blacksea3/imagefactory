@@ -20,6 +20,6 @@ public interface TaskDetailRepository {
     TaskDetailDO queryById(Integer id);
     List<TaskDetailDO> queryByInstanceNameAndStatus(String instanceName, String status);
 
-    boolean setSuccessStatusAndUpdateContent(Integer id, String content);
-    boolean setFailStatusAndUpdateContent(Integer id, String content);
+    boolean setSuccessStatusAndUpdateResult(Integer id, String result);
+    boolean setFailStatusAndUpdateResult(Integer id, String result);
 }

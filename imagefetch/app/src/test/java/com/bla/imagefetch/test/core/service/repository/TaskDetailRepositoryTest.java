@@ -55,6 +55,7 @@ public class TaskDetailRepositoryTest {
         taskDetailDO.setScript("scr");
         taskDetailDO.setServiceName("service_name");
         taskDetailDO.setStatus("sta");
+        taskDetailDO.setResult("");
 
         Assertions.assertEquals(1, (long) taskDetailRepository.insert(taskDetailDO));
 
@@ -81,6 +82,7 @@ public class TaskDetailRepositoryTest {
         taskDetailDO.setScript("scr");
         taskDetailDO.setServiceName("service_name");
         taskDetailDO.setStatus("sta");
+        taskDetailDO.setResult("");
 
         Assertions.assertEquals(1, (long) taskDetailRepository.insert(taskDetailDO));
         taskDetailDO.setExtInfo("newext");
@@ -99,14 +101,14 @@ public class TaskDetailRepositoryTest {
         taskDetailDO.setStatus("success");
         Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
 
-        Assertions.assertTrue(taskDetailRepository.setFailStatusAndUpdateContent(-1, "conc"));
+        Assertions.assertTrue(taskDetailRepository.setFailStatusAndUpdateResult(-1, "re1"));
         taskDetailDO.setStatus("fail");
-        taskDetailDO.setContent("conc");
+        taskDetailDO.setResult("re1");
         Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
 
-        Assertions.assertTrue(taskDetailRepository.setSuccessStatusAndUpdateContent(-1, "conc2"));
+        Assertions.assertTrue(taskDetailRepository.setSuccessStatusAndUpdateResult(-1, "re2"));
         taskDetailDO.setStatus("success");
-        taskDetailDO.setContent("conc2");
+        taskDetailDO.setResult("re2");
         Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
 
         Assertions.assertEquals(1, taskDetailRepository.deleteById(-1));
@@ -135,6 +137,7 @@ public class TaskDetailRepositoryTest {
             taskDetailDO.setScript("scr" + i);
             taskDetailDO.setServiceName("service_name");
             taskDetailDO.setStatus("sta" + Math.abs(i) % 2);
+            taskDetailDO.setResult("");
             taskDetailDOS.add(taskDetailDO);
             if (Math.abs(i) % 2 == 1){
                 taskDetailDOS_odd.add(taskDetailDO);

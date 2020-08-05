@@ -136,27 +136,27 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public boolean setSuccessStatusAndUpdateContent(Integer id, String content) {
+    public boolean setSuccessStatusAndUpdateResult(Integer id, String result) {
         if (id == null){
             return false;
         }else{
             TaskDetailDO taskDetailDO = new TaskDetailDO();
             taskDetailDO.setId(id);
             taskDetailDO.setStatus(taskDetailStatus.SUCCESS._val);
-            taskDetailDO.setContent(content);
+            taskDetailDO.setResult(result);
             return taskDetailDOMapper.updateAll(taskDetailDO) == 1;
         }
     }
 
     @Override
-    public boolean setFailStatusAndUpdateContent(Integer id, String content) {
+    public boolean setFailStatusAndUpdateResult(Integer id, String result) {
         if (id == null){
             return false;
         }else{
             TaskDetailDO taskDetailDO = new TaskDetailDO();
             taskDetailDO.setId(id);
             taskDetailDO.setStatus(taskDetailStatus.FAIL._val);
-            taskDetailDO.setContent(content);
+            taskDetailDO.setResult(result);
             return taskDetailDOMapper.updateAll(taskDetailDO) == 1;
         }
     }

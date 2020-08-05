@@ -27,6 +27,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
@@ -37,6 +38,7 @@
             , #{serviceName,jdbcType=VARCHAR}
             , #{instanceName,jdbcType=VARCHAR}
             , #{status,jdbcType=VARCHAR}
+            , #{result,jdbcType=VARCHAR}
             , now()
             , now()
         )
@@ -53,6 +55,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
@@ -63,6 +66,7 @@
             , #{serviceName,jdbcType=VARCHAR}
             , #{instanceName,jdbcType=VARCHAR}
             , #{status,jdbcType=VARCHAR}
+            , #{result,jdbcType=VARCHAR}
             , now()
             , now()
         )
@@ -80,6 +84,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES
@@ -92,6 +97,7 @@
                 , #{item.serviceName,jdbcType=VARCHAR}
                 , #{item.instanceName,jdbcType=VARCHAR}
                 , #{status,jdbcType=VARCHAR}
+                , #{result,jdbcType=VARCHAR}
                 , now()
                 , now()
             )
@@ -119,6 +125,9 @@
         </if>
         <if test='status != null and status != ""'>
             ,STATUS          = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test='result != null and result != ""'>
+            ,RESULT          = #{result,jdbcType=VARCHAR}
         </if>
         WHERE
             ID              = #{id,jdbcType=INTEGER}

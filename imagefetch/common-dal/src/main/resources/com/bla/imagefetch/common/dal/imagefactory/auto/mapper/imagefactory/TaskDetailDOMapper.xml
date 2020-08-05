@@ -4,6 +4,7 @@
     <!-- 自动生成,请修改 TASK_DETAIL.xml -->
     <resultMap id="BaseResultMap"  type="com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO">
         <id column="ID" property="id" jdbcType="INTEGER" javaType="Integer"/>
+        <result column="RESULT" property="result" jdbcType="VARCHAR" javaType="String"/>
         <result column="SCRIPT" property="script" jdbcType="VARCHAR" javaType="String"/>
         <result column="STATUS" property="status" jdbcType="VARCHAR" javaType="String"/>
         <result column="CONTENT" property="content" jdbcType="VARCHAR" javaType="String"/>
@@ -40,6 +41,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
@@ -50,6 +52,7 @@
             , #{serviceName,jdbcType=VARCHAR}
             , #{instanceName,jdbcType=VARCHAR}
             , #{status,jdbcType=VARCHAR}
+            , #{result,jdbcType=VARCHAR}
             , now()
             , now()
         )
@@ -67,6 +70,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
@@ -77,6 +81,7 @@
             , #{serviceName,jdbcType=VARCHAR}
             , #{instanceName,jdbcType=VARCHAR}
             , #{status,jdbcType=VARCHAR}
+            , #{result,jdbcType=VARCHAR}
             , now()
             , now()
         )
@@ -93,6 +98,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES
@@ -105,6 +111,7 @@
                 , #{item.serviceName,jdbcType=VARCHAR}
                 , #{item.instanceName,jdbcType=VARCHAR}
                 , #{status,jdbcType=VARCHAR}
+                , #{result,jdbcType=VARCHAR}
                 , now()
                 , now()
             )
@@ -133,6 +140,9 @@
         </if>
         <if test="status != null and status != &quot;&quot;">
             ,STATUS          = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test="result != null and result != &quot;&quot;">
+            ,RESULT          = #{result,jdbcType=VARCHAR}
         </if>
         WHERE
             ID              = #{id,jdbcType=INTEGER}

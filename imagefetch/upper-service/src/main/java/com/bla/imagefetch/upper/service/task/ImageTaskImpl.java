@@ -139,7 +139,7 @@ public class ImageTaskImpl implements AbstractTask, InitializingBean {
         if (serviceConfigDO == null){
             String temp = "服务配置查找为空, 内部逻辑出错";
             LoggerUtil.error(LOGGER, temp);
-            if (!taskDetailRepository.setFailStatusAndUpdateContent(taskDetailID, temp)){
+            if (!taskDetailRepository.setFailStatusAndUpdateResult(taskDetailID, temp)){
                 LoggerUtil.error(LOGGER, "executeTask:更新原子任务状态和内容出错, taskDetailID:[", String.valueOf(taskDetailID), "]");
             }
             return;
@@ -156,7 +156,7 @@ public class ImageTaskImpl implements AbstractTask, InitializingBean {
         }catch (Exception e){
             String temp = "找不到Bean, beanName:[" + beanName + "]";
             LoggerUtil.error(LOGGER, e, temp);
-            if (!taskDetailRepository.setFailStatusAndUpdateContent(taskDetailID, temp)){
+            if (!taskDetailRepository.setFailStatusAndUpdateResult(taskDetailID, temp)){
                 LoggerUtil.error(LOGGER, "executeTask:更新原子任务状态和内容出错, taskDetailID:[", String.valueOf(taskDetailID), "]");
             }
             return;
@@ -170,20 +170,20 @@ public class ImageTaskImpl implements AbstractTask, InitializingBean {
             if (retUrl == null){
                 String temp = "topAlg返回结果为null, 请查看日志";
                 LoggerUtil.error(LOGGER, temp);
-                if (!taskDetailRepository.setFailStatusAndUpdateContent(taskDetailID, temp)){
+                if (!taskDetailRepository.setFailStatusAndUpdateResult(taskDetailID, temp)){
                     LoggerUtil.error(LOGGER, "executeTask:更新原子任务状态和内容出错, taskDetailID:[", String.valueOf(taskDetailID), "]");
                 }
                 return;
             }
             String retFileName = FileUtil.downloadFromRemoteUrl(retUrl, directory, "res.jpg");
-            if (!taskDetailRepository.setSuccessStatusAndUpdateContent(taskDetailID, retFileName)){
+            if (!taskDetailRepository.setSuccessStatusAndUpdateResult(taskDetailID, retFileName)){
                 LoggerUtil.error(LOGGER, "executeTask:更新原子任务状态和内容出错, taskDetailID:[", String.valueOf(taskDetailID), "]");
             }
             //return;
         }catch (ClientException | IOException e) {
             String temp = "处理图片出错, refName:[" + refName + "], fileName:[" + fileName + "]";
             LoggerUtil.error(LOGGER, e, temp);
-            if (!taskDetailRepository.setFailStatusAndUpdateContent(taskDetailID, temp)){
+            if (!taskDetailRepository.setFailStatusAndUpdateResult(taskDetailID, temp)){
                 LoggerUtil.error(LOGGER, "executeTask:更新原子任务状态和内容出错, taskDetailID:[", String.valueOf(taskDetailID), "]");
             }
             //return;
