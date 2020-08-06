@@ -30,9 +30,19 @@ Vue.use(VueRouter)
     component: () => import('../views/Index.vue')
   },
     {
-      path: '/imageFetch',
-      name: 'ImageFetch',
-      component: () => import('../views/ImageFetch.vue')
+      path: '/imageFetch/serviceConfig/query',
+      name: 'ImageFetch-ServiceConfig-Query',
+      component: () => import('../views/imageFetch/serviceConfig/Query')
+    },
+    {
+      path: '/imageFetch/serviceConfig/add',
+      name: 'ImageFetch-ServiceConfig-Add',
+      component: () => import('../views/imageFetch/serviceConfig/Add')
+    },
+    {
+      path: '/imageFetch/serviceConfig/Modify',
+      name: 'ImageFetch-ServiceConfig-Modify',
+      component: () => import('../views/imageFetch/serviceConfig/Modify')
     }
 ]
 

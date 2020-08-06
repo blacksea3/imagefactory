@@ -19,7 +19,7 @@
                     </el-row>
                 </el-main>
                 <el-footer style="height: 120px;">
-                    <my-footer></my-footer>
+                    <image-fetch-footer></image-fetch-footer>
                 </el-footer>
             </el-container>
         </el-container>
@@ -28,7 +28,7 @@
 
 <script>
     export default {
-        name: "ImageFetch",
+        name: "Query",
         //初始化数据
         data(){
             return{
