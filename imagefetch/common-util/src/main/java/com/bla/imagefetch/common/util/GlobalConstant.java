@@ -23,12 +23,19 @@ public class GlobalConstant implements InitializingBean {
     @Value("${imageTaskCron}")
     private String imageTaskCron;
 
+    @Value("${imageTaskRunWithStart}")
+    private boolean imageTaskRunWithStart;
+
     public String getImageDirectory() {
         return imageDirectory;
     }
 
     public String getImageTaskCron() {
         return imageTaskCron;
+    }
+
+    public boolean getImageTaskRunWithStart() {
+        return imageTaskRunWithStart;
     }
 
     @Override
@@ -38,7 +45,8 @@ public class GlobalConstant implements InitializingBean {
         }else{
             LoggerUtil.info(LOGGER, "Bean of GlobalConstant has been initialized, " +
                     "imageDirectory is [", imageDirectory, "]",
-                    ", imageTaskCron is [" + imageTaskCron + "]");
+                    ", imageTaskCron is [" + imageTaskCron + "]",
+                    ", imageTaskRunWithStart is [" + imageTaskRunWithStart + "]");
         }
     }
 }

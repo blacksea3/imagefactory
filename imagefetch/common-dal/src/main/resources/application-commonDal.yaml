@@ -27,6 +27,8 @@ spring:
       initial-size: 5                            # 初始化连接数
       max-total: 5                               # 最大连接数
       max-wait-millis: 150                       # 等待连接获取的最大超时时间
+
+imageTaskRunWithStart: false                     # 自定义:禁用图片任务自启动
 ---
 spring:
   profiles: dev
@@ -40,3 +42,5 @@ spring:
       initial-size: 5                            # 初始化连接数
       max-total: 5                               # 最大连接数
       max-wait-millis: 150                       # 等待连接获取的最大超时时间
+
+imageTaskRunWithStart: true                      # 自定义:禁用图片任务自启动

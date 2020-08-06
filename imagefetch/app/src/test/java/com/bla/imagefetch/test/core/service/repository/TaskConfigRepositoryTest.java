@@ -138,4 +138,31 @@ public class TaskConfigRepositoryTest extends BaseTest {
         }
     }
 
+    /**
+     * Description: 比较两个任务配置, 不带ID
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/6
+     * @param expected: 期待
+     * @param actual: 实际
+     * @return boolean 结果
+     */
+    public static boolean compareTaskConfigDOWithoutID(TaskConfigDO expected, TaskConfigDO actual){
+        if (expected == null){
+            return actual == null;
+        }else{
+            if (actual == null){
+                return false;
+            }
+            return ((expected.getDescription().equals(actual.getDescription())) &&
+                    (
+                            (expected.getExtInfo() == null && actual.getExtInfo() == null) ||
+                                    expected.getExtInfo().equals(actual.getExtInfo())
+                    ) &&
+                    (expected.getServiceName().equals(actual.getServiceName())) &&
+                    (expected.getName().equals(actual.getName())) &&
+                    (expected.getStatus().equals(actual.getStatus())));
+        }
+    }
+
 }

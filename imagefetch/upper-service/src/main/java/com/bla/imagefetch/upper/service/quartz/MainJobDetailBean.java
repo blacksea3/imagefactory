@@ -43,6 +43,9 @@ public class MainJobDetailBean implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         LoggerUtil.info(LOGGER, "Bean of MainJobDetailBean has been initialized!");
+        if (globalConstant.getImageTaskRunWithStart()){
+            startScheduler();
+        }
     }
 
     /**
