@@ -47,7 +47,7 @@ public class ServiceConfigController {
             commonResponseDTO.setInfo("插入成功, 插入数据为:" + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString());
         }else{
             commonResponseDTO.setSuccess(false);
-            commonResponseDTO.setInfo("插入失败, 待插入数据为:" + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString());
+            commonResponseDTO.setInfo("插入失败, 插入数据为:" + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString());
         }
         return commonResponseDTO;
     }
@@ -79,10 +79,10 @@ public class ServiceConfigController {
         Integer ret = serviceConfigRepository.update(serviceConfigDO);
         if (ret == null || ret != 1){
             commonResponseDTO.setSuccess(false);
-            commonResponseDTO.setInfo("插入失败, 插入数据为: + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString()");
+            commonResponseDTO.setInfo("更新失败, 更新数据为:" + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString());
         }else{
             commonResponseDTO.setSuccess(true);
-            commonResponseDTO.setInfo("插入成功, 待插入数据为: + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString()");
+            commonResponseDTO.setInfo("更新成功, 更新数据为:" + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString());
         }
         return commonResponseDTO;
     }
