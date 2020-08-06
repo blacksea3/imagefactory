@@ -6,6 +6,7 @@ import PageOne from '../views/PageOne.vue'
 import PageTwo from '../views/PageTwo.vue'
 import PageThree from '../views/PageThree.vue'
 import PageFour from '../views/PageFour.vue'
+import ImageFetch from "../views/ImageFetch";
 
 Vue.use(VueRouter)
 
@@ -27,7 +28,12 @@ Vue.use(VueRouter)
     path: '/index',
     name: 'Index',
     component: () => import('../views/Index.vue')
-  }
+  },
+    {
+      path: '/imageFetch',
+      name: 'ImageFetch',
+      component: () => import('../views/ImageFetch.vue')
+    }
 ]
 
 const router = new VueRouter({

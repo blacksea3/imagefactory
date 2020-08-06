@@ -10,3 +10,5 @@ spring:
 
 imageDirectory: E:\imageFactory\images
 imageTaskCron: 0/5 * * * * ? *
+server:
+  port: 8081
