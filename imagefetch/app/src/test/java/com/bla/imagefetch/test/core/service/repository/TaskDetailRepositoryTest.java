@@ -3,6 +3,7 @@ package com.bla.imagefetch.test.core.service.repository;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.TaskDetailRepository;
+import com.bla.imagefetch.test.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
@@ -22,7 +23,7 @@ import java.util.List;
  * @date 2020/7/25 23:14
  */
 @SpringBootTest
-public class TaskDetailRepositoryTest {
+public class TaskDetailRepositoryTest extends BaseTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TaskDetailRepositoryTest.class);
 

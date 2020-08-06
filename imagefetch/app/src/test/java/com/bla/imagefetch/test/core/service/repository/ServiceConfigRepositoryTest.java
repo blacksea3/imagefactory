@@ -4,6 +4,7 @@ import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigD
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.ServiceConfigRepository;
+import com.bla.imagefetch.test.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import java.util.List;
  * @date 2020/7/26 22:52<br/>
  */
 @SpringBootTest
-public class ServiceConfigRepositoryTest {
+public class ServiceConfigRepositoryTest extends BaseTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ServiceConfigRepositoryTest.class);
 

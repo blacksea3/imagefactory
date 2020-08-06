@@ -2,6 +2,7 @@ package com.bla.imagefetch.test.common.util;
 
 import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.GlobalConstant;
+import com.bla.imagefetch.test.BaseTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +17,7 @@ import java.util.List;
  * @date 2020/8/3 22:10
  */
 @SpringBootTest
-public class FileUtilTest {
+public class FileUtilTest extends BaseTest {
 
     @Autowired
     private GlobalConstant globalConstant;

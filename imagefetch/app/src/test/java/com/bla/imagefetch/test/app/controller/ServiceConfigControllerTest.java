@@ -6,6 +6,7 @@ import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.controller.DTO.ServiceConfigDTO;
 import com.bla.imagefetch.controller.ServiceConfigController;
 import com.bla.imagefetch.core.service.repository.ServiceConfigRepository;
+import com.bla.imagefetch.test.BaseTest;
 import com.bla.imagefetch.test.core.service.repository.ServiceConfigRepositoryTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,7 +33,7 @@ import java.io.UnsupportedEncodingException;
  * @date 2020/8/5 23:27
  */
 @SpringBootTest
-public class ServiceConfigControllerTest {
+public class ServiceConfigControllerTest extends BaseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ServiceConfigControllerTest.class);
 

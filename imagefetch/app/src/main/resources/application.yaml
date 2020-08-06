@@ -6,7 +6,7 @@ logging:
           app: info
 spring:
   profiles:
-    active: commonDal, commonUtil, coreService
+    active: commonDal, commonUtil, coreService, dev
 
 imageDirectory: E:\imageFactory\images
 imageTaskCron: 0/5 * * * * ? *

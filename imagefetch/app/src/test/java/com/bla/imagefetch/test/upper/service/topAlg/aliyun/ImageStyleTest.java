@@ -4,8 +4,8 @@ import com.aliyuncs.exceptions.ClientException;
 import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.common.util.LoggerUtil;
+import com.bla.imagefetch.test.BaseTest;
 import com.bla.imagefetch.upper.service.topAlg.aliyun.ImageStyle;
-import org.apache.ibatis.annotations.Param;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,7 +23,7 @@ import java.util.List;
  * @date 2020/8/4 15:57
  */
 @SpringBootTest
-public class ImageStyleTest {
+public class ImageStyleTest extends BaseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageStyleTest.class);
 

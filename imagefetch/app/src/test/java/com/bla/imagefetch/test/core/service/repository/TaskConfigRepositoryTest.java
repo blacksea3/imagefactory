@@ -3,6 +3,7 @@ package com.bla.imagefetch.test.core.service.repository;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.TaskConfigRepository;
+import com.bla.imagefetch.test.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -18,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @date 2020/7/26 22:52
  */
 @SpringBootTest
-public class TaskConfigRepositoryTest {
+public class TaskConfigRepositoryTest extends BaseTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TaskConfigRepositoryTest.class);
 

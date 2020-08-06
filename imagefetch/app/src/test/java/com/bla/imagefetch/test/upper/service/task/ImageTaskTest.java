@@ -7,6 +7,7 @@ import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO
 import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.core.service.repository.*;
+import com.bla.imagefetch.test.BaseTest;
 import com.bla.imagefetch.test.core.service.repository.ServiceConfigRepositoryTest;
 import com.bla.imagefetch.test.core.service.repository.TaskConfigRepositoryTest;
 import com.bla.imagefetch.test.core.service.repository.TaskDetailRepositoryTest;
@@ -32,7 +33,7 @@ import java.util.List;
  * @date 2020/8/2 21:23
  */
 @SpringBootTest
-public class ImageTaskTest {
+public class ImageTaskTest extends BaseTest {
 
     @Autowired
     private AbstractTask abstractTask;
