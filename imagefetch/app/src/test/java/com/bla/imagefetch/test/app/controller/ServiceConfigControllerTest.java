@@ -1,7 +1,13 @@
 package com.bla.imagefetch.test.app.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigDO;
 import com.bla.imagefetch.common.util.LoggerUtil;
+import com.bla.imagefetch.controller.DTO.ServiceConfigDTO;
 import com.bla.imagefetch.controller.ServiceConfigController;
+import com.bla.imagefetch.core.service.repository.ServiceConfigRepository;
+import com.bla.imagefetch.test.core.service.repository.ServiceConfigRepositoryTest;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -11,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -32,20 +39,43 @@ public class ServiceConfigControllerTest {
     @Autowired
     private ServiceConfigController serviceConfigController;
 
+    @Autowired
+    private ServiceConfigRepository serviceConfigRepository;
+
     private MockMvc mockMvc;
 
     @Test
     public void testAddServiceConfig() throws Exception {
         mockMvc = MockMvcBuilders.standaloneSetup(serviceConfigController).build();
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/addServiceConfig")
-                .accept(MediaType.APPLICATION_JSON)
-                .param("originContent", "15221365094"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print())
-                .andReturn();
+        ServiceConfigDO old = serviceConfigRepository.queryByName("example_service_config_name");
+        if (old != null){
+            Assertions.assertEquals(1, serviceConfigRepository.deleteById(old.getId()));
+        }
 
-        LoggerUtil.info(LOGGER, mvcResult.getResponse().getContentAsString());
+        ServiceConfigDTO serviceConfigDTO = new ServiceConfigDTO();
+        serviceConfigDTO.setBeanName("bn");
+        serviceConfigDTO.setBeanType("bt");
+        serviceConfigDTO.setExtInfo("");
+        serviceConfigDTO.setName("example_service_config_name");
+        serviceConfigDTO.setSysName("sysna");
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/addServiceConfig")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(JSON.toJSONString(serviceConfigDTO))
+                );
+
+        resultActions.andReturn().getResponse().setCharacterEncoding("UTF-8");
+        //断言
+        resultActions.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
+
+        ServiceConfigDO actual = serviceConfigRepository.queryByName("example_service_config_name");
+
+        Assertions.assertTrue(
+                ServiceConfigRepositoryTest.compareServiceConfigDOWithoutID(ServiceConfigDTO.DTOconvertToDO(serviceConfigDTO), actual));
+
+        Assertions.assertEquals(1, serviceConfigRepository.deleteById(actual.getId()));
     }
 
 }

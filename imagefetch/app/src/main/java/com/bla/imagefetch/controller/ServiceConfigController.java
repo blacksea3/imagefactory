@@ -1,7 +1,14 @@
 package com.bla.imagefetch.controller;
 
+import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigDO;
+import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.controller.DTO.CommonResponseDTO;
 import com.bla.imagefetch.controller.DTO.ServiceConfigDTO;
+import com.bla.imagefetch.core.service.repository.ServiceConfigRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,12 +24,23 @@ import java.util.List;
 @RestController
 public class ServiceConfigController {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(ServiceConfigController.class);
+
+    @Autowired
+    private ServiceConfigRepository serviceConfigRepository;
+
     @RequestMapping(value = "addServiceConfig")
-    public CommonResponseDTO addServiceConfig(ServiceConfigDTO serviceConfigDTO){
-        //TODO:待数据库插入数据
+    public CommonResponseDTO addServiceConfig(@RequestBody ServiceConfigDTO serviceConfigDTO){
+        LoggerUtil.info(LOGGER, "POST url:/addServiceConfig, get", serviceConfigDTO.toString());
         CommonResponseDTO commonResponseDTO = new CommonResponseDTO();
-        commonResponseDTO.setSuccess(true);
-        commonResponseDTO.setInfo("");
+        ServiceConfigDO serviceConfigDO = ServiceConfigDTO.DTOconvertToDO(serviceConfigDTO);
+        if (null != serviceConfigRepository.insert(serviceConfigDO)){
+            commonResponseDTO.setSuccess(true);
+            commonResponseDTO.setInfo("插入成功, 插入数据为:" + serviceConfigDO.toString());
+        }else{
+            commonResponseDTO.setSuccess(false);
+            commonResponseDTO.setInfo("插入失败, 待插入数据为:" + serviceConfigDTO.toString());
+        }
         return commonResponseDTO;
     }
 
