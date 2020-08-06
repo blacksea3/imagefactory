@@ -78,4 +78,78 @@ public class ServiceConfigControllerTest {
         Assertions.assertEquals(1, serviceConfigRepository.deleteById(actual.getId()));
     }
 
+    @Test
+    public void testQueryAllServiceConfig() throws Exception{
+        mockMvc = MockMvcBuilders.standaloneSetup(serviceConfigController).build();
+
+        ServiceConfigDO old = serviceConfigRepository.queryByName("example_service_config_name");
+        if (old != null){
+            Assertions.assertEquals(1, serviceConfigRepository.deleteById(old.getId()));
+        }
+
+        ServiceConfigDO serviceConfigDO = new ServiceConfigDO();
+        serviceConfigDO.setBeanName("bn");
+        serviceConfigDO.setBeanType("bt");
+        serviceConfigDO.setExtInfo("");
+        serviceConfigDO.setName("example_service_config_name");
+        serviceConfigDO.setSysName("sysna");
+
+        Assertions.assertNotNull(serviceConfigRepository.insert(serviceConfigDO));
+
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/queryAllServiceConfig")
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        resultActions.andReturn().getResponse().setCharacterEncoding("UTF-8");
+        //断言
+        resultActions.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
+
+        Assertions.assertEquals(1, serviceConfigRepository.deleteById(serviceConfigDO.getId()));
+    }
+
+    @Test
+    public void testUpdateServiceConfig() throws Exception{
+        //准备数据
+        mockMvc = MockMvcBuilders.standaloneSetup(serviceConfigController).build();
+
+        ServiceConfigDO old = serviceConfigRepository.queryByName("example_service_config_name");
+        if (old != null){
+            Assertions.assertEquals(1, serviceConfigRepository.deleteById(old.getId()));
+        }
+
+        ServiceConfigDO serviceConfigDO = new ServiceConfigDO();
+        serviceConfigDO.setId(old.getId());
+        serviceConfigDO.setBeanName("bn");
+        serviceConfigDO.setBeanType("bt");
+        serviceConfigDO.setExtInfo("");
+        serviceConfigDO.setName("example_service_config_name");
+        serviceConfigDO.setSysName("sysna");
+
+        Assertions.assertNotNull(serviceConfigRepository.insert(serviceConfigDO));
+
+        ServiceConfigDTO serviceConfigDTO = ServiceConfigDTO.DOconvertToDTO(serviceConfigDO);
+        serviceConfigDTO.setSysName("syssys");
+
+        serviceConfigDO.setSysName("syssys");
+
+        //获取结果
+        ResultActions resultActions = mockMvc.perform(
+                MockMvcRequestBuilders.post("/updateServiceConfig")
+                        .contentType(MediaType.APPLICATION_JSON)
+                .content(JSON.toJSONString(serviceConfigDTO))
+        );
+
+        resultActions.andReturn().getResponse().setCharacterEncoding("UTF-8");
+        //断言
+        resultActions.andDo(MockMvcResultHandlers.print()).andExpect(MockMvcResultMatchers.status().isOk());
+
+        //结果判断
+        ServiceConfigDO actual = serviceConfigRepository.queryByName("example_service_config_name");
+        Assertions.assertTrue(
+                ServiceConfigRepositoryTest.compareServiceConfigDOWithoutID(serviceConfigDO, actual));
+        //清除数据
+        Assertions.assertEquals(1, serviceConfigRepository.deleteById(serviceConfigDO.getId()));
+    }
+
 }

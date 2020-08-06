@@ -1,6 +1,7 @@
 package com.bla.imagefetch.common.dal.imagefactory.auto.mapper;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -52,4 +53,10 @@ public interface TaskConfigDOMapper{
      * @return TaskConfigDO
      */
     TaskConfigDO queryByName(@Param("name")String name);
+    /**
+     * desc:查询所有任务配置.<br/>
+     * descSql =  SELECT * FROM task_config
+     * @return List<TaskConfigDO>
+     */
+    List<TaskConfigDO> queryAll();
 }

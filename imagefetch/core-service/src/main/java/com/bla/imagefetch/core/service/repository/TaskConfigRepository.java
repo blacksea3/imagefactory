@@ -2,6 +2,8 @@ package com.bla.imagefetch.core.service.repository;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
 
+import java.util.List;
+
 /**
  * InterfaceName TaskConfigRepository
  * 任务配置仓库接口
@@ -15,4 +17,5 @@ public interface TaskConfigRepository {
     Integer deleteById(Integer id);
     TaskConfigDO queryById(Integer id);
     TaskConfigDO queryByName(String name);
+    List<TaskConfigDO> queryAll();
 }

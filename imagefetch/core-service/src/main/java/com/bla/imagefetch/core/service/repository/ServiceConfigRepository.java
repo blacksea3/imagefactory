@@ -17,4 +17,5 @@ public interface ServiceConfigRepository {
     Integer deleteById(Integer id);
     ServiceConfigDO queryById(Integer id);
     ServiceConfigDO queryByName(String name);
+    List<ServiceConfigDO> queryAll();
 }

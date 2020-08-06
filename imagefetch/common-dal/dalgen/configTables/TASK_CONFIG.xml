@@ -93,4 +93,9 @@
         ]]>
     </operation>
 
+    <operation name="queryAll" multiplicity="many" remark="查询所有任务配置">
+        SELECT *
+        FROM task_config
+    </operation>
+
 </table>

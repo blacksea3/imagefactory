@@ -93,4 +93,9 @@
         ]]>
     </operation>
 
+    <operation name="queryAll" multiplicity="many" remark="查询所有服务配置">
+        SELECT *
+        FROM service_config
+    </operation>
+
 </table>

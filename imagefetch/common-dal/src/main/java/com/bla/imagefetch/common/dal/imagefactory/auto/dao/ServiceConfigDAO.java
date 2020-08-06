@@ -3,6 +3,7 @@ package com.bla.imagefetch.common.dal.imagefactory.auto.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigDO;
+import java.util.List;
 import com.bla.imagefetch.common.dal.imagefactory.auto.mapper.ServiceConfigDOMapper;
 
 /**
@@ -62,5 +63,12 @@ public class ServiceConfigDAO{
      */
     public ServiceConfigDO queryByName(String name){
         return serviceConfigDOMapper.queryByName(name);
+    }
+    /**
+     * desc:查询所有服务配置.<br/>
+     * @return List<ServiceConfigDO>
+     */
+    public List<ServiceConfigDO> queryAll(){
+        return serviceConfigDOMapper.queryAll();
     }
 }

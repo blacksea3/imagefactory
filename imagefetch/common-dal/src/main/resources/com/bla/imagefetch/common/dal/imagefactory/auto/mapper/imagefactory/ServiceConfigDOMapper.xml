@@ -119,4 +119,10 @@
             NAME   = #{name,jdbcType=VARCHAR}
         ]]>
     </select>
+
+    <!--查询所有服务配置-->
+    <select id="queryAll" resultMap="BaseResultMap" >
+        SELECT /*MS-SERVICE-CONFIG-QUERYALL*/  <include refid="Base_Column_List" />
+        FROM service_config
+    </select>
 </mapper>

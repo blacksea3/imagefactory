@@ -29,17 +29,25 @@ public class ServiceConfigController {
     @Autowired
     private ServiceConfigRepository serviceConfigRepository;
 
+    /**
+     * Description: 添加服务配置
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/6
+     * @param serviceConfigDTO: 服务配置DTO
+     * @return com.bla.imagefetch.controller.DTO.CommonResponseDTO 通用响应DTO
+     */
     @RequestMapping(value = "addServiceConfig")
     public CommonResponseDTO addServiceConfig(@RequestBody ServiceConfigDTO serviceConfigDTO){
-        LoggerUtil.info(LOGGER, "POST url:/addServiceConfig, get", serviceConfigDTO.toString());
+        LoggerUtil.trace(LOGGER, "POST url:/addServiceConfig, get", serviceConfigDTO.toString());
         CommonResponseDTO commonResponseDTO = new CommonResponseDTO();
         ServiceConfigDO serviceConfigDO = ServiceConfigDTO.DTOconvertToDO(serviceConfigDTO);
         if (null != serviceConfigRepository.insert(serviceConfigDO)){
             commonResponseDTO.setSuccess(true);
-            commonResponseDTO.setInfo("插入成功, 插入数据为:" + serviceConfigDO.toString());
+            commonResponseDTO.setInfo("插入成功, 插入数据为:" + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString());
         }else{
             commonResponseDTO.setSuccess(false);
-            commonResponseDTO.setInfo("插入失败, 待插入数据为:" + serviceConfigDTO.toString());
+            commonResponseDTO.setInfo("插入失败, 待插入数据为:" + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString());
         }
         return commonResponseDTO;
     }
@@ -50,24 +58,31 @@ public class ServiceConfigController {
      * @author blacksea3(jxt)
      * @date 2020/8/5
 
-     * @return java.util.List<com.bla.imagefetch.controller.DTO.ServiceConfigDTO>
+     * @return java.util.List<com.bla.imagefetch.controller.DTO.ServiceConfigDTO> 结果，全量
      */
     @RequestMapping(value = "queryAllServiceConfig")
     public List<ServiceConfigDTO> queryAllServiceConfig(){
-        //TODO:待数据库查询
-        return new ArrayList<>();
+        List<ServiceConfigDO> serviceConfigDOS = serviceConfigRepository.queryAll();
+
+        List<ServiceConfigDTO> res = new ArrayList<>();
+        for (ServiceConfigDO serviceConfigDO:serviceConfigDOS){
+            res.add(ServiceConfigDTO.DOconvertToDTO(serviceConfigDO));
+        }
+        return res;
     }
 
     @RequestMapping(value = "updateServiceConfig")
-    public CommonResponseDTO updateServiceConfig(ServiceConfigDTO serviceConfigDTO){
+    public CommonResponseDTO updateServiceConfig(@RequestBody ServiceConfigDTO serviceConfigDTO){
         CommonResponseDTO commonResponseDTO = new CommonResponseDTO();
-        if (serviceConfigDTO.getId() == null){
+
+        ServiceConfigDO serviceConfigDO = ServiceConfigDTO.DTOconvertToDO(serviceConfigDTO);
+        Integer ret = serviceConfigRepository.update(serviceConfigDO);
+        if (ret == null || ret != 1){
             commonResponseDTO.setSuccess(false);
-            commonResponseDTO.setInfo("Id为空");
+            commonResponseDTO.setInfo("插入失败, 插入数据为: + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString()");
         }else{
-            //TODO:待数据库更新
             commonResponseDTO.setSuccess(true);
-            commonResponseDTO.setInfo("");
+            commonResponseDTO.setInfo("插入成功, 待插入数据为: + ServiceConfigDTO.DOconvertToDTO(serviceConfigDO).toString()");
         }
         return commonResponseDTO;
     }

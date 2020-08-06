@@ -3,6 +3,7 @@ package com.bla.imagefetch.common.dal.imagefactory.auto.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
+import java.util.List;
 import com.bla.imagefetch.common.dal.imagefactory.auto.mapper.TaskConfigDOMapper;
 
 /**
@@ -62,5 +63,12 @@ public class TaskConfigDAO{
      */
     public TaskConfigDO queryByName(String name){
         return taskConfigDOMapper.queryByName(name);
+    }
+    /**
+     * desc:查询所有任务配置.<br/>
+     * @return List<TaskConfigDO>
+     */
+    public List<TaskConfigDO> queryAll(){
+        return taskConfigDOMapper.queryAll();
     }
 }

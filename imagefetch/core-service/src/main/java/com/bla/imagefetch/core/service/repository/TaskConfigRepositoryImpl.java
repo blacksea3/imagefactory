@@ -9,6 +9,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * ClassName TaskConfigRepositoryImpl
  * 任务配置仓库 实现类
@@ -73,5 +75,10 @@ public class TaskConfigRepositoryImpl implements TaskConfigRepository, Initializ
         }else{
             return taskConfigDOMapper.queryByName(name);
         }
+    }
+
+    @Override
+    public List<TaskConfigDO> queryAll() {
+        return taskConfigDOMapper.queryAll();
     }
 }

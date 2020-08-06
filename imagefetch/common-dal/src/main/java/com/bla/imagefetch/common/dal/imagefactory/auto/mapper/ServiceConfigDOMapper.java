@@ -1,6 +1,7 @@
 package com.bla.imagefetch.common.dal.imagefactory.auto.mapper;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigDO;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -52,4 +53,10 @@ public interface ServiceConfigDOMapper{
      * @return ServiceConfigDO
      */
     ServiceConfigDO queryByName(@Param("name")String name);
+    /**
+     * desc:查询所有服务配置.<br/>
+     * descSql =  SELECT * FROM service_config
+     * @return List<ServiceConfigDO>
+     */
+    List<ServiceConfigDO> queryAll();
 }
