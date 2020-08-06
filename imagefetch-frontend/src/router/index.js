@@ -38,6 +38,11 @@ Vue.use(VueRouter)
       path: '/imageFetch/taskConfig',
       name: 'ImageFetch-TaskConfig',
       component: () => import('../views/imageFetch/TaskConfig')
+    },
+    {
+      path: '/imageFetch/task',
+      name: 'ImageFetch-Task',
+      component: () => import('../views/imageFetch/Task')
     }
 ]
 
