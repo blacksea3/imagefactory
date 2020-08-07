@@ -108,14 +108,18 @@
         ]]>
     </operation>
 
-    <operation name="queryTaskInstanceNotEqualSpecificStatus" multiplicity="many" remark="查询status不为finish的任务,取最高优先级"
+    <operation name="queryTaskInstanceEqualStatusList" multiplicity="many" remark="查询status在某个List中的任务,取最高优先级"
     paramtype="primitive">
+        <extraparams>
+            <param name="limit" javatype="java.lang.Integer"/>
+        </extraparams>
         SELECT *
         FROM task_instance
         WHERE
-        <![CDATA[
-            STATUS   != #{status,jdbcType=VARCHAR}
-        ]]>
+        STATUS IN
+        <foreach collection="statusList" javatype="java.lang.String" item="status" open="(" close=")" separator=",">
+            #{status}
+        </foreach>
         ORDER BY PRIORITY
         LIMIT
         #{limit,jdbcType=INTEGER}

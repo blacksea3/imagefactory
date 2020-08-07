@@ -138,14 +138,16 @@
         ]]>
     </select>
 
-    <!--查询status不为finish的任务,取最高优先级-->
-    <select id="queryTaskInstanceNotEqualSpecificStatus" resultMap="BaseResultMap" >
-        SELECT /*MS-TASK-INSTANCE-QUERYTASKINSTANCENOTEQUALSPECIFICSTATUS*/  <include refid="Base_Column_List" />
+    <!--查询status在某个List中的任务,取最高优先级-->
+    <select id="queryTaskInstanceEqualStatusList" resultMap="BaseResultMap" >
+        
+        SELECT /*MS-TASK-INSTANCE-QUERYTASKINSTANCEEQUALSTATUSLIST*/  <include refid="Base_Column_List" />
         FROM task_instance
         WHERE
-        <![CDATA[
-            STATUS   != #{status,jdbcType=VARCHAR}
-        ]]>
+        STATUS IN
+        <foreach collection="statusList"   item="status" open="(" close=")" separator=",">
+            #{status}
+        </foreach>
         ORDER BY PRIORITY
         LIMIT
         #{limit,jdbcType=INTEGER}

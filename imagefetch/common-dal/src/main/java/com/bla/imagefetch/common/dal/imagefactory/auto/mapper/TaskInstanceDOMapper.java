@@ -1,6 +1,7 @@
 package com.bla.imagefetch.common.dal.imagefactory.auto.mapper;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
+import java.lang.String;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
@@ -54,13 +55,13 @@ public interface TaskInstanceDOMapper{
      */
     TaskInstanceDO queryByName(@Param("name")String name);
     /**
-     * desc:查询status不为finish的任务,取最高优先级.<br/>
-     * descSql =  SELECT * FROM task_instance WHERE <![CDATA[ STATUS != #{status,jdbcType=VARCHAR} ]]> ORDER BY PRIORITY LIMIT #{limit,jdbcType=INTEGER}
-     * @param status status
+     * desc:查询status在某个List中的任务,取最高优先级.<br/>
+     * descSql =  SELECT * FROM task_instance WHERE STATUS IN #{status} ORDER BY PRIORITY LIMIT #{limit,jdbcType=INTEGER}
      * @param limit limit
+     * @param statusList statusList
      * @return List<TaskInstanceDO>
      */
-    List<TaskInstanceDO> queryTaskInstanceNotEqualSpecificStatus(@Param("status")String status,@Param("limit")Integer limit);
+    List<TaskInstanceDO> queryTaskInstanceEqualStatusList(@Param("limit")Integer limit,@Param("statusList")List<String> statusList);
     /**
      * desc:根据Id更新表状态.<br/>
      * descSql =  UPDATE task_instance SET GMT_MODIFIED = now() ,STATUS = #{status,jdbcType=VARCHAR} WHERE ID = #{id,jdbcType=INTEGER}

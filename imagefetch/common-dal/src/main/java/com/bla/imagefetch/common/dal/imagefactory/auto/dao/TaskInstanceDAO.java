@@ -3,6 +3,7 @@ package com.bla.imagefetch.common.dal.imagefactory.auto.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
+import java.lang.String;
 import java.util.List;
 import com.bla.imagefetch.common.dal.imagefactory.auto.mapper.TaskInstanceDOMapper;
 
@@ -65,13 +66,14 @@ public class TaskInstanceDAO{
         return taskInstanceDOMapper.queryByName(name);
     }
     /**
-     * desc:查询status不为finish的任务,取最高优先级.<br/>
-     * @param status status
+     * desc:查询status在某个List中的任务,取最高优先级.<br/>
      * @param limit limit
+     * @param statusList statusList
      * @return List<TaskInstanceDO>
      */
-    public List<TaskInstanceDO> queryTaskInstanceNotEqualSpecificStatus(String status,Integer limit){
-        return taskInstanceDOMapper.queryTaskInstanceNotEqualSpecificStatus(status, limit);
+    public List<TaskInstanceDO> queryTaskInstanceEqualStatusList(Integer limit,List<String> statusList){
+    if(statusList!=null && statusList.size()>201){throw new RuntimeException("statusList 超出200长度限制");}
+        return taskInstanceDOMapper.queryTaskInstanceEqualStatusList(limit, statusList);
     }
     /**
      * desc:根据Id更新表状态.<br/>

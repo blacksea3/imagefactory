@@ -22,4 +22,6 @@ public interface TaskInstanceRepository {
 
     List<Integer> updateStatusByTotalNumAndHandleNum(Integer id);
     boolean insertTaskInstanceAndTaskDetailForImages(String directory, List<String> files, String serviceConfig, String taskConfig);
+
+    Integer enableTaskInstance(Integer id);
 }
