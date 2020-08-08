@@ -7,6 +7,7 @@ import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.*;
 import com.bla.imagefetch.test.BaseTest;
+import javafx.concurrent.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -382,6 +383,88 @@ public class TaskInstanceRepositoryTest extends BaseTest {
             Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(0).getId()));
             Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(1).getId()));
         }
+    }
+
+    @Test
+    void testQueryAllTaskInstances(){
+        List<TaskInstanceDO> expectedArray = new ArrayList<>();
+
+        for (int i = 0; i < 4; ++i){
+            TaskInstanceDO expected = new TaskInstanceDO();
+            expected.setTotalNum(3);
+            expected.setHandleNum(0);
+            if (i == 0){
+                expected.setStatus("init");
+            }else if (i == 1){
+                expected.setStatus("disable");
+            }else if (i == 2){
+                expected.setStatus("running");
+            }else{
+                expected.setStatus("finish");
+            }
+
+            expected.setPriority(1);
+            expected.setDescription("");
+            expected.setServiceName("example_service_config_name");
+            expected.setConfigName("example_task_config_name");
+            expected.setName("example_dir" + String.valueOf(i));
+            expectedArray.add(expected);
+
+            {
+                TaskInstanceDO temp = taskInstanceRepository.queryByName("example_dir" + String.valueOf(i));
+                if (temp != null){
+                    taskInstanceRepository.deleteById(temp.getId());
+                }
+            }
+            Assertions.assertNotNull(taskInstanceRepository.insert(expected));
+        }
+
+        List<TaskInstanceDO> actual = taskInstanceRepository.queryAllTaskInstances();
+
+        Assertions.assertEquals(actual.size(), expectedArray.size());
+        for (TaskInstanceDO right:actual){
+            boolean find = false;
+            for (TaskInstanceDO left:expectedArray){
+                if (compareTaskInstanceDOWithoutID(left, right)){
+                    find = true;
+                    break;
+                }
+            }
+            Assertions.assertTrue(find);
+        }
+
+        for (TaskInstanceDO right:actual){
+            Assertions.assertEquals(1, taskInstanceRepository.deleteById(right.getId()));
+        }
+    }
+
+    @Test
+    public void testEnableTaskInstance(){
+        TaskInstanceDO expected = new TaskInstanceDO();
+        expected.setTotalNum(6);
+        expected.setHandleNum(0);
+        expected.setStatus("disable");
+        expected.setPriority(1);
+        expected.setDescription("");
+        expected.setServiceName("example_service_config_name");
+        expected.setConfigName("example_task_config_name");
+        expected.setName("example_dir");
+
+        {
+            TaskInstanceDO temp = taskInstanceRepository.queryByName("example_dir");
+            if (temp != null){
+                taskInstanceRepository.deleteById(temp.getId());
+            }
+        }
+
+        Assertions.assertNotNull(taskInstanceRepository.insert(expected));
+        Assertions.assertEquals(1, taskInstanceRepository.enableTaskInstance(expected.getId()));
+
+        expected.setStatus("init");
+
+        Assertions.assertTrue(compareTaskInstanceDO(expected, taskInstanceRepository.queryById(expected.getId())));
+
+        Assertions.assertEquals(1, taskInstanceRepository.deleteById(expected.getId()));
     }
 
     /**

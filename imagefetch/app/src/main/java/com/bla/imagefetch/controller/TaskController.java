@@ -4,6 +4,7 @@ import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.controller.DTO.CommonResponseDTO;
+import com.bla.imagefetch.controller.DTO.TaskInstanceDTO;
 import com.bla.imagefetch.core.service.repository.TaskInstanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,5 +74,14 @@ public class TaskController {
             commonResponseDTO.setSuccess(false);
         }
         return commonResponseDTO;
+    }
+
+    @RequestMapping(value = "queryTaskInstance")
+    public List<TaskInstanceDTO> queryTaskInstance(){
+        List<TaskInstanceDTO> ret = new ArrayList<>();
+
+        //TODO:查询所有的 in 状态, 不限数量 任务实例
+
+        return ret;
     }
 }

@@ -240,6 +240,24 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     }
 
     /**
+     * Description: 查询所有任务实例(含状态要求)
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/8
+
+     * @return java.util.List<com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO>
+     */
+    @Override
+    public List<TaskInstanceDO> queryAllTaskInstances() {
+        List<String> status = new ArrayList<>();
+        status.add(taskInstanceStatus.DISABLE._val);
+        status.add(taskInstanceStatus.FINISH._val);
+        status.add(taskInstanceStatus.INIT._val);
+        status.add(taskInstanceStatus.RUNNING._val);
+        return taskInstanceDOMapper.queryTaskInstanceEqualStatusList(null, status);
+    }
+
+    /**
      * Description: 激活任务: disable->init态
      *
      * @author blacksea3(jxt)
@@ -253,7 +271,7 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
         if (taskInstanceDO == null){
             return null;
         }
-        if (taskInstanceDO.getStatus().equals(taskInstanceStatus.DISABLE._val)){
+        if (!taskInstanceDO.getStatus().equals(taskInstanceStatus.DISABLE._val)){
             return null;
         }
 

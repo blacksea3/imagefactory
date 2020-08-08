@@ -55,8 +55,8 @@ public interface TaskInstanceDOMapper{
      */
     TaskInstanceDO queryByName(@Param("name")String name);
     /**
-     * desc:查询status在某个List中的任务,取最高优先级.<br/>
-     * descSql =  SELECT * FROM task_instance WHERE STATUS IN #{status} ORDER BY PRIORITY LIMIT #{limit,jdbcType=INTEGER}
+     * desc:查询status在某个List中的任务,优先级排序,限定数量.<br/>
+     * descSql =  SELECT * FROM task_instance WHERE STATUS IN #{status} ORDER BY PRIORITY LIMIT #{limit,jdbcType=INTEGER} 
      * @param limit limit
      * @param statusList statusList
      * @return List<TaskInstanceDO>

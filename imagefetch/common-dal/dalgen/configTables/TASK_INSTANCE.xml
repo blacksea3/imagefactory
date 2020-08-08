@@ -108,7 +108,7 @@
         ]]>
     </operation>
 
-    <operation name="queryTaskInstanceEqualStatusList" multiplicity="many" remark="查询status在某个List中的任务,取最高优先级"
+    <operation name="queryTaskInstanceEqualStatusList" multiplicity="many" remark="查询status在某个List中的任务,优先级排序,限定数量"
     paramtype="primitive">
         <extraparams>
             <param name="limit" javatype="java.lang.Integer"/>
@@ -121,8 +121,10 @@
             #{status}
         </foreach>
         ORDER BY PRIORITY
-        LIMIT
-        #{limit,jdbcType=INTEGER}
+        <if test="limit != null">
+            LIMIT
+            #{limit,jdbcType=INTEGER}
+        </if>
     </operation>
 
     <operation name="updateStatus" paramtype="primitive" remark="根据Id更新表状态">

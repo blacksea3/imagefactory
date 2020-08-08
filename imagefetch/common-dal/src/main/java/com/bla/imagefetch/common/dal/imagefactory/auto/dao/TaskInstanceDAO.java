@@ -66,7 +66,7 @@ public class TaskInstanceDAO{
         return taskInstanceDOMapper.queryByName(name);
     }
     /**
-     * desc:查询status在某个List中的任务,取最高优先级.<br/>
+     * desc:查询status在某个List中的任务,优先级排序,限定数量.<br/>
      * @param limit limit
      * @param statusList statusList
      * @return List<TaskInstanceDO>

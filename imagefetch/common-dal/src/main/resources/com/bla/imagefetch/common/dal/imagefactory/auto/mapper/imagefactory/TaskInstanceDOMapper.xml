@@ -138,7 +138,7 @@
         ]]>
     </select>
 
-    <!--查询status在某个List中的任务,取最高优先级-->
+    <!--查询status在某个List中的任务,优先级排序,限定数量-->
     <select id="queryTaskInstanceEqualStatusList" resultMap="BaseResultMap" >
         
         SELECT /*MS-TASK-INSTANCE-QUERYTASKINSTANCEEQUALSTATUSLIST*/  <include refid="Base_Column_List" />
@@ -149,8 +149,10 @@
             #{status}
         </foreach>
         ORDER BY PRIORITY
-        LIMIT
-        #{limit,jdbcType=INTEGER}
+        <if test="limit != null">
+            LIMIT
+            #{limit,jdbcType=INTEGER}
+        </if>
     </select>
 
     <!--根据Id更新表状态-->

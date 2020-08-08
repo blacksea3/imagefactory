@@ -19,7 +19,8 @@ public interface TaskInstanceRepository {
     TaskInstanceDO queryByName(String name);
 
     TaskInstanceDO queryHighestPriority();
-
+    List<TaskInstanceDO> queryAllTaskInstances();
+    
     List<Integer> updateStatusByTotalNumAndHandleNum(Integer id);
     boolean insertTaskInstanceAndTaskDetailForImages(String directory, List<String> files, String serviceConfig, String taskConfig);
 
