@@ -43,6 +43,11 @@ Vue.use(VueRouter)
       path: '/imageFetch/task',
       name: 'ImageFetch-Task',
       component: () => import('../views/imageFetch/Task')
+    },
+    {
+      path: '/imageFetch/queryImageFileNames',
+      name: 'ImageFetch-Image',
+      component: () => import('../views/imageFetch/MyImage')
     }
 ]
 

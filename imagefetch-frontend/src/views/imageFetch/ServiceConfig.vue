@@ -211,6 +211,7 @@
                 })
                     .then(function (response) {
                         _this.msg = response.data;
+                        _this.$forceUpdate();   //数组需要强制使用更新
                         console.log(response);
                     })
                     .catch(function (error) {
