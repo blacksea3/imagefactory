@@ -4,6 +4,7 @@ import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.controller.DTO.CommonResponseDTO;
+import com.bla.imagefetch.core.service.repository.TaskInstanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 任务 Controller
@@ -28,19 +30,47 @@ public class TaskController {
     @Autowired
     private GlobalConstant globalConstant;
 
+    @Autowired
+    private TaskInstanceRepository taskInstanceRepository;
+
     @RequestMapping(value = "uploadZipImages")
     public CommonResponseDTO uploadZipImages(@RequestParam("file") MultipartFile file){
         String fullDir = globalConstant.getImageDirectory() + "\\" + String.valueOf(new Date().getTime());
 
         String ret = FileUtil.saveFile(fullDir, file);
-        LoggerUtil.info(LOGGER, "保存图片结果:", ret);
+        if (ret == null || ret.equals("")){
+            LoggerUtil.error(LOGGER, "保存压缩包失败:", ret);
+            CommonResponseDTO commonResponseDTO = new CommonResponseDTO();
+            commonResponseDTO.setInfo("保存压缩包失败:" + ret);
+            commonResponseDTO.setSuccess(false);
+            return commonResponseDTO;
+        }
+        LoggerUtil.info(LOGGER, "保存压缩包结果:", ret);
 
         String ret2 = FileUtil.extractZip(ret);
         LoggerUtil.info(LOGGER, "解压zip结果:", ret2);
+        if (ret2 == null || ret2.equals("")){
+            LoggerUtil.error(LOGGER, "解压zip结果:", ret2);
+            CommonResponseDTO commonResponseDTO = new CommonResponseDTO();
+            commonResponseDTO.setInfo("解压zip结果:" + ret2);
+            commonResponseDTO.setSuccess(false);
+            return commonResponseDTO;
+        }
+
+        List<String> files = FileUtil.findAllPicFiles(ret2);
+
+        boolean dualWriteRes = taskInstanceRepository.insertTaskInstanceAndTaskDetailForImages(
+                ret2, files, "imageStyle", "test"
+        );
 
         CommonResponseDTO commonResponseDTO = new CommonResponseDTO();
-        commonResponseDTO.setInfo("");
-        commonResponseDTO.setSuccess(true);
+        if (dualWriteRes){
+            commonResponseDTO.setInfo("");
+            commonResponseDTO.setSuccess(true);
+        }else{
+            commonResponseDTO.setInfo("双写失败");
+            commonResponseDTO.setSuccess(false);
+        }
         return commonResponseDTO;
     }
 }

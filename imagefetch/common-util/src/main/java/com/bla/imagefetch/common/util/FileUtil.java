@@ -183,7 +183,7 @@ public class FileUtil {
      * @author blacksea3(jxt)
      * @date 2020/8/6
      * @param fileName: 文件名
-     * @return java.lang.String 解压后的文件夹
+     * @return java.lang.String 解压后的文件夹, 不带末尾的/
      */
     private static final int UNZIP_BUFFER = 2048;
 
@@ -198,7 +198,7 @@ public class FileUtil {
         InputStream is = null;
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
-        savepath = fileName.substring(0, fileName.lastIndexOf(".")) + File.separator; //保存解压文件目录
+        savepath = fileName.substring(0, fileName.lastIndexOf("."));   //保存解压文件目录
         new File(savepath).mkdir(); //创建保存目录
         ZipFile zipFile = null;
         try
@@ -214,7 +214,7 @@ public class FileUtil {
                 if(filename.lastIndexOf("/") != -1){ //检查此文件是否带有文件夹
                     ismkdir = true;
                 }
-                filename = savepath + filename;
+                filename = savepath + File.separator + filename;
                 if(entry.isDirectory()){ //如果是文件夹先创建
                     file = new File(filename);
                     file.mkdirs();
