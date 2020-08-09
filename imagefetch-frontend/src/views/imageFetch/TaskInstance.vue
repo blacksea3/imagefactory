@@ -229,7 +229,7 @@
                     data: JSON.stringify(reqData)
                 })
                     .then(function (response) {
-                        if (response.data.success === 'true'){
+                        if (response.data.success === true){
                             _this.$message('激活成功');
                             _this.queryTaskInstance();
                         }else{

@@ -7,6 +7,10 @@ logging:
 spring:
   profiles:
     active: commonDal, commonUtil, coreService, dev
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
 
 imageDirectory: E:\imageFactory\images
 imageTaskCron: 0/5 * * * * ? *
