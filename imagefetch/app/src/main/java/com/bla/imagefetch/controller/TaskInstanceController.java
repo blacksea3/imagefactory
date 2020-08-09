@@ -4,21 +4,17 @@ import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO
 import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.common.util.LoggerUtil;
+import com.bla.imagefetch.controller.DTO.CommonIntegerRequestDTO;
+import com.bla.imagefetch.controller.DTO.CommonStringRequestDTO;
 import com.bla.imagefetch.controller.DTO.CommonResponseDTO;
-import com.bla.imagefetch.controller.DTO.ImagePathDTO;
 import com.bla.imagefetch.controller.DTO.TaskInstanceDTO;
 import com.bla.imagefetch.core.service.repository.TaskInstanceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.*;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,9 +26,9 @@ import java.util.List;
  * @date 2020/8/6 22:11
  */
 @RestController
-public class TaskController {
+public class TaskInstanceController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TaskController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskInstanceController.class);
 
     @Autowired
     private GlobalConstant globalConstant;
@@ -93,7 +89,6 @@ public class TaskController {
     public List<TaskInstanceDTO> queryTaskInstance(){
         List<TaskInstanceDTO> ret = new ArrayList<>();
 
-        //TODO:查询所有的 in 状态, 不限数量 任务实例
         List<TaskInstanceDO> raw = taskInstanceRepository.queryAllTaskInstances();
         for (TaskInstanceDO temp:raw){
             ret.add(TaskInstanceDTO.DOconvertToDTO(temp));
@@ -103,43 +98,24 @@ public class TaskController {
     }
 
     /**
-     * Description: 查询所有图片路径
+     * Description: 激活任务实例
      *
      * @author blacksea3(jxt)
-     * @date 2020/8/8
-     * @param image: 路径
-     * @return java.util.List<java.lang.String>
+     * @date 2020/8/9
+     * @param id: 任务实例ID
+     * @return com.bla.imagefetch.controller.DTO.CommonResponseDTO
      */
-    @RequestMapping(value = "queryImageFileNames", method = RequestMethod.POST)
-    public List<ImagePathDTO> queryImageFileNames(@RequestBody ImagePathDTO image) throws UnsupportedEncodingException {
-        String realPath = URLDecoder.decode(image.getPath(), "UTF-8"); //decode
-        List<ImagePathDTO> ret = new ArrayList<>();
-        List<String> stringRet = FileUtil.findAllPicFiles(realPath);
-        for (String temp:stringRet){
-            ImagePathDTO imagePathDTO = new ImagePathDTO();
-            imagePathDTO.setPath(temp);
-            ret.add(imagePathDTO);
+    @RequestMapping(value = "enableTaskInstance", method = RequestMethod.POST)
+    public CommonResponseDTO enableTaskInstance(@RequestBody CommonIntegerRequestDTO id){
+        CommonResponseDTO commonResponseDTO = new CommonResponseDTO();
+        Integer ret = taskInstanceRepository.enableTaskInstance(id.getNum());
+        if (ret == null || ret != 1){
+            commonResponseDTO.setSuccess(false);
+            commonResponseDTO.setInfo("更新状态失败");
+        }else{
+            commonResponseDTO.setSuccess(true);
+            commonResponseDTO.setInfo("");
         }
-        return ret;
-    }
-
-    /**
-     * Description: 获取图片
-     * 参考:https://blog.csdn.net/qq_18298439/article/details/89315478
-     *
-     * @author blacksea3(jxt)
-     * @date 2020/8/8
-     * @param fileName: 图片名
-     * @return byte[] 图片内容
-     */
-    @RequestMapping(value = "queryImageContent", produces = MediaType.IMAGE_JPEG_VALUE, method = RequestMethod.GET)
-    public byte[] queryImageContent(@RequestParam(name = "fileName") String fileName) throws IOException {
-        String realPath = URLDecoder.decode(fileName, "UTF-8"); //decode
-
-        File file = new File(realPath);
-        FileInputStream inputStream = new FileInputStream(file);
-        byte[] bytes = new byte[inputStream.available()];
-        inputStream.read(bytes, 0, inputStream.available());
-        return bytes;
+        return commonResponseDTO;
     }
 }

@@ -18,11 +18,11 @@
 
     <sql id="Base_SF_Column_List">
         sf.ID,sf.SCRIPT,sf.CONTENT,sf.EXT_INFO,sf.SERVICE_NAME
-        ,sf.INSTANCE_NAME,sf.STATUS,sf.GMT_CREATE,sf.GMT_MODIFIED
+        ,sf.INSTANCE_NAME,sf.STATUS,sf.RESULT,sf.GMT_CREATE,sf.GMT_MODIFIED
     </sql>
     <sql id="Base_Column_List">
         ID,SCRIPT,CONTENT,EXT_INFO,SERVICE_NAME 
-        ,INSTANCE_NAME,STATUS,GMT_CREATE,GMT_MODIFIED
+        ,INSTANCE_NAME,STATUS,RESULT,GMT_CREATE,GMT_MODIFIED
     </sql>
 
 

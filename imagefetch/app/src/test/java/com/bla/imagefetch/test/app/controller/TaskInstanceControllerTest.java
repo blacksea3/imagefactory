@@ -1,8 +1,7 @@
 package com.bla.imagefetch.test.app.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
-import com.bla.imagefetch.controller.TaskController;
+import com.bla.imagefetch.controller.TaskInstanceController;
 import com.bla.imagefetch.core.service.repository.TaskInstanceRepository;
 import com.bla.imagefetch.test.BaseTest;
 import org.junit.jupiter.api.Assertions;
@@ -28,12 +27,12 @@ import java.util.List;
  * @date 2020/8/8 19:55
  */
 @SpringBootTest
-public class TaskControllerTest extends BaseTest {
+public class TaskInstanceControllerTest extends BaseTest {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(TaskControllerTest.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(TaskInstanceControllerTest.class);
 
     @Autowired
-    private TaskController taskController;
+    private TaskInstanceController taskInstanceController;
 
     @Autowired
     private TaskInstanceRepository taskInstanceRepository;
@@ -42,7 +41,7 @@ public class TaskControllerTest extends BaseTest {
 
     @Test
     public void testQueryTaskInstance() throws Exception{
-        mockMvc = MockMvcBuilders.standaloneSetup(taskController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(taskInstanceController).build();
 
         //准备数据
         for (int i = 0; i < 4; ++i){
