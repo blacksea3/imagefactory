@@ -2,7 +2,7 @@
     <el-container>
         <el-container>
             <el-header>
-
+                <image-fetch-header></image-fetch-header>
             </el-header>
             <el-main style="min-height: 550px;">
                 <el-tabs v-model="activeName" @tab-click="handleClick">
@@ -27,7 +27,7 @@
                             查询任务实例
                         </el-row>
                         <el-row>
-                            <el-button type="primary" v-on:click="testClick()">更新</el-button>
+                            <el-button type="primary" v-on:click="queryTaskInstance()">更新</el-button>
                         </el-row>
                         <el-row>
                             <el-table
@@ -90,6 +90,36 @@
                                         label="修改时间"
                                         width="240">
                                 </el-table-column>
+                                <el-table-column
+                                        label="查询原子任务"
+                                        width="120">
+                                    <template slot-scope="scope">
+                                    <el-button
+                                            size="mini"
+                                            type="primary"
+                                            @click="redirect(scope.row.detailUrl)">查询原子任务</el-button>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column
+                                        label="激活任务实例"
+                                        width="120">
+                                    <template slot-scope="scope">
+                                        <div v-if="scope.row.status === 'disable'">
+                                            <el-button
+                                                    size="mini"
+                                                    type="success"
+                                                    @click="enableTaskInstance(scope.row.id)"
+                                                    >激活任务实例</el-button>
+                                        </div>
+                                        <div v-else>
+                                            <el-button
+                                                    size="mini"
+                                                    type="success"
+                                                    @click="enableTaskInstance(scope.row.id)"
+                                                    disabled>激活任务实例</el-button>
+                                        </div>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </el-row>
                     </el-tab-pane>
@@ -104,7 +134,7 @@
 
 <script>
     export default {
-        name: "Task",
+        name: "TaskInstance",
         data() {
             let _this = this;
             _this.taskInstanceData = [];
@@ -145,20 +175,72 @@
                     }
                 })
                     .then(function (response) {
-                        _this.taskInstanceData = response.data;
+                        _this.taskInstanceData = [];
+                        for (let taskInstanceIndex = 0; taskInstanceIndex < response.data.length; taskInstanceIndex++){
+                            let temp = {
+                                id: response.data[taskInstanceIndex].id,
+                                name: response.data[taskInstanceIndex].name,
+                                description: response.data[taskInstanceIndex].description,
+                                configName: response.data[taskInstanceIndex].configName,
+                                status: response.data[taskInstanceIndex].status,
+                                priority: response.data[taskInstanceIndex].priority,
+                                totalNum: response.data[taskInstanceIndex].totalNum,
+                                handleNum: response.data[taskInstanceIndex].handleNum,
+                                serviceName: response.data[taskInstanceIndex].serviceName,
+                                gmtCreate: response.data[taskInstanceIndex].gmtCreate,
+                                gmtModified: response.data[taskInstanceIndex].gmtModified,
+                                detailUrl: "http://127.0.0.1:8080/imageFetch/taskDetail?instanceName=" + encodeURI(response.data[taskInstanceIndex].name),
+                            };
+                            _this.taskInstanceData.push(temp);
+                        }
                         _this.$forceUpdate();   //数组需要强制使用更新
-                        console.log(response);
+                        //console.log(response);
                     })
                     .catch(function (error) {
                         console.log(error);
                     });
             },
 
-            testClick: function(){
-                let _this = this;
-                console.log(_this.taskInstanceData);
+            /**
+             * 重定向
+             * url: 路径
+             */
+            redirect: function(url){
+                window.location.href=url;
             },
 
+            /**
+             * 更新任务实例
+             */
+            enableTaskInstance: function(id){
+                let _this = this;
+
+                let reqData = {
+                    num: id,
+                };
+
+                axios({
+                    method:'post',
+                    url:'http://127.0.0.1:8081/enableTaskInstance',
+                    responseType:'json',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    data: JSON.stringify(reqData)
+                })
+                    .then(function (response) {
+                        if (response.data.success === 'true'){
+                            _this.$message('激活成功');
+                            _this.queryTaskInstance();
+                        }else{
+                            _this.$message('激活失败');
+                        }
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
             /**
              * 标签点击
              * @param key 点击的标签

@@ -30,6 +30,11 @@ Vue.use(VueRouter)
     component: () => import('../views/Index.vue')
   },
     {
+      path: '/imageFetch/index',
+      name: '/ImageFetch-Index',
+      component: () => import('../views/imageFetch/Index')
+    },
+    {
       path: '/imageFetch/serviceConfig',
       name: 'ImageFetch-ServiceConfig',
       component: () => import('../views/imageFetch/ServiceConfig')
@@ -40,14 +45,14 @@ Vue.use(VueRouter)
       component: () => import('../views/imageFetch/TaskConfig')
     },
     {
-      path: '/imageFetch/task',
-      name: 'ImageFetch-Task',
-      component: () => import('../views/imageFetch/Task')
+      path: '/imageFetch/taskInstance',
+      name: 'ImageFetch-TaskInstance',
+      component: () => import('../views/imageFetch/TaskInstance')
     },
     {
-      path: '/imageFetch/queryImageFileNames',
-      name: 'ImageFetch-Image',
-      component: () => import('../views/imageFetch/MyImage')
+      path: '/imageFetch/taskDetail',
+      name: 'ImageFetch-TaskDetail',
+      component: () => import('../views/imageFetch/TaskDetail')
     }
 ]
 

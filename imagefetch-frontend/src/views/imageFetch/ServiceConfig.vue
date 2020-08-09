@@ -3,7 +3,7 @@
         <el-container>
             <el-container>
                 <el-header>
-
+                    <image-fetch-header></image-fetch-header>
                 </el-header>
                 <el-main style="min-height: 550px;">
                     <el-tabs v-model="activeName" @tab-click="handleClick">
