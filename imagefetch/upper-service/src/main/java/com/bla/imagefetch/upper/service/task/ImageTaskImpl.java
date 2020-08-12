@@ -166,6 +166,7 @@ public class ImageTaskImpl implements AbstractTask, InitializingBean {
         String refName = directory + "\\ref.png";
 
         try {
+            //TODO:待切换成新 顶层 算法接口层 接口
             String retUrl = imageStyle.changeImageStyle(fileName, refName);
             if (retUrl == null){
                 String temp = "topAlg返回结果为null, 请查看日志";
@@ -175,10 +176,10 @@ public class ImageTaskImpl implements AbstractTask, InitializingBean {
                 }
                 return;
             }
-            String retFileName = FileUtil.downloadFromRemoteUrl(retUrl, directory, "res.jpg");
-            if (!taskDetailRepository.setSuccessStatusAndUpdateResult(taskDetailID, retFileName)){
-                LoggerUtil.error(LOGGER, "executeTask:更新原子任务状态和内容出错, taskDetailID:[", String.valueOf(taskDetailID), "]");
-            }
+            //String retFileName = FileUtil.downloadFromRemoteUrl(retUrl, directory, "res.jpg");
+            //if (!taskDetailRepository.setSuccessStatusAndUpdateResult(taskDetailID, retFileName)){
+            //    LoggerUtil.error(LOGGER, "executeTask:更新原子任务状态和内容出错, taskDetailID:[", String.valueOf(taskDetailID), "]");
+            //}
             //return;
         }catch (ClientException | IOException e) {
             String temp = "处理图片出错, refName:[" + refName + "], fileName:[" + fileName + "]";

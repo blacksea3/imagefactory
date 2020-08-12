@@ -3,6 +3,8 @@ package com.bla.imagefetch.test.common.util;
 import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.test.BaseTest;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,11 +32,12 @@ public class FileUtilTest extends BaseTest {
 
     @Test
     void testDownloadFromRemoteUrl(){
-        String ret = FileUtil.downloadFromRemoteUrl(
+        Pair<Boolean, String> ret = FileUtil.downloadFromRemoteUrl(
                 "http://vibktprfx-prod-prod-aic-gd-cn-shanghai.oss-cn-shanghai.aliyuncs.com/photo-style-imitation/84F9A7CC-B453-47B3-82AC-BCD7373FBFE6__e61020200804-080530.jpg?Expires=1596530131&OSSAccessKeyId=LTAI4FoLmvQ9urWXgSRpDvh1&Signature=LLIL84Ra0f0yvUGbeXmKL0QhACU%3D",
                 "E:\\imageFactory\\images\\20200803",
                 "result.jpg"
         );
-        System.out.println(ret);
+        System.out.println(ret.getKey());
+        System.out.println(ret.getValue());
     }
 }

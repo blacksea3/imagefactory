@@ -11,6 +11,7 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.imageenhan.model.v20190930.ImitatePhotoStyleRequest;
 import com.aliyuncs.imageenhan.model.v20190930.ImitatePhotoStyleResponse;
 import com.aliyuncs.profile.DefaultProfile;
+import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.upper.service.VO.CommonAlgRequestVO;
 import com.bla.imagefetch.upper.service.VO.CommonAlgResponseVO;
@@ -35,13 +36,13 @@ import java.util.Map;
  * @author blacksea3(jxt)
  * @date 2020/8/4
  */
-@Component("imageStyle")
-public class ImageStyleImplInterface extends CommonImageAlgBase implements CommonImageAlgInterface, InitializingBean {
+@Component("imitatePhotoStyle")
+public class ImitatePhotoStyle extends CommonImageAlgBase implements CommonImageAlgInterface, InitializingBean {
     /** aLiYun client */
     static IAcsClient client = null;
 
     /** 日志 */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageStyleImplInterface.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImitatePhotoStyle.class);
 
     /**
      * 生成url，阿里云oss的，从本地文件
@@ -96,10 +97,12 @@ public class ImageStyleImplInterface extends CommonImageAlgBase implements Commo
      */
     @Override
     public CommonAlgResponseVO exec(CommonAlgRequestVO commonAlgRequestVO) {
+        //预处理: 生成结果变量
         CommonAlgResponseVO commonAlgResponseVO = new CommonAlgResponseVO();
         Map<String, String> content = commonAlgRequestVO.getContent();
         Map<String, String> result = new HashMap<>();
 
+        //提取输入参数内容与格式校验
         if (content == null){
             commonAlgResponseVO.setSuccess(false);
             result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.INPUT_FIELD_MISS.getInfo());
@@ -110,8 +113,9 @@ public class ImageStyleImplInterface extends CommonImageAlgBase implements Commo
 
         String source = content.get("source");
         String ref = content.get("ref");
+        String res = content.get("res");
 
-        if (source == null || ref == null){
+        if (source == null || ref == null || res == null){
             commonAlgResponseVO.setSuccess(false);
             result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.INPUT_FIELD_MISS.getInfo());
             result.put(RESPONSE_DETAIL_KEY, null);
@@ -119,21 +123,29 @@ public class ImageStyleImplInterface extends CommonImageAlgBase implements Commo
             return commonAlgResponseVO;
         }
 
+        //执行算法
         Pair<Boolean, String> ret = changeImageStyle(source, ref);
 
+        //结果分析与图片下载
         if (ret.getKey()){
-            commonAlgResponseVO.setSuccess(true);
-            result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.SUCCESS.getInfo());
-            result.put(RESPONSE_DETAIL_KEY, ret.getValue());
-            commonAlgResponseVO.setResult(result);
-            return commonAlgResponseVO;
+            Pair<Boolean, String> pRet = FileUtil.downloadFromRemoteUrl(ret.getValue(),
+                    res.substring(0, res.lastIndexOf("\\")), res.substring(res.lastIndexOf("\\") + 1));
+            if (!pRet.getKey()){
+                commonAlgResponseVO.setSuccess(false);
+                result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.DOWNLOAD_FILE_ERROR.getInfo());
+                result.put(RESPONSE_DETAIL_KEY, pRet.getValue());
+            }else{
+                commonAlgResponseVO.setSuccess(true);
+                result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.SUCCESS.getInfo());
+                result.put(RESPONSE_DETAIL_KEY, "");
+            }
         }else {
             commonAlgResponseVO.setSuccess(false);
-            result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.INTERNAL_ALG_ERROR.getInfo());
             result.put(RESPONSE_DETAIL_KEY, ret.getValue());
-            commonAlgResponseVO.setResult(result);
-            return commonAlgResponseVO;
+            result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.INTERNAL_ALG_ERROR.getInfo());
         }
+        commonAlgResponseVO.setResult(result);
+        return commonAlgResponseVO;
     }
 
     /**
@@ -229,6 +241,6 @@ public class ImageStyleImplInterface extends CommonImageAlgBase implements Commo
 
     @Override
     public void afterPropertiesSet(){
-        LoggerUtil.info(LOGGER, "Bean of ImageStyleImplInterface has been initialized!");
+        LoggerUtil.info(LOGGER, "Bean of ImitatePhotoStyle has been initialized!");
     }
 }

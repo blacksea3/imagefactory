@@ -1,5 +1,6 @@
 package com.bla.imagefetch.common.util;
 
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -95,16 +96,16 @@ public class FileUtil {
      * @author blacksea3(jxt)
      * @date 2020/8/4
      * @param urlString: 远端url
-     * @return java.lang.String 本地路径
+     * @return javafx.util.Pair<java.lang.Boolean,java.lang.String> true,null  或  false,错误信息
      */
-    public static String downloadFromRemoteUrl(String urlString, String savePath, String filename){
+    public static Pair<Boolean, String> downloadFromRemoteUrl(String urlString, String savePath, String filename){
         // 构造URL
         URL url = null;
         try {
             url = new URL(urlString);
         } catch (MalformedURLException e) {
             LoggerUtil.error(LOGGER, e, "url失效:", urlString);
-            return null;
+            return new Pair<>(false, "url失效:" + urlString);
         }
         // 打开连接
         URLConnection con = null;
@@ -112,7 +113,7 @@ public class FileUtil {
             con = url.openConnection();
         } catch (IOException e) {
             LoggerUtil.error(LOGGER, e, "url失效:", urlString);
-            return null;
+            return new Pair<>(false, "url失效:" + urlString);
         }
         //设置请求超时为5s
         con.setConnectTimeout(5*1000);
@@ -122,7 +123,7 @@ public class FileUtil {
             is = con.getInputStream();
         } catch (IOException e) {
             LoggerUtil.error(LOGGER, e, "url失效:", urlString);
-            return null;
+            return new Pair<>(false, "url失效:" + urlString);
         }
 
         // 1K的数据缓冲
@@ -134,20 +135,14 @@ public class FileUtil {
         if(!sf.exists()){
             sf.mkdirs();
         }
-        //获取图片的扩展名
-        String extensionName = filename.substring(filename.lastIndexOf(".") +     1);
-        // 新的图片文件名 = 编号 +"."图片扩展名
-
-        Timestamp ts = new Timestamp(new Date().getTime());
-
-        String newFileName = ts.getTime() + filename.substring(0, filename.lastIndexOf(".")) + "." + extensionName;
+        //生成图片名
         OutputStream os = null;
-        String fullFileName = sf.getPath() + "\\" + newFileName;
+        String fullFileName = savePath + "\\" + filename;
         try {
             os = new FileOutputStream(fullFileName);
         } catch (FileNotFoundException e) {
             LoggerUtil.error(LOGGER, e, "无法创建文件:", fullFileName);
-            return null;
+            return new Pair<>(false, "无法创建文件:" + fullFileName);
         }
         // 开始读取
         try {
@@ -155,14 +150,16 @@ public class FileUtil {
                 os.write(bs, 0, len);
             }
         }catch (IOException e){
-            LoggerUtil.error(LOGGER, e, "无法输入数据至文件:", sf.getPath() + "\\" + newFileName);
+            LoggerUtil.error(LOGGER, e, "无法输入数据至文件:", fullFileName);
+            String temp = "无法输入数据至文件:" + fullFileName;
             try {
                 os.close();
                 is.close();
             } catch (IOException ioException) {
                 LoggerUtil.error(LOGGER, e, "无法关闭输入或输出流");
+                temp += ", 且无法关闭输入或输出流";
             }
-            return null;
+            return new Pair<>(false, temp);
         }
 
         try {
@@ -170,10 +167,10 @@ public class FileUtil {
             is.close();
         } catch (IOException e) {
             LoggerUtil.error(LOGGER, e, "无法关闭输入或输出流");
-            return null;
+            return new Pair<>(false, "无法关闭输入或输出流");
         }
 
-        return fullFileName;
+        return new Pair<>(true, null);
     }
 
     /**

@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,8 @@ public class ImageStyleTest extends BaseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageStyleTest.class);
 
-    @Resource(name = "imageStyle")
-    private CommonImageAlgInterface imageStyle;
+    @Resource(name = "imitatePhotoStyle")
+    private CommonImageAlgInterface imitatePhotoStyle;
 
     @Autowired
     private GlobalConstant globalConstant;
@@ -46,8 +47,10 @@ public class ImageStyleTest extends BaseTest {
         Map<String, String> content = new HashMap<>();
         content.put("source", "E:\\imageFactory\\newImages\\source.jpg");
         content.put("ref", "E:\\imageFactory\\newImages\\ref.png");
+        String resFileName = "E:\\imageFactory\\newImages\\res" + new Date().getTime() + ".jpg";
+        content.put("res", resFileName);
         commonAlgRequestVO.setContent(content);
-        CommonAlgResponseVO commonAlgResponseVO = imageStyle.exec(commonAlgRequestVO);
+        CommonAlgResponseVO commonAlgResponseVO = imitatePhotoStyle.exec(commonAlgRequestVO);
 
         Assertions.assertTrue(commonAlgResponseVO.isSuccess());
 

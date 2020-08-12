@@ -20,6 +20,7 @@ public class CommonImageAlgBase {
         INPUT_FIELD_MISS("输入缺少必要参数"),
         INPUT_FIELD_INVALID("输入必要参数格式错误"),
         INTERNAL_ALG_ERROR("内部算法错误"),
+        DOWNLOAD_FILE_ERROR("下载文件错误"),
         OTHER_ERROR("其他错误"),
         SUCCESS("正确");
 
