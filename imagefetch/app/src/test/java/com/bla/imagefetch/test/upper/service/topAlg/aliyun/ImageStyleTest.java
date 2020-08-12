@@ -5,7 +5,11 @@ import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.GlobalConstant;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.test.BaseTest;
+import com.bla.imagefetch.upper.service.VO.CommonAlgRequestVO;
+import com.bla.imagefetch.upper.service.VO.CommonAlgResponseVO;
+import com.bla.imagefetch.upper.service.topAlg.aliyun.CommonImageAlgInterface;
 import com.bla.imagefetch.upper.service.topAlg.aliyun.ImageStyle;
+import javafx.util.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -13,8 +17,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ImageStyleTest 图片风格测试类
@@ -27,32 +34,28 @@ public class ImageStyleTest extends BaseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageStyleTest.class);
 
-    @Autowired
-    private ImageStyle imageStyle;
+    @Resource(name = "imageStyle")
+    private CommonImageAlgInterface imageStyle;
 
     @Autowired
     private GlobalConstant globalConstant;
 
     @Test
-    public void testChangeImageStyle() throws IOException, ClientException {
-        String directory = globalConstant.getImageDirectory() + "\\" + "20200803";
+    public void testChangeImageStyle(){
+        CommonAlgRequestVO commonAlgRequestVO = new CommonAlgRequestVO();
+        Map<String, String> content = new HashMap<>();
+        content.put("source", "E:\\imageFactory\\newImages\\source.jpg");
+        content.put("ref", "E:\\imageFactory\\newImages\\ref.png");
+        commonAlgRequestVO.setContent(content);
+        CommonAlgResponseVO commonAlgResponseVO = imageStyle.exec(commonAlgRequestVO);
 
-        List<String> imageFiles = FileUtil.findAllPicFiles(directory);
-        String refImageName = null;
-        String sourceImageName = null;
-        for (String image:imageFiles){
-            if (image.endsWith("ref.png")){
-                refImageName = image;
-            }else{
-                sourceImageName = image;
-            }
-        }
+        Assertions.assertTrue(commonAlgResponseVO.isSuccess());
 
-        String downloadUrl = imageStyle.changeImageStyle(sourceImageName, refImageName);
-        Assertions.assertNotNull(downloadUrl);
+        Map<String, String> ret = commonAlgResponseVO.getResult();
 
-        String ret = FileUtil.downloadFromRemoteUrl(downloadUrl, directory, "res.jpg");
-        LoggerUtil.info(LOGGER, ret);
+        Assertions.assertEquals(ret.get("info"), "正确");
+
+        LoggerUtil.info(LOGGER, ret.get("detail"));
     }
 
 }

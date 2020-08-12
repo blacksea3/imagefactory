@@ -12,14 +12,19 @@ import com.aliyuncs.imageenhan.model.v20190930.ImitatePhotoStyleRequest;
 import com.aliyuncs.imageenhan.model.v20190930.ImitatePhotoStyleResponse;
 import com.aliyuncs.profile.DefaultProfile;
 import com.bla.imagefetch.common.util.LoggerUtil;
+import com.bla.imagefetch.upper.service.VO.CommonAlgRequestVO;
+import com.bla.imagefetch.upper.service.VO.CommonAlgResponseVO;
 import com.bla.imagefetch.upper.service.topAlg.localSecret.CusConstants;
 import com.google.gson.Gson;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 图片风格处理 实现类
@@ -31,12 +36,12 @@ import java.io.IOException;
  * @date 2020/8/4
  */
 @Component("imageStyle")
-public class ImageStyleImpl implements ImageStyle, InitializingBean {
+public class ImageStyleImplInterface extends CommonImageAlgBase implements CommonImageAlgInterface, InitializingBean {
     /** aLiYun client */
     static IAcsClient client = null;
 
     /** 日志 */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageStyleImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageStyleImplInterface.class);
 
     /**
      * 生成url，阿里云oss的，从本地文件
@@ -46,33 +51,89 @@ public class ImageStyleImpl implements ImageStyle, InitializingBean {
      * @author blacksea3(jxt)
      * @date 2020/8/4
      * @param fileName 图片路径
-     * @return java.lang.String 生成图片url, 尽快下载, 自动下载
+     * @return javafx.util.Pair<java.lang.Boolean,java.lang.String> key:结果正确? value:信息
      */
 
-    private String genFileUrlFromLocal(String fileName){
+    private Pair<Boolean, String> genFileUrlFromLocal(String fileName){
         FileUtils fileUtils = null; //您的Access Key ID,您的Access Key Secret,
         try {
             fileUtils = FileUtils.getInstance(CusConstants.ACCESS_KEYID, CusConstants.SECRET);
         } catch (ClientException e) {
-            LoggerUtil.error(LOGGER, e, "阿里云账号登陆失败，ACCESS_KEYID/SECRET不存在或不匹配，请检查\n",
-                    "ACCESS_KEYID:", CusConstants.ACCESS_KEYID,
-                    "\nSECRET:", CusConstants.SECRET);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("阿里云账号登陆失败，ACCESS_KEYID/SECRET不存在或不匹配，请检查, ");
+            stringBuilder.append("ACCESS_KEYID:");
+            stringBuilder.append(CusConstants.ACCESS_KEYID);
+            stringBuilder.append(", SECRET:");
+            stringBuilder.append(CusConstants.SECRET);
+            String ret = stringBuilder.toString();
+            LoggerUtil.error(LOGGER, e, ret);
+            return new Pair<>(false, ret);
         }
 
         String ossurl = null;
         try {
             ossurl = fileUtils.upload(fileName);
         } catch (ClientException e) {
-            LoggerUtil.error(LOGGER, e, "文件上传失败");
-            return null;
+            LoggerUtil.error(LOGGER, e, "文件生成url失败", fileName);
+            return new Pair<>(false, "文件生成url失败" + fileName);
             //e.printStackTrace();
         } catch (IOException e) {
-            LoggerUtil.error(LOGGER, e, "文件找不到");
-            return null;
+            LoggerUtil.error(LOGGER, e, "文件找不到", fileName);
+            return new Pair<>(false, "文件找不到" + fileName);
             //e.printStackTrace();
         }
         LoggerUtil.info(LOGGER, "成功生成url:", ossurl);
-        return ossurl;
+        return new Pair<>(true, ossurl);
+    }
+
+    /**
+     * 执行, 对外接口实现
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/11
+     * @param commonAlgRequestVO: 请求
+     * @return com.bla.imagefetch.upper.service.VO.CommonAlgResponseVO 结果
+     */
+    @Override
+    public CommonAlgResponseVO exec(CommonAlgRequestVO commonAlgRequestVO) {
+        CommonAlgResponseVO commonAlgResponseVO = new CommonAlgResponseVO();
+        Map<String, String> content = commonAlgRequestVO.getContent();
+        Map<String, String> result = new HashMap<>();
+
+        if (content == null){
+            commonAlgResponseVO.setSuccess(false);
+            result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.INPUT_FIELD_MISS.getInfo());
+            result.put(RESPONSE_DETAIL_KEY, null);
+            commonAlgResponseVO.setResult(result);
+            return commonAlgResponseVO;
+        }
+
+        String source = content.get("source");
+        String ref = content.get("ref");
+
+        if (source == null || ref == null){
+            commonAlgResponseVO.setSuccess(false);
+            result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.INPUT_FIELD_MISS.getInfo());
+            result.put(RESPONSE_DETAIL_KEY, null);
+            commonAlgResponseVO.setResult(result);
+            return commonAlgResponseVO;
+        }
+
+        Pair<Boolean, String> ret = changeImageStyle(source, ref);
+
+        if (ret.getKey()){
+            commonAlgResponseVO.setSuccess(true);
+            result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.SUCCESS.getInfo());
+            result.put(RESPONSE_DETAIL_KEY, ret.getValue());
+            commonAlgResponseVO.setResult(result);
+            return commonAlgResponseVO;
+        }else {
+            commonAlgResponseVO.setSuccess(false);
+            result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.INTERNAL_ALG_ERROR.getInfo());
+            result.put(RESPONSE_DETAIL_KEY, ret.getValue());
+            commonAlgResponseVO.setResult(result);
+            return commonAlgResponseVO;
+        }
     }
 
     /**
@@ -82,10 +143,9 @@ public class ImageStyleImpl implements ImageStyle, InitializingBean {
      * @date 2020/8/4
      * @param sourceImageFileName: 源文件路径
      * @param refImageFileName: 参考文件路径
-     * @return java.lang.String 生成图片url, 尽快下载, 自动下载
+     * @return javafx.util.Pair<java.lang.Boolean,java.lang.String> key:结果正确? value:信息
      */
-    @Override
-    public String changeImageStyle(String sourceImageFileName, String refImageFileName) throws IOException, ClientException {
+    private Pair<Boolean, String> changeImageStyle(String sourceImageFileName, String refImageFileName){
         DefaultProfile profile = DefaultProfile.getProfile(
                 "cn-shanghai",             //默认
                 CusConstants.ACCESS_KEYID,         //您的Access Key ID,
@@ -95,8 +155,17 @@ public class ImageStyleImpl implements ImageStyle, InitializingBean {
 
         ImitatePhotoStyleRequest request = new ImitatePhotoStyleRequest();
         request.setRegionId("cn-shanghai");
-        request.setImageURL(genFileUrlFromLocal(sourceImageFileName));
-        request.setStyleUrl(genFileUrlFromLocal(refImageFileName));
+        Pair<Boolean, String> res1 = genFileUrlFromLocal(sourceImageFileName);
+        if (!res1.getKey()){
+            return new Pair<>(false, res1.getValue());
+        }
+        request.setImageURL(res1.getValue());
+
+        Pair<Boolean, String> res2 = genFileUrlFromLocal(refImageFileName);
+        if (!res2.getKey()){
+            return new Pair<>(false, res2.getValue());
+        }
+        request.setStyleUrl(res2.getValue());
 
         String ret = null;
 
@@ -106,17 +175,14 @@ public class ImageStyleImpl implements ImageStyle, InitializingBean {
             ret = response.getData().getImageURL();
         } catch (ServerException e) {
             LoggerUtil.error(LOGGER, e,"图片处理失败");
-            return null;
-            //e.printStackTrace();
+            return new Pair<>(false, "图片处理失败" + e.getErrMsg());
         } catch (ClientException e) {
-            LoggerUtil.error(LOGGER, "图片处理失败, ErrCode:", e.getErrCode(),
-                    "\tErrMsg:", e.getErrMsg(),
-                    "\te.getErrMsg():", e.getRequestId());
-            return null;
+            String temp = "图片处理失败, ErrCode:" + e.getErrCode() + ", ErrMsg:" + e.getErrMsg() + ", RequestId:" + e.getRequestId();
+            LoggerUtil.error(LOGGER, temp);
+            return new Pair<>(false, temp);
         }
-        return ret;
+        return new Pair<>(true, ret);
     }
-
 
     /**
      * 获取结果
@@ -163,6 +229,6 @@ public class ImageStyleImpl implements ImageStyle, InitializingBean {
 
     @Override
     public void afterPropertiesSet(){
-        LoggerUtil.info(LOGGER, "Bean of ImageStyleImpl has been initialized!");
+        LoggerUtil.info(LOGGER, "Bean of ImageStyleImplInterface has been initialized!");
     }
 }
