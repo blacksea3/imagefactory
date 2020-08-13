@@ -38,6 +38,9 @@ public class ImageStyleTest extends BaseTest {
     @Resource(name = "imitatePhotoStyle")
     private CommonImageAlgInterface imitatePhotoStyle;
 
+    @Resource(name = "recoverImage")
+    private CommonImageAlgInterface recoverImage;
+
     @Autowired
     private GlobalConstant globalConstant;
 
@@ -51,6 +54,26 @@ public class ImageStyleTest extends BaseTest {
         content.put("res", resFileName);
         commonAlgRequestVO.setContent(content);
         CommonAlgResponseVO commonAlgResponseVO = imitatePhotoStyle.exec(commonAlgRequestVO);
+
+        Assertions.assertTrue(commonAlgResponseVO.isSuccess());
+
+        Map<String, String> ret = commonAlgResponseVO.getResult();
+
+        Assertions.assertEquals(ret.get("info"), "正确");
+
+        LoggerUtil.info(LOGGER, ret.get("detail"));
+    }
+
+    @Test
+    public void testRecoverImage(){
+        CommonAlgRequestVO commonAlgRequestVO = new CommonAlgRequestVO();
+        Map<String, String> content = new HashMap<>();
+        content.put("source", "E:\\imageFactory\\newImages\\recoverImage\\source.jpg");
+        content.put("color", "FFFFFF");
+        String resFileName = "E:\\imageFactory\\newImages\\recoverImage\\res" + new Date().getTime() + ".jpg";
+        content.put("res", resFileName);
+        commonAlgRequestVO.setContent(content);
+        CommonAlgResponseVO commonAlgResponseVO = recoverImage.exec(commonAlgRequestVO);
 
         Assertions.assertTrue(commonAlgResponseVO.isSuccess());
 

@@ -1,15 +1,12 @@
 package com.bla.imagefetch.upper.service.topAlg.aliyun;
 
-import com.alibaba.fastjson.JSON;
-import com.aliyun.com.viapi.FileUtils;
-import com.aliyuncs.AcsResponse;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
-import com.aliyuncs.RpcAcsRequest;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.exceptions.ServerException;
-import com.aliyuncs.imageenhan.model.v20190930.ImitatePhotoStyleRequest;
 import com.aliyuncs.imageenhan.model.v20190930.ImitatePhotoStyleResponse;
+import com.aliyuncs.imageenhan.model.v20190930.RecolorImageRequest;
+import com.aliyuncs.imageenhan.model.v20190930.RecolorImageResponse;
 import com.aliyuncs.profile.DefaultProfile;
 import com.bla.imagefetch.common.util.FileUtil;
 import com.bla.imagefetch.common.util.LoggerUtil;
@@ -23,32 +20,84 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * 图片风格处理 实现类
- *
- * 调阿里云API
- * 接口层
+ * RecoverImage 色彩迁移
+ * 阿里云:https://vision.aliyun.com/experience/detail?spm=a211p3.14471187.J_7524944390.55.4eb4797dAaGzjU&tagName=imageenhan&children=RecolorImage
  *
  * @author blacksea3(jxt)
- * @date 2020/8/4
+ * @date 2020/8/13 23:31
  */
-@Component("imitatePhotoStyle")
-public class ImitatePhotoStyle extends CommonImageAlgBase implements CommonImageAlgInterface, InitializingBean {
+@Component("recoverImage")
+public class RecoverImage extends CommonImageAlgBase implements CommonImageAlgInterface, InitializingBean {
     /** aLiYun client */
     static IAcsClient client = null;
 
-    /** 日志 */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImitatePhotoStyle.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(RecoverImage.class);
+    
+    /**
+     * Description: 色彩迁移，使用色彩模板
+     * 
+     * @author blacksea3(jxt)
+     * @date 2020/8/13
+     * @param imageName: 图片名
+     * @param color: 颜色
+     * @return javafx.util.Pair<java.lang.Boolean,java.lang.String> true,null 或者 false,错误原因
+     */
+    private Pair<Boolean, String> recoverImage(String imageName, String color){
+        DefaultProfile profile = DefaultProfile.getProfile(
+                "cn-shanghai",             //默认
+                CusConstants.ACCESS_KEYID,         //您的Access Key ID,
+                CusConstants.SECRET);    //您的Access Key Secret,
+
+        client = new DefaultAcsClient(profile);
+
+        RecolorImageRequest request = new RecolorImageRequest();
+        request.setRegionId("cn-shanghai");
+        Pair<Boolean, String> res1 = genFileUrlFromLocal(imageName);
+        if (!res1.getKey()){
+            return new Pair<>(false, res1.getValue());
+        }
+        request.setUrl(res1.getValue());
+        request.setMode("TEMPLATE");
+
+        List<RecolorImageRequest.ColorTemplate> colorTemplateList = new ArrayList<>();
+
+        RecolorImageRequest.ColorTemplate colorTemplate1 = new RecolorImageRequest.ColorTemplate();
+        colorTemplate1.setColor(color);
+        colorTemplateList.add(colorTemplate1);
+        request.setColorTemplates(colorTemplateList);
+
+        String ret = null;
+        try {
+            RecolorImageResponse response = client.getAcsResponse(request);
+            LoggerUtil.info(LOGGER, "图片处理结果", new Gson().toJson(response));
+            List<String> rawRets = response.getData().getImageList();
+            if (rawRets.size() != 1){
+                LoggerUtil.error(LOGGER, "返回图片数量不为1, 返回信息为:", new Gson().toJson(response));
+                return new Pair<>(false, "返回图片数量不为1, 返回信息为:" + new Gson().toJson(response));
+            }
+            ret = rawRets.get(0);
+        } catch (ServerException e) {
+            LoggerUtil.error(LOGGER, e,"图片处理失败");
+            return new Pair<>(false, "图片处理失败" + e.getErrMsg());
+        } catch (ClientException e) {
+            String temp = "图片处理失败, ErrCode:" + e.getErrCode() + ", ErrMsg:" + e.getErrMsg() + ", RequestId:" + e.getRequestId();
+            LoggerUtil.error(LOGGER, temp);
+            return new Pair<>(false, temp);
+        }
+        return new Pair<>(true, ret);
+    }
 
     /**
-     * 执行, 对外接口实现
+     * Description: 指定:对外接口
      *
      * @author blacksea3(jxt)
-     * @date 2020/8/11
+     * @date 2020/8/13
      * @param commonAlgRequestVO: 请求
      * @return com.bla.imagefetch.upper.service.VO.CommonAlgResponseVO 结果
      */
@@ -69,10 +118,10 @@ public class ImitatePhotoStyle extends CommonImageAlgBase implements CommonImage
         }
 
         String source = content.get("source");
-        String ref = content.get("ref");
         String res = content.get("res");
+        String color = content.get("color");
 
-        if (source == null || ref == null || res == null){
+        if (source == null || res == null){
             commonAlgResponseVO.setSuccess(false);
             result.put(RESPONSE_INFO_KEY, RESPONSE_INFO_ENUM.INPUT_FIELD_MISS.getInfo());
             result.put(RESPONSE_DETAIL_KEY, null);
@@ -81,7 +130,7 @@ public class ImitatePhotoStyle extends CommonImageAlgBase implements CommonImage
         }
 
         //执行算法
-        Pair<Boolean, String> ret = changeImageStyle(source, ref);
+        Pair<Boolean, String> ret = recoverImage(source, color);
 
         //结果分析与图片下载
         if (ret.getKey()){
@@ -105,56 +154,8 @@ public class ImitatePhotoStyle extends CommonImageAlgBase implements CommonImage
         return commonAlgResponseVO;
     }
 
-    /**
-     * 修改图片风格
-     *
-     * @author blacksea3(jxt)
-     * @date 2020/8/4
-     * @param sourceImageFileName: 源文件路径
-     * @param refImageFileName: 参考文件路径
-     * @return javafx.util.Pair<java.lang.Boolean,java.lang.String> key:结果正确? value:信息
-     */
-    private Pair<Boolean, String> changeImageStyle(String sourceImageFileName, String refImageFileName){
-        DefaultProfile profile = DefaultProfile.getProfile(
-                "cn-shanghai",             //默认
-                CusConstants.ACCESS_KEYID,         //您的Access Key ID,
-                CusConstants.SECRET);    //您的Access Key Secret,
-
-        client = new DefaultAcsClient(profile);
-
-        ImitatePhotoStyleRequest request = new ImitatePhotoStyleRequest();
-        request.setRegionId("cn-shanghai");
-        Pair<Boolean, String> res1 = genFileUrlFromLocal(sourceImageFileName);
-        if (!res1.getKey()){
-            return new Pair<>(false, res1.getValue());
-        }
-        request.setImageURL(res1.getValue());
-
-        Pair<Boolean, String> res2 = genFileUrlFromLocal(refImageFileName);
-        if (!res2.getKey()){
-            return new Pair<>(false, res2.getValue());
-        }
-        request.setStyleUrl(res2.getValue());
-
-        String ret = null;
-
-        try {
-            ImitatePhotoStyleResponse response = client.getAcsResponse(request);
-            LoggerUtil.info(LOGGER, "图片处理结果", new Gson().toJson(response));
-            ret = response.getData().getImageURL();
-        } catch (ServerException e) {
-            LoggerUtil.error(LOGGER, e,"图片处理失败");
-            return new Pair<>(false, "图片处理失败" + e.getErrMsg());
-        } catch (ClientException e) {
-            String temp = "图片处理失败, ErrCode:" + e.getErrCode() + ", ErrMsg:" + e.getErrMsg() + ", RequestId:" + e.getRequestId();
-            LoggerUtil.error(LOGGER, temp);
-            return new Pair<>(false, temp);
-        }
-        return new Pair<>(true, ret);
-    }
-
     @Override
-    public void afterPropertiesSet(){
-        LoggerUtil.info(LOGGER, "Bean of ImitatePhotoStyle has been initialized!");
+    public void afterPropertiesSet() throws Exception {
+
     }
 }
