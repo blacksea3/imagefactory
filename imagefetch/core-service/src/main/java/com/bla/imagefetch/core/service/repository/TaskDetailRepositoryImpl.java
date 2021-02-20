@@ -27,7 +27,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     TaskDetailDOMapper taskDetailDOMapper;
 
     /** 原子任务状态枚举类，初始化，准备态，成功态，失败态 */
-    private enum taskDetailStatus{
+    public enum taskDetailStatus{
         INIT("init"),
         READY("ready"),
         SUCCESS("success"),
@@ -37,19 +37,24 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
         taskDetailStatus(String val){
             this._val = val;
         }
+
+        public String get_val() {
+            return _val;
+        }
     };
 
     @Override
-    public Long insert(TaskDetailDO entity) {
+    public Integer insert(TaskDetailDO entity) {
         if (entity.getId() == null){
-            return taskDetailDOMapper.insertWithoutID(entity);
+            taskDetailDOMapper.insertWithoutID(entity);
+            return entity.getId();
         }else{
             return taskDetailDOMapper.insertWithID(entity);
         }
     }
 
     @Override
-    public Long updateFields(TaskDetailDO entity) {
+    public Integer updateFields(TaskDetailDO entity) {
         if (entity.getId() == null){
             return null;
         }else{
@@ -58,7 +63,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long setReadyStatus(Integer id) {
+    public Integer setReadyStatus(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -70,7 +75,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long setSuccessStatus(Integer id) {
+    public Integer setSuccessStatus(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -82,7 +87,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long setFailStatus(Integer id) {
+    public Integer setFailStatus(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -94,7 +99,7 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
     }
 
     @Override
-    public Long deleteById(Integer id) {
+    public Integer deleteById(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -127,6 +132,32 @@ public class TaskDetailRepositoryImpl implements TaskDetailRepository, Initializ
         }else{
             //注意参数顺序
             return taskDetailDOMapper.queryByInstanceNameAndStatus(status, instanceName);
+        }
+    }
+
+    @Override
+    public boolean setSuccessStatusAndUpdateResult(Integer id, String result) {
+        if (id == null){
+            return false;
+        }else{
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setId(id);
+            taskDetailDO.setStatus(taskDetailStatus.SUCCESS._val);
+            taskDetailDO.setResult(result);
+            return taskDetailDOMapper.updateAll(taskDetailDO) == 1;
+        }
+    }
+
+    @Override
+    public boolean setFailStatusAndUpdateResult(Integer id, String result) {
+        if (id == null){
+            return false;
+        }else{
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setId(id);
+            taskDetailDO.setStatus(taskDetailStatus.FAIL._val);
+            taskDetailDO.setResult(result);
+            return taskDetailDOMapper.updateAll(taskDetailDO) == 1;
         }
     }
 

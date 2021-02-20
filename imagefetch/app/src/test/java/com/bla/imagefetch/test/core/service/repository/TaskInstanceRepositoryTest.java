@@ -1,11 +1,13 @@
 package com.bla.imagefetch.test.core.service.repository;
 
+import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigDO;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO;
 import com.bla.imagefetch.common.util.LoggerUtil;
-import com.bla.imagefetch.core.service.repository.TaskDetailRepository;
-import com.bla.imagefetch.core.service.repository.TaskInstanceRepository;
+import com.bla.imagefetch.core.service.repository.*;
+import com.bla.imagefetch.test.BaseTest;
+import javafx.concurrent.Task;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ import java.util.List;
  * @date 2020/7/26 22:52
  */
 @SpringBootTest
-public class TaskInstanceRepositoryTest {
+public class TaskInstanceRepositoryTest extends BaseTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TaskInstanceRepositoryTest.class);
 
@@ -33,6 +35,12 @@ public class TaskInstanceRepositoryTest {
 
     @Autowired
     private TaskDetailRepository taskDetailRepository;
+
+    @Autowired
+    private ServiceConfigRepository serviceConfigRepository;
+
+    @Autowired
+    private TaskConfigRepository taskConfigRepository;
 
     /**
      * Description: 简单测试:删除和单项带Id插入
@@ -310,7 +318,153 @@ public class TaskInstanceRepositoryTest {
             //删除数据
             Assertions.assertEquals(1, taskInstanceRepository.deleteById(-1));
         }
+    }
 
+    @Test
+    void testInsertTaskInstanceAndTaskDetailForImages(){
+        {
+            List<String> files = new ArrayList<>();
+            files.add("ddd");
+            //参数存在null
+            Assertions.assertFalse(taskInstanceRepository.insertTaskInstanceAndTaskDetailForImages(null, files, "", ""));
+            Assertions.assertFalse(taskInstanceRepository.insertTaskInstanceAndTaskDetailForImages("", null, "", ""));
+            Assertions.assertFalse(taskInstanceRepository.insertTaskInstanceAndTaskDetailForImages("", files, null, ""));
+            Assertions.assertFalse(taskInstanceRepository.insertTaskInstanceAndTaskDetailForImages("", files, "", null));
+
+            //files为空列表
+            files.clear();
+            Assertions.assertFalse(taskInstanceRepository.insertTaskInstanceAndTaskDetailForImages("", files, "", ""));
+        }
+
+        {
+            //正常
+            List<String> files = new ArrayList<>();
+            files.add("test_filename_1");
+            files.add("test_filename_2");
+
+            Assertions.assertTrue(
+                    taskInstanceRepository.insertTaskInstanceAndTaskDetailForImages(
+                            "example_dir", files, "example_service_config_name", "example_task_config_name")
+            );
+
+            TaskInstanceDO expected = new TaskInstanceDO();
+            expected.setTotalNum(files.size());
+            expected.setHandleNum(0);
+            expected.setStatus("init");
+            expected.setPriority(1);
+            expected.setDescription("");
+            expected.setServiceName("example_service_config_name");
+            expected.setConfigName("example_task_config_name");
+            expected.setName("example_dir");
+
+            TaskInstanceDO actual = taskInstanceRepository.queryByName("example_dir");
+            Assertions.assertTrue(compareTaskInstanceDOWithoutID(expected, actual));
+
+            TaskDetailRepositoryTest taskDetailRepositoryTest = new TaskDetailRepositoryTest();
+
+            List<TaskDetailDO> actuals = taskDetailRepository.queryByInstanceNameAndStatus("example_dir", null);
+
+            Assertions.assertEquals(2, actuals.size());
+
+            for (String filename:files){
+                TaskDetailDO taskDetailDO = new TaskDetailDO();
+                taskDetailDO.setStatus(TaskDetailRepositoryImpl.taskDetailStatus.INIT.get_val());
+                taskDetailDO.setScript("");
+                taskDetailDO.setExtInfo("");
+                taskDetailDO.setServiceName("example_service_config_name");
+                taskDetailDO.setInstanceName("example_dir");
+                taskDetailDO.setContent(filename);
+
+                Assertions.assertTrue(taskDetailRepositoryTest.compareTaskDetailDOWithoutID(taskDetailDO, actuals.get(0)) ||
+                        taskDetailRepositoryTest.compareTaskDetailDOWithoutID(taskDetailDO, actuals.get(1)));
+            }
+
+            Assertions.assertEquals(1, taskInstanceRepository.deleteById(actual.getId()));
+            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(0).getId()));
+            Assertions.assertEquals(1, taskDetailRepository.deleteById(actuals.get(1).getId()));
+        }
+    }
+
+    @Test
+    void testQueryAllTaskInstances(){
+        List<TaskInstanceDO> expectedArray = new ArrayList<>();
+
+        for (int i = 0; i < 4; ++i){
+            TaskInstanceDO expected = new TaskInstanceDO();
+            expected.setTotalNum(3);
+            expected.setHandleNum(0);
+            if (i == 0){
+                expected.setStatus("init");
+            }else if (i == 1){
+                expected.setStatus("disable");
+            }else if (i == 2){
+                expected.setStatus("running");
+            }else{
+                expected.setStatus("finish");
+            }
+
+            expected.setPriority(1);
+            expected.setDescription("");
+            expected.setServiceName("example_service_config_name");
+            expected.setConfigName("example_task_config_name");
+            expected.setName("example_dir" + String.valueOf(i));
+            expectedArray.add(expected);
+
+            {
+                TaskInstanceDO temp = taskInstanceRepository.queryByName("example_dir" + String.valueOf(i));
+                if (temp != null){
+                    taskInstanceRepository.deleteById(temp.getId());
+                }
+            }
+            Assertions.assertNotNull(taskInstanceRepository.insert(expected));
+        }
+
+        List<TaskInstanceDO> actual = taskInstanceRepository.queryAllTaskInstances();
+
+        Assertions.assertEquals(actual.size(), expectedArray.size());
+        for (TaskInstanceDO right:actual){
+            boolean find = false;
+            for (TaskInstanceDO left:expectedArray){
+                if (compareTaskInstanceDOWithoutID(left, right)){
+                    find = true;
+                    break;
+                }
+            }
+            Assertions.assertTrue(find);
+        }
+
+        for (TaskInstanceDO right:actual){
+            Assertions.assertEquals(1, taskInstanceRepository.deleteById(right.getId()));
+        }
+    }
+
+    @Test
+    public void testEnableTaskInstance(){
+        TaskInstanceDO expected = new TaskInstanceDO();
+        expected.setTotalNum(6);
+        expected.setHandleNum(0);
+        expected.setStatus("disable");
+        expected.setPriority(1);
+        expected.setDescription("");
+        expected.setServiceName("example_service_config_name");
+        expected.setConfigName("example_task_config_name");
+        expected.setName("example_dir");
+
+        {
+            TaskInstanceDO temp = taskInstanceRepository.queryByName("example_dir");
+            if (temp != null){
+                taskInstanceRepository.deleteById(temp.getId());
+            }
+        }
+
+        Assertions.assertNotNull(taskInstanceRepository.insert(expected));
+        Assertions.assertEquals(1, taskInstanceRepository.enableTaskInstance(expected.getId()));
+
+        expected.setStatus("init");
+
+        Assertions.assertTrue(compareTaskInstanceDO(expected, taskInstanceRepository.queryById(expected.getId())));
+
+        Assertions.assertEquals(1, taskInstanceRepository.deleteById(expected.getId()));
     }
 
     /**
@@ -338,6 +492,33 @@ public class TaskInstanceRepositoryTest {
                     (expected.getTotalNum().equals(actual.getTotalNum())) &&
                     (expected.getPriority().equals(actual.getPriority())) &&
                     (expected.getStatus().equals(actual.getStatus()));
+        }
+    }
+
+    /**
+     * Description: 比较两个任务实例, 不带ID
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/7/26
+     * @param expected: 期待
+     * @param actual: 实际
+     * @return boolean 结果
+     */
+    public boolean compareTaskInstanceDOWithoutID(TaskInstanceDO expected, TaskInstanceDO actual){
+        if (expected == null){
+            return actual == null;
+        }else{
+            if (actual == null){
+                return false;
+            }
+            return ((expected.getDescription().equals(actual.getDescription())) &&
+                    (expected.getConfigName().equals(actual.getConfigName())) &&
+                    (expected.getServiceName().equals(actual.getServiceName())) &&
+                    (expected.getName().equals(actual.getName())) &&
+                    (expected.getHandleNum().equals(actual.getHandleNum())) &&
+                    (expected.getTotalNum().equals(actual.getTotalNum())) &&
+                    (expected.getPriority().equals(actual.getPriority())) &&
+                    (expected.getStatus().equals(actual.getStatus())));
         }
     }
 

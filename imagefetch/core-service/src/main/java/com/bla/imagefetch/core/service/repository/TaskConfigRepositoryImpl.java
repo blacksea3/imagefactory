@@ -9,6 +9,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * ClassName TaskConfigRepositoryImpl
  * 任务配置仓库 实现类
@@ -30,16 +32,17 @@ public class TaskConfigRepositoryImpl implements TaskConfigRepository, Initializ
     }
 
     @Override
-    public Long insert(TaskConfigDO taskConfigDO) {
+    public Integer insert(TaskConfigDO taskConfigDO) {
         if (taskConfigDO.getId() == null){
-            return taskConfigDOMapper.insertWithoutID(taskConfigDO);
+            taskConfigDOMapper.insertWithoutID(taskConfigDO);
+            return taskConfigDO.getId();
         }else{
             return taskConfigDOMapper.insertWithID(taskConfigDO);
         }
     }
 
     @Override
-    public Long update(TaskConfigDO taskConfigDO) {
+    public Integer update(TaskConfigDO taskConfigDO) {
         if (taskConfigDO.getId() == null){
             return null;
         }else{
@@ -48,7 +51,7 @@ public class TaskConfigRepositoryImpl implements TaskConfigRepository, Initializ
     }
 
     @Override
-    public Long deleteById(Integer id) {
+    public Integer deleteById(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -72,5 +75,10 @@ public class TaskConfigRepositoryImpl implements TaskConfigRepository, Initializ
         }else{
             return taskConfigDOMapper.queryByName(name);
         }
+    }
+
+    @Override
+    public List<TaskConfigDO> queryAll() {
+        return taskConfigDOMapper.queryAll();
     }
 }

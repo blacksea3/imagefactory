@@ -32,7 +32,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <!-- this is needed or IntelliJ gives junit.jar-->
             <groupId>org.junit.platform</groupId>
@@ -40,6 +39,13 @@
             <scope>test</scope>
         </dependency>
         <!-- springboot测试 end -->
+
+        <!-- springboot web start 给文件上传与下载用的 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- springboot web end -->
 
     </dependencies>
 

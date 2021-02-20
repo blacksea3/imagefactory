@@ -4,6 +4,7 @@ import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.ServiceConfigD
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.ServiceConfigRepository;
+import com.bla.imagefetch.test.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import java.util.List;
  * @date 2020/7/26 22:52<br/>
  */
 @SpringBootTest
-public class ServiceConfigRepositoryTest {
+public class ServiceConfigRepositoryTest extends BaseTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ServiceConfigRepositoryTest.class);
 
@@ -122,7 +123,7 @@ public class ServiceConfigRepositoryTest {
      * @param actual: 实际
      * @return boolean 结果
      */
-    private boolean compareServiceConfigDO(ServiceConfigDO expected, ServiceConfigDO actual){
+    public boolean compareServiceConfigDO(ServiceConfigDO expected, ServiceConfigDO actual){
         if (expected == null){
             return actual == null;
         }else{
@@ -135,6 +136,30 @@ public class ServiceConfigRepositoryTest {
                     (expected.getBeanType().equals(actual.getBeanType())) &&
                     (expected.getName().equals(actual.getName())) &&
                     (expected.getSysName().equals(actual.getSysName()));
+        }
+    }
+
+    /**
+     * Description: 比较两个服务配置, 不带ID
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/7/26
+     * @param expected: 期待
+     * @param actual: 实际
+     * @return boolean 结果
+     */
+    public static boolean compareServiceConfigDOWithoutID(ServiceConfigDO expected, ServiceConfigDO actual){
+        if (expected == null){
+            return actual == null;
+        }else{
+            if (actual == null){
+                return false;
+            }
+            return ((expected.getBeanName().equals(actual.getBeanName())) &&
+                    (expected.getExtInfo().equals(actual.getExtInfo())) &&
+                    (expected.getBeanType().equals(actual.getBeanType())) &&
+                    (expected.getName().equals(actual.getName())) &&
+                    (expected.getSysName().equals(actual.getSysName())));
         }
     }
 

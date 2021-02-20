@@ -79,7 +79,7 @@
     <extParams>
         <extParam name="Repository" value="true"/>
         <!-- insert update delete 返回结果 -->
-        <extParam name="IUD" value="Long"/>
+        <extParam name="IUD" value="Integer"/>
         <!-- DOMapp name中默认出现DO，如需不出现则将DO去掉即可  -->
         <extParam name="DoMapperName" value="DO"/>
         <!--默认DAO中方法参数排序，设定为false时与xml模板中顺序一致-->

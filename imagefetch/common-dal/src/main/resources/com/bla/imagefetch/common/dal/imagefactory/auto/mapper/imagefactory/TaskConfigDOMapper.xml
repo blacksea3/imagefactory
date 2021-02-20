@@ -110,7 +110,7 @@
         ]]>
     </select>
 
-    <!--根据普通索引Name获取数据:task_detail-->
+    <!--根据普通索引Name获取数据:task_config-->
     <select id="queryByName" resultMap="BaseResultMap" >
         SELECT /*MS-TASK-CONFIG-QUERYBYNAME*/  <include refid="Base_Column_List" />
         FROM task_config
@@ -118,5 +118,11 @@
         <![CDATA[
             NAME   = #{name,jdbcType=VARCHAR}
         ]]>
+    </select>
+
+    <!--查询所有任务配置-->
+    <select id="queryAll" resultMap="BaseResultMap" >
+        SELECT /*MS-TASK-CONFIG-QUERYALL*/  <include refid="Base_Column_List" />
+        FROM task_config
     </select>
 </mapper>

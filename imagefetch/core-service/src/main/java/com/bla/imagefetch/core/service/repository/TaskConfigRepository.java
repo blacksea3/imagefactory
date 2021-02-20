@@ -2,6 +2,8 @@ package com.bla.imagefetch.core.service.repository;
 
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
 
+import java.util.List;
+
 /**
  * InterfaceName TaskConfigRepository
  * 任务配置仓库接口
@@ -10,9 +12,10 @@ import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
  * @date 2020/7/26 23:06
  */
 public interface TaskConfigRepository {
-    Long insert(TaskConfigDO taskConfigDO);
-    Long update(TaskConfigDO taskConfigDO);
-    Long deleteById(Integer id);
+    Integer insert(TaskConfigDO taskConfigDO);
+    Integer update(TaskConfigDO taskConfigDO);
+    Integer deleteById(Integer id);
     TaskConfigDO queryById(Integer id);
     TaskConfigDO queryByName(String name);
+    List<TaskConfigDO> queryAll();
 }

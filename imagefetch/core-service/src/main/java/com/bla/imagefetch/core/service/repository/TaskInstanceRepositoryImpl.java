@@ -28,8 +28,9 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TaskInstanceRepositoryImpl.class);
 
-    /** 任务实例状态枚举类，初始化，运行态，结束态 */
+    /** 任务实例状态枚举类，未激活，初始化，运行态，结束态 */
     private enum taskInstanceStatus{
+        DISABLE("disable"),
         INIT("init"),
         RUNNING("running"),
         FINISH("finish");
@@ -55,16 +56,17 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     }
 
     @Override
-    public Long insert(TaskInstanceDO taskInstanceDO) {
+    public Integer insert(TaskInstanceDO taskInstanceDO) {
         if (taskInstanceDO.getId() == null){
-            return taskInstanceDOMapper.insertWithoutID(taskInstanceDO);
+            taskInstanceDOMapper.insertWithoutID(taskInstanceDO);
+            return taskInstanceDO.getId();
         }else{
             return taskInstanceDOMapper.insertWithID(taskInstanceDO);
         }
     }
 
     @Override
-    public Long update(TaskInstanceDO taskInstanceDO) {
+    public Integer update(TaskInstanceDO taskInstanceDO) {
         if (taskInstanceDO.getId() == null){
             return null;
         }else{
@@ -73,7 +75,7 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
     }
 
     @Override
-    public Long deleteById(Integer id) {
+    public Integer deleteById(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -101,8 +103,11 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
 
     @Override
     public TaskInstanceDO queryHighestPriority() {
-        List<TaskInstanceDO> taskInstanceDOS = taskInstanceDOMapper.queryTaskInstanceNotEqualSpecificStatus(
-                taskInstanceStatus.FINISH._val, 1);
+        List<String> statusList = new ArrayList<>();
+        statusList.add(taskInstanceStatus.INIT._val);
+        statusList.add(taskInstanceStatus.RUNNING._val);
+        List<TaskInstanceDO> taskInstanceDOS = taskInstanceDOMapper.queryTaskInstanceEqualStatusList(
+                1, statusList);
         if (taskInstanceDOS.size() == 0){
             return null;
         }
@@ -182,5 +187,95 @@ public class TaskInstanceRepositoryImpl implements TaskInstanceRepository, Initi
                 return res;
             }
         }
+    }
+
+    /**
+     * 事务:RC, 双写:任务示例和原子任务，针对图片任务设置
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/3
+     * @param files: 文件们
+     * @param directory 文件夹
+     * @param serviceConfig 服务配置名
+     * @param taskConfig 任务配置名
+     * @return boolean
+     */
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public boolean insertTaskInstanceAndTaskDetailForImages(String directory, List<String> files, String serviceConfig, String taskConfig) {
+        if (directory == null || files == null || serviceConfig == null || taskConfig == null){
+            return false;
+        }
+
+        if (files.isEmpty()){   //空的, 无需添加任务
+            return false;
+        }
+
+        TaskInstanceDO taskInstanceDO = new TaskInstanceDO();
+
+        taskInstanceDO.setTotalNum(files.size());
+        taskInstanceDO.setHandleNum(0);
+        taskInstanceDO.setStatus(taskInstanceStatus.DISABLE._val);
+        taskInstanceDO.setPriority(1);
+        taskInstanceDO.setDescription("");
+        taskInstanceDO.setServiceName(serviceConfig);
+        taskInstanceDO.setConfigName(taskConfig);
+        taskInstanceDO.setName(directory);
+
+        taskInstanceDOMapper.insertWithoutID(taskInstanceDO);
+
+        for (String filename:files){
+            TaskDetailDO taskDetailDO = new TaskDetailDO();
+            taskDetailDO.setStatus(TaskDetailRepositoryImpl.taskDetailStatus.INIT.get_val());
+            taskDetailDO.setScript("");
+            taskDetailDO.setExtInfo("");
+            taskDetailDO.setServiceName(serviceConfig);
+            taskDetailDO.setInstanceName(directory);
+            taskDetailDO.setContent(filename);
+
+            taskDetailDOMapper.insertWithoutID(taskDetailDO);
+        }
+
+        return true;
+    }
+
+    /**
+     * Description: 查询所有任务实例(含状态要求)
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/8
+
+     * @return java.util.List<com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskInstanceDO>
+     */
+    @Override
+    public List<TaskInstanceDO> queryAllTaskInstances() {
+        List<String> status = new ArrayList<>();
+        status.add(taskInstanceStatus.DISABLE._val);
+        status.add(taskInstanceStatus.FINISH._val);
+        status.add(taskInstanceStatus.INIT._val);
+        status.add(taskInstanceStatus.RUNNING._val);
+        return taskInstanceDOMapper.queryTaskInstanceEqualStatusList(null, status);
+    }
+
+    /**
+     * Description: 激活任务: disable->init态
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/7
+     * @param id: 任务实例ID
+     * @return java.lang.Integer 更新成功数, 注:仅当任务实例确实是disable时才会更新成init
+     */
+    @Override
+    public Integer enableTaskInstance(Integer id) {
+        TaskInstanceDO taskInstanceDO = taskInstanceDOMapper.queryById(id);
+        if (taskInstanceDO == null){
+            return null;
+        }
+        if (!taskInstanceDO.getStatus().equals(taskInstanceStatus.DISABLE._val)){
+            return null;
+        }
+
+        taskInstanceDO.setStatus(taskInstanceStatus.INIT._val);
+        return taskInstanceDOMapper.updateAll(taskInstanceDO);
     }
 }

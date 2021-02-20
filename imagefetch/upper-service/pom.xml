@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>imagefetch</artifactId>
+        <groupId>com.bla</groupId>
+        <version>0.0.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>upper-service</artifactId>
+    <version>0.0.1</version>
+
+    <dependencies>
+        <!-- 项目内其他模块 start -->
+        <dependency>
+            <groupId>com.bla</groupId>
+            <artifactId>common-util</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.bla</groupId>
+            <artifactId>core-service</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <!-- 项目内其他模块 end -->
+
+        <!-- quartz start -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+        <!-- quartz end -->
+
+        <!-- spring-context-support start -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- spring-context-support end -->
+
+        <!-- 阿里云 视觉平台 公用 start -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>4.4.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.52</version>
+        </dependency>
+        <!-- 阿里云 视觉平台 公用 end -->
+
+        <!-- 图像增强 start -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-imageenhan</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+        <!-- 图像增强 end -->
+
+        <!-- 本地上传 start -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>viapi-utils</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-viapiutils</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- 本地上传 end -->
+    </dependencies>
+
+    <!-- 作用:打一个可运行的包 -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

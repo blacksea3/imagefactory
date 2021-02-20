@@ -19,41 +19,41 @@ public class TaskDetailDAO{
     /**
      * desc:不带Id插入表:task_detail.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long insertWithoutID(TaskDetailDO entity){
+    public Integer insertWithoutID(TaskDetailDO entity){
         return taskDetailDOMapper.insertWithoutID(entity);
     }
     /**
      * desc:带Id插入表:task_detail.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long insertWithID(TaskDetailDO entity){
+    public Integer insertWithID(TaskDetailDO entity){
         return taskDetailDOMapper.insertWithID(entity);
     }
     /**
      * desc:不带Id批量插入表:task_detail.<br/>
      * @param list list
-     * @return Long
+     * @return Integer
      */
-    public Long insertBatchWithoutID(List<TaskDetailDO> list){
+    public Integer insertBatchWithoutID(List<TaskDetailDO> list){
         return taskDetailDOMapper.insertBatchWithoutID(list);
     }
     /**
      * desc:根据Id和非null项部分更新表:task_detail.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long updateAll(TaskDetailDO entity){
+    public Integer updateAll(TaskDetailDO entity){
         return taskDetailDOMapper.updateAll(entity);
     }
     /**
      * desc:根据Id删除数据:task_detail.<br/>
      * @param id id
-     * @return Long
+     * @return Integer
      */
-    public Long deleteById(Integer id){
+    public Integer deleteById(Integer id){
         return taskDetailDOMapper.deleteById(id);
     }
     /**

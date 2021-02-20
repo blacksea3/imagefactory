@@ -13,39 +13,39 @@ public interface TaskDetailDOMapper{
 
     /**
      * desc:不带Id插入表:task_detail.<br/>
-     * descSql =  SELECT LAST_INSERT_ID() <![CDATA[ INSERT INTO task_detail( ID ,SCRIPT ,CONTENT ,EXT_INFO ,SERVICE_NAME ,INSTANCE_NAME ,STATUS ,GMT_CREATE ,GMT_MODIFIED )VALUES( null , #{script,jdbcType=VARCHAR} , #{content,jdbcType=VARCHAR} , #{extInfo,jdbcType=VARCHAR} , #{serviceName,jdbcType=VARCHAR} , #{instanceName,jdbcType=VARCHAR} , #{status,jdbcType=VARCHAR} , now() , now() ) ]]>
+     * descSql =  SELECT LAST_INSERT_ID() <![CDATA[ INSERT INTO task_detail( ID ,SCRIPT ,CONTENT ,EXT_INFO ,SERVICE_NAME ,INSTANCE_NAME ,STATUS ,RESULT ,GMT_CREATE ,GMT_MODIFIED )VALUES( null , #{script,jdbcType=VARCHAR} , #{content,jdbcType=VARCHAR} , #{extInfo,jdbcType=VARCHAR} , #{serviceName,jdbcType=VARCHAR} , #{instanceName,jdbcType=VARCHAR} , #{status,jdbcType=VARCHAR} , #{result,jdbcType=VARCHAR} , now() , now() ) ]]>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    Long insertWithoutID(TaskDetailDO entity);
+    Integer insertWithoutID(TaskDetailDO entity);
     /**
      * desc:带Id插入表:task_detail.<br/>
-     * descSql =  <![CDATA[ INSERT INTO task_detail( ID ,SCRIPT ,CONTENT ,EXT_INFO ,SERVICE_NAME ,INSTANCE_NAME ,STATUS ,GMT_CREATE ,GMT_MODIFIED )VALUES( #{id,jdbcType=INTEGER} , #{script,jdbcType=VARCHAR} , #{content,jdbcType=VARCHAR} , #{extInfo,jdbcType=VARCHAR} , #{serviceName,jdbcType=VARCHAR} , #{instanceName,jdbcType=VARCHAR} , #{status,jdbcType=VARCHAR} , now() , now() ) ]]>
+     * descSql =  <![CDATA[ INSERT INTO task_detail( ID ,SCRIPT ,CONTENT ,EXT_INFO ,SERVICE_NAME ,INSTANCE_NAME ,STATUS ,RESULT ,GMT_CREATE ,GMT_MODIFIED )VALUES( #{id,jdbcType=INTEGER} , #{script,jdbcType=VARCHAR} , #{content,jdbcType=VARCHAR} , #{extInfo,jdbcType=VARCHAR} , #{serviceName,jdbcType=VARCHAR} , #{instanceName,jdbcType=VARCHAR} , #{status,jdbcType=VARCHAR} , #{result,jdbcType=VARCHAR} , now() , now() ) ]]>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    Long insertWithID(TaskDetailDO entity);
+    Integer insertWithID(TaskDetailDO entity);
     /**
      * desc:不带Id批量插入表:task_detail.<br/>
-     * descSql =  INSERT INTO task_detail( ID ,SCRIPT ,CONTENT ,EXT_INFO ,SERVICE_NAME ,INSTANCE_NAME ,STATUS ,GMT_CREATE ,GMT_MODIFIED )VALUES ( null , #{item.script,jdbcType=VARCHAR} , #{item.content,jdbcType=VARCHAR} , #{item.extInfo,jdbcType=VARCHAR} , #{item.serviceName,jdbcType=VARCHAR} , #{item.instanceName,jdbcType=VARCHAR} , #{status,jdbcType=VARCHAR} , now() , now() ) 
+     * descSql =  INSERT INTO task_detail( ID ,SCRIPT ,CONTENT ,EXT_INFO ,SERVICE_NAME ,INSTANCE_NAME ,STATUS ,RESULT ,GMT_CREATE ,GMT_MODIFIED )VALUES ( null , #{item.script,jdbcType=VARCHAR} , #{item.content,jdbcType=VARCHAR} , #{item.extInfo,jdbcType=VARCHAR} , #{item.serviceName,jdbcType=VARCHAR} , #{item.instanceName,jdbcType=VARCHAR} , #{status,jdbcType=VARCHAR} , #{result,jdbcType=VARCHAR} , now() , now() ) 
      * @param list list
-     * @return Long
+     * @return Integer
      */
-    Long insertBatchWithoutID(List<TaskDetailDO> list);
+    Integer insertBatchWithoutID(List<TaskDetailDO> list);
     /**
      * desc:根据Id和非null项部分更新表:task_detail.<br/>
-     * descSql =  UPDATE task_detail SET GMT_MODIFIED = now() ,SCRIPT = #{script,jdbcType=VARCHAR} ,CONTENT = #{content,jdbcType=VARCHAR} ,EXT_INFO = #{extInfo,jdbcType=VARCHAR} ,SERVICE_NAME = #{serviceName,jdbcType=VARCHAR} ,INSTANCE_NAME = #{instanceName,jdbcType=VARCHAR} ,STATUS = #{status,jdbcType=VARCHAR} WHERE ID = #{id,jdbcType=INTEGER}
+     * descSql =  UPDATE task_detail SET GMT_MODIFIED = now() ,SCRIPT = #{script,jdbcType=VARCHAR} ,CONTENT = #{content,jdbcType=VARCHAR} ,EXT_INFO = #{extInfo,jdbcType=VARCHAR} ,SERVICE_NAME = #{serviceName,jdbcType=VARCHAR} ,INSTANCE_NAME = #{instanceName,jdbcType=VARCHAR} ,STATUS = #{status,jdbcType=VARCHAR} ,RESULT = #{result,jdbcType=VARCHAR} WHERE ID = #{id,jdbcType=INTEGER}
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    Long updateAll(TaskDetailDO entity);
+    Integer updateAll(TaskDetailDO entity);
     /**
      * desc:根据Id删除数据:task_detail.<br/>
      * descSql =  <![CDATA[ DELETE FROM task_detail WHERE ID = #{id,jdbcType=INTEGER} ]]>
      * @param id id
-     * @return Long
+     * @return Integer
      */
-    Long deleteById(Integer id);
+    Integer deleteById(Integer id);
     /**
      * desc:根据Id获取数据:task_detail.<br/>
      * descSql =  SELECT * FROM task_detail WHERE <![CDATA[ ID = #{id,jdbcType=INTEGER} ]]>

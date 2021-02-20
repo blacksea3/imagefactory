@@ -3,6 +3,7 @@ package com.bla.imagefetch.test.core.service.repository;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskDetailDO;
 import com.bla.imagefetch.common.util.LoggerUtil;
 import com.bla.imagefetch.core.service.repository.TaskDetailRepository;
+import com.bla.imagefetch.test.BaseTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
@@ -22,7 +23,7 @@ import java.util.List;
  * @date 2020/7/25 23:14
  */
 @SpringBootTest
-public class TaskDetailRepositoryTest {
+public class TaskDetailRepositoryTest extends BaseTest {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TaskDetailRepositoryTest.class);
 
@@ -55,6 +56,7 @@ public class TaskDetailRepositoryTest {
         taskDetailDO.setScript("scr");
         taskDetailDO.setServiceName("service_name");
         taskDetailDO.setStatus("sta");
+        taskDetailDO.setResult("");
 
         Assertions.assertEquals(1, (long) taskDetailRepository.insert(taskDetailDO));
 
@@ -81,6 +83,7 @@ public class TaskDetailRepositoryTest {
         taskDetailDO.setScript("scr");
         taskDetailDO.setServiceName("service_name");
         taskDetailDO.setStatus("sta");
+        taskDetailDO.setResult("");
 
         Assertions.assertEquals(1, (long) taskDetailRepository.insert(taskDetailDO));
         taskDetailDO.setExtInfo("newext");
@@ -97,6 +100,16 @@ public class TaskDetailRepositoryTest {
 
         Assertions.assertEquals(1, taskDetailRepository.setSuccessStatus(-1));
         taskDetailDO.setStatus("success");
+        Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
+
+        Assertions.assertTrue(taskDetailRepository.setFailStatusAndUpdateResult(-1, "re1"));
+        taskDetailDO.setStatus("fail");
+        taskDetailDO.setResult("re1");
+        Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
+
+        Assertions.assertTrue(taskDetailRepository.setSuccessStatusAndUpdateResult(-1, "re2"));
+        taskDetailDO.setStatus("success");
+        taskDetailDO.setResult("re2");
         Assertions.assertTrue(compareTaskDetailDO(taskDetailDO, taskDetailRepository.queryById(-1)));
 
         Assertions.assertEquals(1, taskDetailRepository.deleteById(-1));
@@ -125,6 +138,7 @@ public class TaskDetailRepositoryTest {
             taskDetailDO.setScript("scr" + i);
             taskDetailDO.setServiceName("service_name");
             taskDetailDO.setStatus("sta" + Math.abs(i) % 2);
+            taskDetailDO.setResult("");
             taskDetailDOS.add(taskDetailDO);
             if (Math.abs(i) % 2 == 1){
                 taskDetailDOS_odd.add(taskDetailDO);
@@ -170,6 +184,31 @@ public class TaskDetailRepositoryTest {
                     (expected.getScript().equals(actual.getScript())) &&
                     (expected.getServiceName().equals(actual.getServiceName())) &&
                     (expected.getStatus().equals(actual.getStatus()));
+        }
+    }
+
+    /**
+     * Description: 俩原子任务比较, 不带ID
+     *
+     * @author blacksea3(jxt)
+     * @date 2020/8/2
+     * @param expected: 原
+     * @param actual: 实际
+     * @return boolean 结果
+     */
+    public boolean compareTaskDetailDOWithoutID(TaskDetailDO expected, TaskDetailDO actual){
+        if (expected == null){
+            return actual == null;
+        }else{
+            if (actual == null){
+                return false;
+            }
+            return ((expected.getContent().equals(actual.getContent())) &&
+                    (expected.getExtInfo().equals(actual.getExtInfo())) &&
+                    (expected.getInstanceName().equals(actual.getInstanceName())) &&
+                    (expected.getScript().equals(actual.getScript())) &&
+                    (expected.getServiceName().equals(actual.getServiceName())) &&
+                    (expected.getStatus().equals(actual.getStatus())));
         }
     }
 

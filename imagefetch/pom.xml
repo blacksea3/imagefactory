@@ -8,6 +8,7 @@
         <module>common-dal</module>
         <module>core-service</module>
         <module>common-util</module>
+        <module>upper-service</module>
     </modules>
 
     <!-- spring-boot-starter-web 和 spring-boot-starter-test都在这里面了, 版本号已经被控制 -->

@@ -9,6 +9,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * ClassName ServiceConfigRepositoryImpl
  * 服务配置仓库 实现类
@@ -29,16 +31,17 @@ public class ServiceConfigRepositoryImpl implements ServiceConfigRepository, Ini
     }
 
     @Override
-    public Long insert(ServiceConfigDO serviceConfigDO) {
+    public Integer insert(ServiceConfigDO serviceConfigDO) {
         if (serviceConfigDO.getId() == null){
-            return serviceConfigDOMapper.insertWithoutID(serviceConfigDO);
+            serviceConfigDOMapper.insertWithoutID(serviceConfigDO);
+            return serviceConfigDO.getId();
         }else{
             return serviceConfigDOMapper.insertWithID(serviceConfigDO);
         }
     }
 
     @Override
-    public Long update(ServiceConfigDO serviceConfigDO) {
+    public Integer update(ServiceConfigDO serviceConfigDO) {
         if (serviceConfigDO.getId() == null){
             return null;
         }else{
@@ -47,7 +50,7 @@ public class ServiceConfigRepositoryImpl implements ServiceConfigRepository, Ini
     }
 
     @Override
-    public Long deleteById(Integer id) {
+    public Integer deleteById(Integer id) {
         if (id == null){
             return null;
         }else{
@@ -71,5 +74,10 @@ public class ServiceConfigRepositoryImpl implements ServiceConfigRepository, Ini
         }else{
             return serviceConfigDOMapper.queryByName(name);
         }
+    }
+
+    @Override
+    public List<ServiceConfigDO> queryAll() {
+        return serviceConfigDOMapper.queryAll();
     }
 }

@@ -3,6 +3,7 @@ package com.bla.imagefetch.common.dal.imagefactory.auto.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.bla.imagefetch.common.dal.imagefactory.auto.dataobject.TaskConfigDO;
+import java.util.List;
 import com.bla.imagefetch.common.dal.imagefactory.auto.mapper.TaskConfigDOMapper;
 
 /**
@@ -18,33 +19,33 @@ public class TaskConfigDAO{
     /**
      * desc:不带Id插入表:task_config.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long insertWithoutID(TaskConfigDO entity){
+    public Integer insertWithoutID(TaskConfigDO entity){
         return taskConfigDOMapper.insertWithoutID(entity);
     }
     /**
      * desc:带Id插入表:task_config.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long insertWithID(TaskConfigDO entity){
+    public Integer insertWithID(TaskConfigDO entity){
         return taskConfigDOMapper.insertWithID(entity);
     }
     /**
      * desc:根据Id全量更新表:task_config.<br/>
      * @param entity entity
-     * @return Long
+     * @return Integer
      */
-    public Long updateAll(TaskConfigDO entity){
+    public Integer updateAll(TaskConfigDO entity){
         return taskConfigDOMapper.updateAll(entity);
     }
     /**
      * desc:根据Id删除数据:task_config.<br/>
      * @param id id
-     * @return Long
+     * @return Integer
      */
-    public Long deleteById(Integer id){
+    public Integer deleteById(Integer id){
         return taskConfigDOMapper.deleteById(id);
     }
     /**
@@ -56,11 +57,18 @@ public class TaskConfigDAO{
         return taskConfigDOMapper.queryById(id);
     }
     /**
-     * desc:根据普通索引Name获取数据:task_detail.<br/>
+     * desc:根据普通索引Name获取数据:task_config.<br/>
      * @param name name
      * @return TaskConfigDO
      */
     public TaskConfigDO queryByName(String name){
         return taskConfigDOMapper.queryByName(name);
+    }
+    /**
+     * desc:查询所有任务配置.<br/>
+     * @return List<TaskConfigDO>
+     */
+    public List<TaskConfigDO> queryAll(){
+        return taskConfigDOMapper.queryAll();
     }
 }

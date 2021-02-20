@@ -4,13 +4,13 @@
     <!-- baseSql option中 select * 会自动替换为 include -->
     <sql id="Base_Column_List">
         ID,SCRIPT,CONTENT,EXT_INFO,SERVICE_NAME 
-        ,INSTANCE_NAME,STATUS,GMT_CREATE,GMT_MODIFIED
+        ,INSTANCE_NAME,STATUS,RESULT,GMT_CREATE,GMT_MODIFIED
     </sql>
 
     <!-- baseSql option中 select sf.* 会自动替换为 include -->
     <sql id="Base_SF_Column_List">
         sf.ID,sf.SCRIPT,sf.CONTENT,sf.EXT_INFO,sf.SERVICE_NAME
-        ,sf.INSTANCE_NAME,sf.STATUS,sf.GMT_CREATE,sf.GMT_MODIFIED
+        ,sf.INSTANCE_NAME,sf.STATUS,sf.RESULT,sf.GMT_CREATE,sf.GMT_MODIFIED
     </sql>
 
     <operation name="insertWithoutID" paramtype="object" remark="不带Id插入表:task_detail">
@@ -27,6 +27,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
@@ -37,6 +38,7 @@
             , #{serviceName,jdbcType=VARCHAR}
             , #{instanceName,jdbcType=VARCHAR}
             , #{status,jdbcType=VARCHAR}
+            , #{result,jdbcType=VARCHAR}
             , now()
             , now()
         )
@@ -53,6 +55,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES(
@@ -63,6 +66,7 @@
             , #{serviceName,jdbcType=VARCHAR}
             , #{instanceName,jdbcType=VARCHAR}
             , #{status,jdbcType=VARCHAR}
+            , #{result,jdbcType=VARCHAR}
             , now()
             , now()
         )
@@ -80,6 +84,7 @@
             ,SERVICE_NAME
             ,INSTANCE_NAME
             ,STATUS
+            ,RESULT
             ,GMT_CREATE
             ,GMT_MODIFIED
         )VALUES
@@ -92,6 +97,7 @@
                 , #{item.serviceName,jdbcType=VARCHAR}
                 , #{item.instanceName,jdbcType=VARCHAR}
                 , #{status,jdbcType=VARCHAR}
+                , #{result,jdbcType=VARCHAR}
                 , now()
                 , now()
             )
@@ -119,6 +125,9 @@
         </if>
         <if test='status != null and status != ""'>
             ,STATUS          = #{status,jdbcType=VARCHAR}
+        </if>
+        <if test='result != null and result != ""'>
+            ,RESULT          = #{result,jdbcType=VARCHAR}
         </if>
         WHERE
             ID              = #{id,jdbcType=INTEGER}

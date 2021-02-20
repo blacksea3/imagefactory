@@ -15,12 +15,7 @@
         <!-- 项目内其他模块 start -->
         <dependency>
             <groupId>com.bla</groupId>
-            <artifactId>common-util</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.bla</groupId>
-            <artifactId>core-service</artifactId>
+            <artifactId>upper-service</artifactId>
             <version>0.0.1</version>
         </dependency>
         <!-- 项目内其他模块 end -->
@@ -50,17 +45,6 @@
             <scope>runtime</scope>
         </dependency>
         -->
-
-        <!-- quartz start -->
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz-jobs</artifactId>
-        </dependency>
-        <!-- quartz end -->
 
         <!-- springboot测试 start -->
         <dependency>
