@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.52</version>
+            <version>1.2.83</version>
         </dependency>
         <!-- 阿里云 视觉平台 公用 end -->
 
